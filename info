@@ -1,0 +1,17 @@
+api:
+    42 : https://api.intra.42.fr/apidoc
+
+pong : https://devsnap.me/javascript-pong-games
+
+NestJS:
+    cryptage : https://docs.nestjs.com/security/encryption-and-hashing
+    chat : https://gabrieltanner.org/blog/nestjs-realtime-chat
+    Pannel admin : https://nestjs-admin.com/
+
+UI :
+    Semantic : https://semantic-ui.com/
+
+palette color :
+    - https://coolors.co/262626-acbfa4-e2e8ce-8f4300-8f0000
+
+NestJS with Postgres : https://medium.com/@gausmann.simon/nestjs-typeorm-and-postgresql-full-example-development-and-project-setup-working-with-database-c1a2b1b11b8f
