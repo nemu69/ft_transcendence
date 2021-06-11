@@ -4,6 +4,7 @@ api:
 pong : https://devsnap.me/javascript-pong-games
 
 NestJS:
+    tuto : https://docs.nestjs.com/first-steps
     cryptage : https://docs.nestjs.com/security/encryption-and-hashing
     chat : https://gabrieltanner.org/blog/nestjs-realtime-chat
     Pannel admin : https://nestjs-admin.com/
@@ -11,7 +12,11 @@ NestJS:
 UI :
     Semantic : https://semantic-ui.com/
 
+template ? : https://html5up.net/dopetrope
+
 palette color :
     - https://coolors.co/262626-acbfa4-e2e8ce-8f4300-8f0000
 
 NestJS with Postgres : https://medium.com/@gausmann.simon/nestjs-typeorm-and-postgresql-full-example-development-and-project-setup-working-with-database-c1a2b1b11b8f
+
+Docker compose for Postgres : https://medium.com/analytics-vidhya/getting-started-with-postgresql-using-docker-compose-34d6b808c47c
