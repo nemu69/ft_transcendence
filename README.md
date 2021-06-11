@@ -4,7 +4,7 @@
 
 <!-- <img alt="Note" src="https://user-images.githubusercontent.com/45235527/96753610-698e7080-13d0-11eb-9461-d3351c9208d7.png" width="250" height="200" /> -->
 
-<strong>Description</strong>
+### <strong>Description</strong>
 
 This is not C or C++ basic functions ! To do something that you’ve never
 done before whitout a piscine. Remind yourself at the beginning of your journey in
