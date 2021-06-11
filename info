@@ -1,7 +1,14 @@
+- tuto instal -
+npm : https://www.npmjs.com/
+client to serv : https://socket.io/docs/v4/index.html
+dockerezing a node js app : https://nodejs.org/fr/docs/guides/nodejs-docker-webapp/
+
 api:
-    42 : https://api.intra.42.fr/apidoc
+    42 : https://api.intra.42.fr/ 
+		*need token / uid to connect
 
 pong : https://devsnap.me/javascript-pong-games
+	*example
 
 NestJS:
     tuto : https://docs.nestjs.com/first-steps
@@ -9,17 +16,10 @@ NestJS:
     chat : https://gabrieltanner.org/blog/nestjs-realtime-chat
     Pannel admin : https://nestjs-admin.com/
 
-UI :
-    Semantic : https://semantic-ui.com/
-
-template ? : https://html5up.net/dopetrope
-
 palette color :
     - https://coolors.co/262626-acbfa4-e2e8ce-8f4300-8f0000
 
 NestJS with Postgres : https://medium.com/@gausmann.simon/nestjs-typeorm-and-postgresql-full-example-development-and-project-setup-working-with-database-c1a2b1b11b8f
 
-Docker compose for Postgres : https://medium.com/analytics-vidhya/getting-started-with-postgresql-using-docker-compose-34d6b808c47c
 docker compose NestJs and Postgres : https://blog.logrocket.com/containerized-development-nestjs-docker/
-
-client to serv : https://socket.io/docs/v4/index.html
+Docker compose for Postgres : https://medium.com/analytics-vidhya/getting-started-with-postgresql-using-docker-compose-34d6b808c47c
