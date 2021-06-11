@@ -20,3 +20,6 @@ palette color :
 NestJS with Postgres : https://medium.com/@gausmann.simon/nestjs-typeorm-and-postgresql-full-example-development-and-project-setup-working-with-database-c1a2b1b11b8f
 
 Docker compose for Postgres : https://medium.com/analytics-vidhya/getting-started-with-postgresql-using-docker-compose-34d6b808c47c
+docker compose NestJs and Postgres : https://blog.logrocket.com/containerized-development-nestjs-docker/
+
+client to serv : https://socket.io/docs/v4/index.html
