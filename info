@@ -3,6 +3,9 @@ npm : https://www.npmjs.com/
 client to serv : https://socket.io/docs/v4/index.html
 dockerezing a node js app : https://nodejs.org/fr/docs/guides/nodejs-docker-webapp/
 
+- tuto with video : https://github.com/ThomasOliver545/nestjs-dockerized
+	* first NestJs project + docker + docker compose + Entity
+
 api:
     42 : https://api.intra.42.fr/ 
 		*need token / uid to connect
