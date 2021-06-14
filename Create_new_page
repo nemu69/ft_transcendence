@@ -1,0 +1,62 @@
+Initial Setup:
+    npm i -g @nestjs/cli
+
+Setup new page:
+    nest g module page_name
+    nest g controller page_name
+    nest g service page_name
+
+Setup controller.ts:
+    import { Controller, Get } from '@nestjs/common';
+    import { page_nameService } from './page_name.service';
+
+    @Controller('page_index')
+    export class Page_nameController {
+        constructor (private page_nameService: Page_nameService) {}
+
+        @Get() //Base get on controller page_index
+        async getfunction() {
+            return this.page_nameService.getfunction(); //getfunction found in service.ts
+        }
+
+        @Get('jj') //Get on page_index/jj
+        async getfunction2() {
+            return this.page_nameService.getfunction2(); //getfunction2 found in service.ts
+        }
+    }
+
+Setup service.ts:
+    import { Injectable } from '@nestjs/common';
+
+    @Injectable()
+    export class page_nameService {
+        public async getfunction(){
+            return("WOOF");
+        }
+
+        public async getfunction2(){
+            return("WOOF2");
+        }
+    }
+
+Setup app.module.ts:
+
+    //includes should add themselves
+    @Module({
+        imports: [
+            ConfigModule.forRoot({isGlobal: true}),
+            TypeOrmModule.forRoot({
+            type: 'postgres',
+            url: process.env.DATABASE_URL,
+            autoLoadEntities: true,
+            synchronize: true
+            }),
+            UserModule,
+            CatsModule,
+            DogsModule
+            //should add themselves
+        ],
+        controllers: [AppController, CatsController, DogsController], //ADD page_nameController
+        providers: [AppService, CatsService, DogsService], //ADD page_nameService
+    })
+    export class AppModule {}
