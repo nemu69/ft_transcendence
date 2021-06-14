@@ -5,12 +5,22 @@ dockerezing a node js app : https://nodejs.org/fr/docs/guides/nodejs-docker-weba
 - tuto with video : https://github.com/ThomasOliver545/nestjs-dockerized
 	* first NestJs project + docker + docker compose + Entity
 
+
+ORM doc :
+    - https://orkhan.gitbook.io/typeorm/docs
+        * Create Entity
+        * Migrations for bdd
+        * Used for One to One / One to Many / Many to One / Many to Many relations
+
+
 api:
     42 : https://api.intra.42.fr/ 
 		*need token / uid to connect
 
+
 pong : https://devsnap.me/javascript-pong-games
 	*example
+
 
 NestJS:
     tuto : https://docs.nestjs.com/first-steps
@@ -20,6 +30,7 @@ NestJS:
 
 palette color :
     - https://coolors.co/262626-acbfa4-e2e8ce-8f4300-8f0000
+
 
 NestJS with Postgres : https://medium.com/@gausmann.simon/nestjs-typeorm-and-postgresql-full-example-development-and-project-setup-working-with-database-c1a2b1b11b8f
 
