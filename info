@@ -12,6 +12,10 @@ ORM doc :
         * Migrations for bdd
         * Used for One to One / One to Many / Many to One / Many to Many relations
 
+Chat :
+    - tuto : https://pusher.com/tutorials/chat-sentiment-analysis-nestjs
+    - API : https://dashboard.pusher.com/
+
 
 api:
     42 : https://api.intra.42.fr/ 
@@ -61,6 +65,8 @@ DOC :
         for the bdd with postgres :
             - npm install --save @nestjs/typeorm typeorm pg 
             - npm i --save @nestjs/config
+        for Single Page Application (SPA) :
+            - npm install --save @nestjs/serve-static
 
     build docker :
         - docker build . -t war/app
