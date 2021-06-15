@@ -10,6 +10,7 @@ import { CatsService } from './cats/cats.service';
 import { DogsModule } from './dogs/dogs.module';
 import { DogsController } from './dogs/dogs.controller';
 import { DogsService } from './dogs/dogs.service';
+import { StatsModule } from './stats/stats.module';
 
 
 @Module({
@@ -23,7 +24,8 @@ import { DogsService } from './dogs/dogs.service';
     }),
     UserModule,
     CatsModule,
-    DogsModule
+    DogsModule,
+    StatsModule
   ],
   controllers: [AppController, CatsController, DogsController],
   providers: [AppService, CatsService, DogsService],
