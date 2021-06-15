@@ -8,6 +8,6 @@ export class FriendService {
 
     constructor(
         @InjectRepository(FriendEntity)
-        private userRepository: Repository<FriendEntity>
+        private friendRepository: Repository<FriendEntity>
     ) {}
 }

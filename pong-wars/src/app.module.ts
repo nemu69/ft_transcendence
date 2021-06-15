@@ -12,6 +12,7 @@ import { DogsController } from './dogs/dogs.controller';
 import { DogsService } from './dogs/dogs.service';
 import { StatsModule } from './stats/stats.module';
 import { FriendModule } from './friend/friend.module';
+import { StatusModule } from './status/status.module';
 
 
 @Module({
@@ -27,7 +28,8 @@ import { FriendModule } from './friend/friend.module';
     CatsModule,
     DogsModule,
     StatsModule,
-    FriendModule
+    FriendModule,
+    StatusModule
   ],
   controllers: [AppController, CatsController, DogsController],
   providers: [AppService, CatsService, DogsService],

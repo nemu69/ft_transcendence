@@ -8,6 +8,6 @@ export class StatsService {
 
     constructor(
         @InjectRepository(StatsEntity)
-        private userRepository: Repository<StatsEntity>
+        private statsRepository: Repository<StatsEntity>
     ) {}
 }

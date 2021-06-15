@@ -1,5 +1,6 @@
 import { FriendEntity } from "src/friend/models/friend.entity";
 import { StatsEntity } from "src/stats/models/stats.entity";
+import { StatusEntity } from "src/status/models/status.entity";
 
 export interface UserI {
     id: number;
@@ -9,4 +10,5 @@ export interface UserI {
     avatar: string;
     stats: StatsEntity;
     friend: FriendEntity;
+    status: StatusEntity;
 }
