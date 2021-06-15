@@ -1,5 +1,6 @@
+import { FriendEntity } from "src/friend/models/friend.entity";
 import { StatsEntity } from "src/stats/models/stats.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class UserEntity {
@@ -22,5 +23,9 @@ export class UserEntity {
     @ManyToOne(() => StatsEntity)
     @JoinColumn()
     stats: StatsEntity;
+
+    @OneToOne(() => FriendEntity)
+    @JoinColumn()
+    friend: FriendEntity;
 
 }

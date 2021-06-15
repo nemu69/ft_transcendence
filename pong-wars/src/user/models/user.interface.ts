@@ -1,3 +1,4 @@
+import { FriendEntity } from "src/friend/models/friend.entity";
 import { StatsEntity } from "src/stats/models/stats.entity";
 
 export interface UserI {
@@ -7,4 +8,5 @@ export interface UserI {
     email: string;
     avatar: string;
     stats: StatsEntity;
+    friend: FriendEntity;
 }

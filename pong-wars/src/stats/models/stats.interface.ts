@@ -1,5 +1,6 @@
+import { UserEntity } from "src/user/models/user.entity";
+
 export interface StatsI {
-    id: number;
     label: string;
-    // users: UsersEntity;
+    users: UserEntity;
 }
