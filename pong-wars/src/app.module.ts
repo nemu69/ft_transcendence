@@ -4,10 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
-import { StatsModule } from './stats/stats.module';
 import { FriendModule } from './friend/friend.module';
-import { StatusModule } from './status/status.module';
-import { RolesModule } from './roles/roles.module';
 
 
 @Module({
@@ -20,10 +17,7 @@ import { RolesModule } from './roles/roles.module';
       synchronize: true
     }),
     UserModule,
-    StatsModule,
-    FriendModule,
-    StatusModule,
-    RolesModule
+    FriendModule
   ],
   controllers: [AppController],
   providers: [AppService],
