@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
@@ -8,9 +7,12 @@ import { StatsModule } from './stats/stats.module';
 import { FriendModule } from './friend/friend.module';
 import { StatusModule } from './status/status.module';
 import { RolesModule } from './roles/roles.module';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 
 @Module({
+  
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
     TypeOrmModule.forRoot({
@@ -23,9 +25,11 @@ import { RolesModule } from './roles/roles.module';
     StatsModule,
     FriendModule,
     StatusModule,
-    RolesModule
+    RolesModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'frontend'),
+      exclude: ['/api*'],
+    }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
