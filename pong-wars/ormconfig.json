@@ -1,0 +1,20 @@
+{
+   "type": "postgres",
+   "host": "localhost",
+   "port": 35000,
+   "username": "war",
+   "password": "war123admin",
+   "database": "warbdd",
+   "synchronize": false,
+   "logging": false,
+   "entities": [
+      "src/entity/**/*.ts"
+   ],
+   "migrations": [
+      "src/migration/**/*.ts"
+   ],
+   "cli": {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "src/migration"
+   }
+}

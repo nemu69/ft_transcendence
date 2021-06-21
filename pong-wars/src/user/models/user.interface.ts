@@ -1,7 +1,4 @@
 import { FriendEntity } from "src/friend/models/friend.entity";
-import { RolesEntity } from "src/roles/models/roles.entity";
-import { StatsEntity } from "src/stats/models/stats.entity";
-import { StatusEntity } from "src/status/models/status.entity";
 
 export interface UserI {
     id: number;
@@ -9,8 +6,8 @@ export interface UserI {
     password: string;
     email: string;
     avatar: string;
-    stats: StatsEntity;
+    level: number;
     friend: FriendEntity;
-    status: StatusEntity;
-    roles: RolesEntity;
+    status: string;
+    role: string;
 }

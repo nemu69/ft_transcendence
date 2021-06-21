@@ -1,8 +1,5 @@
 import { FriendEntity } from "src/friend/models/friend.entity";
-import { RolesEntity } from "src/roles/models/roles.entity";
-import { StatsEntity } from "src/stats/models/stats.entity";
-import { StatusEntity } from "src/status/models/status.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class UserEntity {
@@ -22,20 +19,16 @@ export class UserEntity {
     @Column()
     avatar: string;
     
-    @ManyToOne(() => StatsEntity)
-    @JoinColumn()
-    stats: StatsEntity;
+    @Column()
+    level: number;
 
     @OneToOne(() => FriendEntity)
     @JoinColumn()
     friend: FriendEntity;
+    
+    @Column()
+    status: string;
 
-    @ManyToOne(() => StatusEntity)
-    @JoinColumn()
-    status: StatusEntity;
-
-    @ManyToOne(() => RolesEntity)
-    @JoinColumn()
-    roles: RolesEntity;
-
+    @Column()
+    role: string;
 }
