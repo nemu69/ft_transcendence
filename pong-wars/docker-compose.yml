@@ -14,7 +14,9 @@ services:
             PORT: 3000
         ports:
             - "8080:3000"
-
+        volumes:
+            - .:/usr/src/app
+        command: npm run start:debug
     postgres:
         image: postgres:13.3
         ports:
