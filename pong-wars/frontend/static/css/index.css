@@ -4,42 +4,6 @@ body {
     font-size: 18px;
 }
 
-.nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 90px;
-    background: #222222;
-}
-
-.nav__link {
-    display: block;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-decoration: none;
-    color: #eeeeee;
-    font-weight: 500;
-}
-
-.nav__link_bottom {
-    display: block;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-decoration: none;
-    color: #eeeeee;
-    font-weight: 500;
-}
-
-.nav__link img {
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-.nav__link:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
-
 #app {
     margin: 2em;
     line-height: 1.5;

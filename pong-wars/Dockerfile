@@ -13,10 +13,10 @@ RUN npm install
 # RUN npm ci --only=production
 
 # Bundle app source
-COPY . .
+# COPY . .
 
 # Create node modules
-RUN npm run build
+# RUN npm run build
 
 EXPOSE 8080
 CMD [ "node", "dist/main" ]
