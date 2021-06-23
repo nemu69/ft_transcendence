@@ -15,6 +15,7 @@ export default class extends AbstractView {
             <p>
                 <a href="/posts" data-link>View recent posts</a>.
             </p>
+            <button class="custom-btn btn-12"><span>Click!</span><span>Read More</span></button>
         `;
     }
 }
