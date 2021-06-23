@@ -29,13 +29,16 @@
     "@nestjs/typeorm": "^7.1.5",
     "body-parser": "^1.19.0",
     "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "nestjs-oauth2-server": "^1.1.21",
     "pg": "^8.6.0",
     "pusher": "^5.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6",
     "sentiment": "^5.0.2",
-    "typeorm": "^0.2.34"
+    "typeorm": "^0.2.34",
+    "vanillajs": "^1.0.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.6.0",
@@ -43,7 +46,7 @@
     "@nestjs/testing": "^7.6.15",
     "@types/express": "^4.17.11",
     "@types/jest": "^26.0.22",
-    "@types/node": "^14.14.36",
+    "@types/node": "^14.17.3",
     "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",

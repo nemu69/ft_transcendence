@@ -67,6 +67,8 @@ DOC :
             - npm i --save @nestjs/config
         for Single Page Application (SPA) :
             - npm install --save @nestjs/serve-static
+        for auth api 42 :
+            - npm i nestjs-oauth2-server
 
     build docker :
         - docker build . -t war/app

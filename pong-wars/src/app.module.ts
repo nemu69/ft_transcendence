@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { FriendModule } from './friend/friend.module';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 
 @Module({
+  
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
     TypeOrmModule.forRoot({
@@ -17,9 +19,11 @@ import { FriendModule } from './friend/friend.module';
       synchronize: true
     }),
     UserModule,
-    FriendModule
+    FriendModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'frontend'),
+      exclude: ['/api*'],
+    }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
