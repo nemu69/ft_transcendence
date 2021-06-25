@@ -1,105 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong War</title>
-    <link rel="stylesheet" href="/static/css/login.css">
-    <link rel="stylesheet" href="/static/css/index.css">
-    <link rel="stylesheet" href="/static/css/sidebar.css">
-</head>
-<body>
-    <div class="wrapper">
-        <div class="container-login">
-            <h1 class="login">Login</h1>
-            
-            <form class="form">
-                <input type="text" placeholder="Username">
-                <input type="password" placeholder="Password">
-                <button type="submit" id="login-button">Login</button>
-                <button type="submit" id="register-button">Register</button>
-    
-                </br></br>
-            <input type="text" placeholder="Guest">
-            </form>
-        </div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pong War</title>
+        <!-- <link rel="stylesheet" href="/static/css/login.css"> -->
+        <link rel="stylesheet" href="/static/css/index.css">
+        <link rel="stylesheet" href="/static/css/sidebar.css">
+    </head>
+    <body>
+        <!-- <embed name=ok loop="false" src="/static/music/Background.mp3" hidden=true autostart="true"></embed> -->
+        <!-- <div class="wrapper">
+            <div class="container-login">
+                <h1 class="login">Login</h1>
+                
+                <form class="form">
+                    <input type="text" placeholder="Username">
+                    <input type="password" placeholder="Password">
+                    <button type="submit" id="login-button" data-link>Login</button>
+                    <button type="submit" id="register-button"data-link>Register</button>
         
-        <ul class="bg-bubbles">
-            <li></li>
-            <li class="circle"></li>
-            <li></li>
-            <li class="circle"></li>
-            <li></li>
-            <li class="circle"></li>
-            <li class="circle"></l>
-            <li></li>
-            <li class="circle"></li>
-        </ul>
-    </div>
-    <nav class="main-menu">
-        <ul>
-            <li class="sep-bot">
-                <a href="/" data-link>
-                    <i><img class="side-img" src="/static/img/site/home-page.png"/></i>
-                    <span class="nav-text">
-                         Home
-                    </span>
-                </a>
-            </li>
-            <li>
-                <a href="/profile" data-link>
-                    <i><img class="side-img" src="/static/img/site/user.png"/></i>
-                    <span class="nav-text">
-                         Profile
-                    </span>
-                </a>
-            </li>
-            <li>
-                <a href="/match" data-link>
-                    <i><img class="side-img" src="/static/img/site/katana-sword.png"/></i>
-                    <span class="nav-text">
-                         Match
-                    </span>
-                </a>
-            </li>
-            <li>
-                <a href="/stats" data-link>
-                    <i><img class="side-img" src="/static/img/site/medal.png"/></i>
-                    <span class="nav-text">
-                         Stats
-                    </span>
-                </a>
-            </li>
-            <li>
-                <a href="/friend" data-link>
-                    <i><img class="side-img" src="/static/img/site/crowd.png"/></i>
-                    <span class="nav-text">
-                         Friend
-                    </span>
-                </a>
-            </li>
-        </ul>
+                    </br></br>
+                <input type="text" placeholder="Guest" data-link>
+                </form>
+            </div>
+            
+            <ul class="bg-bubbles">
+                <li></li>
+                <li class="circle"></li>
+                <li></li>
+                <li class="circle"></li>
+                <li></li>
+                <li class="circle"></li>
+                <li class="circle"></l>
+                <li></li>
+                <li class="circle"></li>
+            </ul>
+        </div> -->
+        <nav class="main-menu">
+            <ul>
+                <li class="sep-bot">
+                    <a href="/" data-link>
+                        <img class="side-img" src="/static/img/site/home-page.png"/>
+                        <span class="nav-text">
+                            Home
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/profile" data-link>
+                        <img class="side-img" src="/static/img/site/user.png"/>
+                        <span class="nav-text">
+                            Profile
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/match" data-link>
+                        <img class="side-img" src="/static/img/site/katana-sword.png"/>
+                        <span class="nav-text">
+                            Match
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/stats" data-link>
+                        <img class="side-img" src="/static/img/site/medal.png"/>
+                        <span class="nav-text">
+                            Stats
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/friend" data-link>
+                        <img class="side-img" src="/static/img/site/crowd.png" data-link/>
+                        <span class="nav-text" data-link>
+                            Friend
+                        </span>
+                    </a>
+                </li>
+            </ul>
 
-        <ul class="logout">
-            <li>
-                <a href="/setting" data-link>
-                 <i><img class="side-img" src="/static/img/site/apple-settings.png"/></i>
-                     <span class="nav-text">
-                         Setting
-                     </span>
-                 </a>
-             </li>  
-             <li>
-                <a href="/logout" data-link>
-                 <i><img class="side-img" src="/static/img/site/shutdown.png"/></i>
-                     <span class="nav-text">
-                         Logout
-                     </span>
-                 </a>
-             </li>  
-        </ul>
-    </nav>
-    <div id="app"></div>
-    <script type="module" src="/static/js/index.js"></script>
-</body>
+            <ul class="logout">
+                <li>
+                    <a href="/setting" data-link>
+                        <img class="side-img" src="/static/img/site/apple-settings.png" data-link/>
+                        <span class="nav-text" data-link>
+                                Setting
+                        </span>
+                    </a>
+                </li>  
+                <li>
+                    <a href="/logout" data-link>
+                        <img class="side-img" src="/static/img/site/shutdown.png"/>
+                        <span class="nav-text" data-link>
+                            Logout
+                        </span>
+                    </a>
+                </li>  
+            </ul>
+        </nav>
+        <div id="app"></div>
+        <script type="module" src="/static/js/index.js"></script>
+    </body>
 </html>
