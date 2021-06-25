@@ -93,13 +93,12 @@ window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", e => {
-        if (e.target.matches("[data-link]") && e.target.nodeName == "A") {
+        var parent = e.target;
+        while (parent.nodeName!= "A" && parent.nodeName != "BODY")
+            parent = parent.parentElement;
+        if (parent.matches("[data-link]")) {
             e.preventDefault();
-            navigateTo(e.target.href);
-        }
-        else if (e.target.parentElement.matches("[data-link]")) {
-            e.preventDefault();
-            navigateTo(e.target.parentElement.href);
+            navigateTo(parent.href);
         }
     });
     
