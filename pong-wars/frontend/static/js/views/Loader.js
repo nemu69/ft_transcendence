@@ -3,7 +3,7 @@ import AbstractView from "./AbstractView.js";
 export default class extends AbstractView {
     constructor(params) {
         super(params);
-        this.setTitle("Loading...");
+        this.setTitle("Waiting...");
     }
 
     async getHtml() {
@@ -13,7 +13,7 @@ export default class extends AbstractView {
         <div class="paddle" id="left"></div>
         <div class="paddle" id="right"></div>
         <div class="ball"></div>
-        <div class="loading">Loading...</div>
+        <div class="loading">Waiting...</div>
       </div>
         `;
     }
