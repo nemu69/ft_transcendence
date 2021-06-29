@@ -2,15 +2,27 @@ import AbstractView from "./views/AbstractView.js";
 import Dashboard from "./views/Dashboard.js";
 import PostView from "./views/PostView.js";
 import Logout from "./views/Logout.js";
+import Login from "./views/Login.js";
 import Match from "./views/Match.js";
 import Profile from "./views/Profile.js";
 import Stats from "./views/Stats.js";
 import Settings from "./views/Settings.js";
 import Friend from "./views/Friend.js";
+import Loader from "./views/Loader.js";
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
-// var x = document.getElementById("music").autoplay;
+const button = document.querySelector("#button");
+const icon = document.querySelector("#button > i");
+const audio = document.querySelector("audio");
+
+button.addEventListener("click", () => {
+  if (audio.paused) {
+    audio.play();
+    button.remove(button);
+  }
+});
+
 
 function nodeScriptReplace(node) {
     if ( nodeScriptIs(node) === true ) {
@@ -62,6 +74,8 @@ const router = async () => {
         { path: "/profile", view: Profile },
         { path: "/settings", view: Settings },
         { path: "/stats", view: Stats },
+        { path: "/login", view: Login },
+        { path: "/loader", view: Loader },
         { path: "/posts/:id", view: PostView },
         { path: "/logout", view: Logout }
     ];
@@ -97,11 +111,15 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             navigateTo(e.target.href);
         }
-        else if (e.target.parentElement.matches("[data-link]")) {
-            e.preventDefault();
-            navigateTo(e.target.parentElement.href);
+        else {
+            var parentElement;
+            parentElement = e.target.parentElement;
+            if (parentElement.matches("[data-link]")) {
+                e.preventDefault();
+                navigateTo(e.target.parentElement.href);
+            }
         }
-    });
+        });
     
     router();
 });

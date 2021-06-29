@@ -10,6 +10,7 @@
     font-weight: 300;
     src: url(https://fonts.gstatic.com/s/sourcesanspro/v14/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwlxdr.ttf) format('truetype');
   }
+
   * {
     box-sizing: border-box;
     margin: 0;
@@ -46,7 +47,7 @@
   }
   .wrapper {
     background: #acbfa4;
-    background: linear-gradient(to bottom right, #50a3a2 0%, #acbfa4 100%);
+    background: linear-gradient(to bottom right, #acbfa4 0%, #E2E8CE 100%);
     position: absolute;
     top: 0;
     left: 0;

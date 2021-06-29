@@ -15,6 +15,12 @@ export default class extends AbstractView {
             <p>
                 <a href="/posts" data-link>View recent posts</a>.
             </p>
+            <script>
+            const button = document.querySelector("#button");
+const audio = document.querySelector("audio");
+
+
+</script>
         `;
     }
 }
