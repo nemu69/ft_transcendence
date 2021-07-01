@@ -4,9 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { FriendModule } from './friend/friend.module';
-import { join } from 'path';
-import { ServeStaticModule } from '@nestjs/serve-static';
-
+import { AppService } from './app.service';
 
 @Module({
   
@@ -19,11 +17,9 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       synchronize: true
     }),
     UserModule,
-    FriendModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'frontend'),
-      exclude: ['/api*'],
-    }),
+    FriendModule
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

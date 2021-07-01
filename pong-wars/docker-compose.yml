@@ -1,10 +1,24 @@
   
 version: "3.9"
 services:
+
+    frontend:
+        container_name: wars-front
+		image: node
+        ports:
+            - "4200:4200"
+        volumes:
+            - ./frontend:/usr/src/app/frontend
+        command: npm run start
+        working_dir: /usr/src/app/frontend
+        depends_on: 
+            - api
+
     api:
-        # image: war/app
+        # image: node
+        container_name: wars-api
         build:
-            dockerfile: Dockerfile
+            dockerfile: backend/Dockerfile
             context: .
         depends_on: 
             - postgres
@@ -13,14 +27,16 @@ services:
             NODE_ENV: development
             PORT: 3000
         ports:
-            - "8080:3000"
+            - "3000:3000"
         volumes:
-            - .:/usr/src/app
+            - ./backend:/usr/src/app/backend
         command: npm run start:debug
+
     postgres:
+        container_name: wars-bdd
         image: postgres:13.3
         ports:
-            - "35000:5432"
+            - "5432:5432"
         environment: 
             POSTGRES_USER: war
             POSTGRES_PASSWORD: war123admin
