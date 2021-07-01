@@ -13,7 +13,7 @@ import { NavbarComponent } from './navbar/navbar.component';
     AppComponent,
     LoginComponent,
     PageNotFoundComponent,
-    SettingComponent
+    SettingComponent,
     NavbarComponent
   ],
   imports: [
