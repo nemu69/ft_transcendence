@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pong War</title>
+        <base href="/">
+        <link rel="icon" href="/static/img/logo.png"/>
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0-beta1/css/all.css">
+        <link rel="stylesheet" href="/assets/static/css/login.css">
+        <link rel="stylesheet" href="/assets/static/css/index.css">
+        <link rel="stylesheet" href="/assets/static/css/sidebar.css">
+    </head>
+<body>
+    <h1>Settings :</h1>
+        <input type="checkbox" id="switch" onclick="stopAudio()"/><label for="switch">Volume</label>
+        <script>
+            // const audio = document.querySelector("audio");
+            function stopAudio() {
+                var volume = document.getElementById("switch");
+                if (volume.checked == false) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+                else{ 
+                    audio.play();
+                }
+            }
+            function CheckPosition() {
+                var volume = document.getElementById("switch");
+                if (audio.paused) {
+                    volume.checked = false;
+                }
+                else{ 
+                    volume.checked = true;
+                }
+            }
+            CheckPosition();
+            </script>
+      <app-root></app-root>
+</body>
+</html>
+        
