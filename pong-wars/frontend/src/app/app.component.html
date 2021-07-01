@@ -7,72 +7,6 @@
 <!-- * * * * * * * to get started with your project! * * * * * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 
-<!-- Toolbar -->
-<nav class="main-menu">
-	<ul>
-		<li class="sep-bot">
-			<a routerLink="/" data-link>
-				<img class="side-img" src="/assets/static/img/site/home-page.png"/>
-				<span class="nav-text">
-					Home
-				</span>
-			</a>
-		</li>
-		<li>
-			<a routerLink="/profile" data-link>
-				<img class="side-img" src="/assets/static/img/site/user.png"/>
-				<span class="nav-text">
-					Profile
-				</span>
-			</a>
-		</li>
-		<li>
-			<a routerLink="/match" data-link>
-				<img class="side-img" src="/assets/static/img/site/katana-sword.png"/>
-				<span class="nav-text">
-					Match
-				</span>
-			</a>
-		</li>
-		<li>
-			<a routerLink="/stats" data-link>
-				<img class="side-img" src="/assets/static/img/site/medal.png"/>
-				<span class="nav-text">
-					Stats
-				</span>
-			</a>
-		</li>
-		<li>
-			<a routerLink="/friend" data-link>
-				<img class="side-img" src="../assets/static/img/site/crowd.png" data-link/>
-				<span class="nav-text" data-link>
-					Friend
-				</span>
-			</a>
-		</li>
-	</ul>
-
-	<ul class="logout">
-		<li>
-			<a routerLink="/setting" data-link>
-				<img class="side-img" src="/assets/static/img/site/apple-settings.png" data-link/>
-				<span class="nav-text" data-link>
-						Setting
-				</span>
-			</a>
-		</li>  
-		<li>
-			<a routerLink="/login" data-link>
-				<img class="side-img" src="/assets/static/img/site/shutdown.png"/>
-				<span class="nav-text" data-link>
-					Logout
-				</span>
-			</a>
-		</li>  
-	</ul>
-</nav>
-<div id="app"></div>
-
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * * The content above * * * * * * * * * * * -->
 <!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
@@ -80,5 +14,5 @@
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * End of Placeholder * * * * * * * * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-
+<app-navbar></app-navbar>
 <router-outlet></router-outlet>
