@@ -103,7 +103,7 @@
     width: 300px;
     color: #acbfa4;
   }
-  form button {
+  form button, a.log-reg-dir {
     display: block;
     margin: 0 auto 10px auto;
     -webkit-appearance: none;
@@ -120,7 +120,7 @@
     font-size: 18px;
     transition-duration: 0.25s;
   }
-  form button#register-button {
+  form a.log-reg-dir {
     border: 1px solid rgba(0, 0, 0, 0.6);
     background-color: rgba(0, 0, 0, 0.3);
     color: white;

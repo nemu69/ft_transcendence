@@ -26,10 +26,12 @@ services:
             DATABASE_URL: postgres://war:war123admin@postgres:5432/warbdd
             NODE_ENV: development
             PORT: 3000
+            JWT_SECRET: qw45sd4f7t46g87s8a
         ports:
             - "3000:3000"
         volumes:
             - ./backend:/usr/src/app/backend
+            - /usr/src/app/backend/node_modules/
         command: npm run start:debug
 
     postgres:

@@ -1,5 +1,6 @@
 import { FriendEntity } from "src/friend/models/friend.entity";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { UserRole, UserStatus } from "./user.interface";
 
 @Entity()
 export class UserEntity {
@@ -7,13 +8,13 @@ export class UserEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ unique: true })
     name: string;
 
     @Column()
     password: string;
 
-    @Column()
+    @Column({ unique: true })
     email: string;
 
     @Column()
@@ -26,9 +27,14 @@ export class UserEntity {
     @JoinColumn()
     friend: FriendEntity;
     
-    @Column()
-    status: string;
+    @Column({type: 'enum', enum: UserStatus, default: UserStatus.OFF})
+    status: UserStatus;
 
-    @Column()
-    role: string;
+    @Column({type: 'enum', enum: UserRole, default: UserRole.USER})
+    role: UserRole;
+
+	@BeforeInsert()
+	emailToLowerCase() {
+		this.email = this.email.toLocaleLowerCase();
+	}
 }
