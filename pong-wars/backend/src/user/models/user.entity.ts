@@ -22,7 +22,7 @@ export class UserEntity {
     @Column()
     level: number;
 
-    @OneToMany(() => UserEntity, user => user.id, {nullable: true})
+    @OneToMany(() => UserEntity, user => user.id)
     @JoinColumn()
     friend: UserEntity[];
     
