@@ -1,5 +1,4 @@
-import { FriendEntity } from "src/friend/models/friend.entity";
-import { BeforeInsert, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserRole, UserStatus } from "./user.interface";
 
 @Entity()
@@ -23,9 +22,9 @@ export class UserEntity {
     @Column()
     level: number;
 
-    @OneToOne(() => FriendEntity)
+    @OneToMany(() => UserEntity, user => user.id, {nullable: true})
     @JoinColumn()
-    friend: FriendEntity;
+    friend: UserEntity[];
     
     @Column({type: 'enum', enum: UserStatus, default: UserStatus.OFF})
     status: UserStatus;

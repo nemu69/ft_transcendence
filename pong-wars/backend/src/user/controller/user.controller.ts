@@ -16,6 +16,11 @@ export class UserController {
         );
     }
 
+	@Get()
+    findAll(): Observable<User[]> {
+        return this.userService.findAll();
+    }
+
 	@Post('login')
     login(@Body() user: User): Observable<Object> {
         return this.userService.login(user).pipe(

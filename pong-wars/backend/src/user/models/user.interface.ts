@@ -1,4 +1,4 @@
-import { FriendEntity } from "src/friend/models/friend.entity";
+import { UserEntity } from "./user.entity";
 
 export interface UserI {
     id?: number;
@@ -7,7 +7,7 @@ export interface UserI {
     email?: string;
     avatar?: string;
     level?: number;
-	friend?: FriendEntity;
+	friend: UserEntity[];
     status?: UserStatus;
     role?: UserRole;
 }

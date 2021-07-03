@@ -6,7 +6,6 @@ import { Repository } from 'typeorm';
 import { UserEntity } from '../models/user.entity';
 import { UserI } from '../models/user.interface';
 import { switchMap, map, catchError } from 'rxjs/operators';
-import { FriendEntity } from 'src/friend/models/friend.entity';
 
 // This should be a real class/interface representing a user entity
 export type User = any;
@@ -31,9 +30,6 @@ export class UserService {
 				newUser.avatar = "fake";
 				newUser.status = user.status;
 				newUser.role = user.role;
-				const friendEntity = new FriendEntity();
-				newUser.friend = friendEntity;
-				friendEntity.user = newUser;
 
 				return from(this.userRepository.save(newUser)).pipe(
 					map((user: User) => {
