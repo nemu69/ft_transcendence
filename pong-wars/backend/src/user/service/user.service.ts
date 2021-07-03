@@ -4,7 +4,7 @@ import { from, Observable, throwError } from 'rxjs';
 import { AuthService } from 'src/auth/services/auth.service';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../models/user.entity';
-import { UserI } from '../models/user.interface';
+import { UserI, UserRole, UserStatus } from '../models/user.interface';
 import { switchMap, map, catchError } from 'rxjs/operators';
 
 // This should be a real class/interface representing a user entity
@@ -78,10 +78,16 @@ export class UserService {
         return from(this.userRepository.update(id, user));
     }
 
+	updateStatusOfUser(id: number, user: User): Observable<any> {
+        return from(this.userRepository.update(id, user));
+    }
+
 	login(user: User): Observable<string> {
         return this.validateUser(user.email, user.password).pipe(
             switchMap((user: User) => {
                 if(user) {
+					this.updateStatusOfUser(user.id, {"status": UserStatus.ON});
+					console.log(user);
                     return this.authService.generateJWT(user).pipe(map((jwt: string) => jwt));
                 } else {
                     return 'Wrong Credentials';
@@ -91,7 +97,7 @@ export class UserService {
     }
 
 	validateUser(email: string, password: string): Observable<User> {
-        return from(this.userRepository.findOne(email)).pipe(
+        return from(this.userRepository.findOne({email}, {select: ['id', 'password', 'name', 'email', 'role', 'status']})).pipe(
             switchMap((user: User) => this.authService.comparePasswords(password, user.password).pipe(
                 map((match: boolean) => {
                     if(match) {

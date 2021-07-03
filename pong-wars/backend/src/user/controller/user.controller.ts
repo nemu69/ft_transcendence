@@ -20,7 +20,7 @@ export class UserController {
         );
     }
 
-	@hasRoles(UserRole.ADMIN)
+	@hasRoles(UserRole.USER)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Get()
     findAll(): Observable<User[]> {
