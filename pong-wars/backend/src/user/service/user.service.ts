@@ -87,7 +87,6 @@ export class UserService {
             switchMap((user: User) => {
                 if(user) {
 					this.updateStatusOfUser(user.id, {"status": UserStatus.ON});
-					console.log(user);
                     return this.authService.generateJWT(user).pipe(map((jwt: string) => jwt));
                 } else {
                     return 'Wrong Credentials';
