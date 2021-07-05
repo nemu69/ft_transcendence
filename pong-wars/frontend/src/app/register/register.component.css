@@ -46,23 +46,21 @@
       color: white;
   }
   .wrapper {
-    background: #acbfa4;
-    background: linear-gradient(to bottom right, #acbfa4 0%, #E2E8CE 100%);
+	background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+	background: -moz-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+	background: -o-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+	background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
   }
   .wrapper.form-success .container-login h1 {
     transform: translateY(85px);
   }
   .container-login {
-    max-width: 600px;
     margin: 0 auto;
-    padding: 20% 0;
-    height: 400px;
     text-align: center;
   }
   .container-login h1 {
@@ -101,7 +99,7 @@
   form input:focus {
     background-color: white;
     width: 300px;
-    color: #acbfa4;
+    color: #53e3a6;
   }
   form button, a.log-reg-dir {
     display: block;
@@ -113,7 +111,7 @@
     background-color: white;
     border: 0;
     padding: 10px 15px;
-    color: #acbfa4;
+    color: #53e3a6;
     border-radius: 3px;
     width: 250px;
     cursor: pointer;
@@ -130,11 +128,12 @@
   }
   .bg-bubbles {
     position: absolute;
-    top: 0;
     left: 0;
+	top: -200px;
     width: 100%;
     height: 100%;
     z-index: 1;
+	/* padding-top: 50%; */
   }
   .bg-bubbles li {
     width: 40px;
@@ -222,18 +221,18 @@
   }
   @-webkit-keyframes square {
     0% {
-      transform: translateY(0);
+      transform: translateY(800px);
     }
     100% {
-      transform: translateY(-1100px) rotate(600deg);
+      transform: translateY(-700px) rotate(600deg);
     }
   }
   @keyframes square {
     0% {
-      transform: translateY(0);
+      transform: translateY(800px);
     }
     100% {
-      transform: translateY(-1100px) rotate(600deg);
+      transform: translateY(-700px) rotate(600deg);
     }
   }
   

@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { from, Observable, throwError } from 'rxjs';
 import { AuthService } from 'src/auth/services/auth.service';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { UserEntity } from '../models/user.entity';
-import { UserI, UserRole, UserStatus } from '../models/user.interface';
+import { UserI, UserStatus } from '../models/user.interface';
 import { switchMap, map, catchError } from 'rxjs/operators';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 // This should be a real class/interface representing a user entity
 export type User = any;
@@ -114,4 +115,46 @@ export class UserService {
     findByMail(email: string): Observable<User> {
         return from(this.userRepository.findOne({email}));
     }
+
+	paginate(options: IPaginationOptions): Observable<Pagination<User>> {
+        return from(paginate<User>(this.userRepository, options)).pipe(
+            map((usersPageable: Pagination<User>) => {
+                usersPageable.items.forEach(function (v) {delete v.password});
+                return usersPageable;
+            })
+        )
+    }
+
+    paginateFilterByUsername(options: IPaginationOptions, user: User): Observable<Pagination<User>>{
+			return from(this.userRepository.findAndCount({
+            skip: (Number(options.page) - 1) * Number(options.limit) || 0,
+            take: Number(options.limit) || 10,
+            order: {id: "ASC"},
+            select: ['id', 'name', 'email', 'status'],
+            where: [
+                { name: Like(`%${user.name}%`)}
+            ]
+        })).pipe(
+            map(([users, totalUsers]) => {
+                const usersPageable: Pagination<User> = {
+                    items: users,
+                    links: {
+                        first: options.route + `?limit=${options.limit}`,
+                        previous: options.route + ``,
+                        next: options.route + `?limit=${options.limit}&page=${Number(options.page) + 1}`,
+                        last: options.route + `?limit=${options.limit}&page=${Math.ceil(totalUsers / Number(options.limit))}`
+                    },
+                    meta: {
+                        currentPage:  Number(options.page),
+                        itemCount: users.length,
+                        itemsPerPage: Number(options.limit),
+                        totalItems: totalUsers,
+                        totalPages: Math.ceil(totalUsers /  Number(options.limit))
+                    }
+                };                
+                return usersPageable;
+            })
+        )
+    }
+       
 }

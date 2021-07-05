@@ -4,7 +4,8 @@ body {
     margin: 0 0 0 90px;
     font-family: 'Quicksand', sans-serif;
     font-size: 18px;
-    background-color: #d4f7c5;
+	background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+	position: relative;
 }
 
 #app {
