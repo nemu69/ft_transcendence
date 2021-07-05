@@ -1,31 +1,27 @@
-<!doctype html>
-<html lang="en">
-<body>
-    <h1>Settings :</h1>
-        <input type="checkbox" id="switch" onclick="stopAudio()"/><label for="switch">Volume</label>
-        <script>
-            // const audio = document.querySelector("audio");
-            function stopAudio() {
-                var volume = document.getElementById("switch");
-                if (volume.checked == false) {
-                    audio.pause();
-                    audio.currentTime = 0;
-                }
-                else{ 
-                    audio.play();
-                }
-            }
-            function CheckPosition() {
-                var volume = document.getElementById("switch");
-                if (audio.paused) {
-                    volume.checked = false;
-                }
-                else{ 
-                    volume.checked = true;
-                }
-            }
-            CheckPosition();
-        </script>
-</body>
-</html>
-        
+<div class="setting">
+	<h1>Settings :</h1>
+	<input type="checkbox" id="switch" onclick="stopAudio()"/><label for="switch">Volume</label>
+	<script>
+		// const audio = document.querySelector("audio");
+		function stopAudio() {
+			var volume = document.getElementById("switch");
+			if (volume.checked == false) {
+				audio.pause();
+				audio.currentTime = 0;
+			}
+			else{ 
+				audio.play();
+			}
+		}
+		function CheckPosition() {
+			var volume = document.getElementById("switch");
+			if (audio.paused) {
+				volume.checked = false;
+			}
+			else{ 
+				volume.checked = true;
+			}
+		}
+		CheckPosition();
+	</script>   
+</div>
