@@ -77,7 +77,7 @@
     position: relative;
     z-index: 2;
   }
-  form input {
+  form mat-form-field {
     display: block;
     -webkit-appearance: none;
        -moz-appearance: none;
@@ -87,20 +87,22 @@
     background-color: rgba(255, 255, 255, 0.2);
     width: 250px;
     border-radius: 3px;
-    padding: 10px 15px;
     margin: 0 auto 10px auto;
     text-align: center;
     font-size: 18px;
     color: white;
     transition-duration: 0.25s;
     font-weight: 300;
+    padding: 13px 15px;
+	padding-top: 0px;
+}
+
+form mat-form-field:hover {
+	  background-color: rgba(255, 255, 255, 0.4);
   }
-  form input:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-  }
-  form input:focus {
+  form mat-form-field:focus {
     background-color: white;
-    width: 300px;
+    width: 500px;
     color: #acbfa4;
   }
   form button, a.log-reg-dir {
