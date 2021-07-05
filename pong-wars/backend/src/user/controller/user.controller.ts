@@ -59,10 +59,9 @@ export class UserController {
             )
         }
     }
-
 }
 
-@Controller('alluser')
+@Controller('allusers')
 export class UserControllerAdmin {
 
     constructor(private userService: UserService) {}
