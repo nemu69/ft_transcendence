@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserRole, UserStatus } from "./user.interface";
 
 @Entity()
@@ -22,9 +22,12 @@ export class UserEntity {
     @Column()
     level: number;
 
-    @OneToMany(() => UserEntity, user => user.id)
+    @OneToMany(() => UserEntity, user => user.followers)
     @JoinColumn()
-    friend: UserEntity[];
+    following: UserEntity[];
+
+	@ManyToOne(type => UserEntity, user => user.following)
+    followers: UserEntity;
     
     @Column({type: 'enum', enum: UserStatus, default: UserStatus.OFF})
     status: UserStatus;
