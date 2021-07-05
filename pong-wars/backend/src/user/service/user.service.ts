@@ -28,7 +28,7 @@ export class UserService {
 		 		newUser.email = user.email;
 				newUser.password = passwordHash;
 				newUser.level = 0;
-				newUser.avatar = "fake";
+				newUser.avatar = "user.png";
 				newUser.status = user.status;
 				newUser.role = user.role;
 

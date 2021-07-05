@@ -1,12 +1,30 @@
-import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { User, UserService } from '../service/user.service';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { hasRoles } from 'src/auth/decorator/roles.decorator';
 import { UserRole } from '../models/user.interface';
 import { RolesGuard } from 'src/auth/guards/roles.guards';
 import { JwtAuthGuard } from 'src/auth/guards/jtw-guards';
 import { Pagination } from 'nestjs-typeorm-paginate';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import path = require('path');
+import { join } from 'path';
+import { v4 as uuidv4 } from 'uuid';
+
+export const storage = {
+    storage: diskStorage({
+        destination: './uploads/avatar',
+        filename: (req, file, cb) => {
+            const filename: string = path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
+            const extension: string = path.parse(file.originalname).ext;
+
+            cb(null, `${filename}${extension}`)
+        }
+    })
+
+}
 
 @Controller('users')
 export class UserController {
@@ -59,17 +77,21 @@ export class UserController {
             )
         }
     }
-}
 
-@Controller('allusers')
-export class UserControllerAdmin {
+	@UseGuards(JwtAuthGuard)
+    @Post('upload')
+    @UseInterceptors(FileInterceptor('file', storage))
+    uploadFile(@UploadedFile() file, @Request() req): Observable<Object> {
+        const user: User = req.user;
 
-    constructor(private userService: UserService) {}
+        return this.userService.updateOne(user.id, {avatar: file.filename}).pipe(
+            tap((user: User) => console.log(user)),
+            map((user:User) => ({avatar: user.avatar}))
+        )
+    }
 
-	@hasRoles(UserRole.ADMIN)
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Get()
-	findAll(): Observable<User[]> {
-		return this.userService.findAll();
-	}
+	@Get('avatar/:imagename')
+    findProfileImage(@Param('imagename') imagename, @Res() res): Observable<Object> {
+        return of(res.sendFile(join(process.cwd(), 'uploads/avatar/' + imagename)));
+    }
 }
