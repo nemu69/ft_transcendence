@@ -15,7 +15,6 @@ services:
             - api
 
     api:
-        # image: node
         container_name: wars-api
         build:
             dockerfile: backend/Dockerfile
