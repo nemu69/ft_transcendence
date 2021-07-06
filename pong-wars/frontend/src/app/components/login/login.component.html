@@ -1,20 +1,17 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" 
 rel="stylesheet">
 <div class="wrapper">
-	<div class="container-login">
+	<div class="container-login" >
 		<h1 class="login">Login</h1>
 		
 		<form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 			<mat-form-field appearance="standard">
 				<input matInput placeholder="Email" formControlName="email">
-				<mat-hint *ngIf="loginForm.controls.email.errors"></mat-hint>
+				 <mat-error *ngIf="loginForm.controls.email.errors">{{getErrorMessageEmail()}}</mat-error>
 			</mat-form-field>
 			<mat-form-field appearance="standard">
 				<input matInput placeholder="Password" formControlName="password"[type]="hide ? 'password' : 'text'">
-				<mat-hint *ngIf="loginForm.controls.password.errors"></mat-hint>
-				<button mat-icon-button type="button" matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-					<mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-				</button>
+					<mat-icon matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
 			</mat-form-field>
 			<button mat-flat-button color="primary" [disabled]="!loginForm.valid" type="submit" id="login-button">Login</button>
 			<a routerLink="/register" class="log-reg-dir">Register</a>

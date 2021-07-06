@@ -22,13 +22,14 @@ export class LoginComponent implements OnInit {
   
 	ngOnInit(): void {
 		this.loginForm = new FormGroup({
-		  email: new FormControl(null, [Validators.required, Validators.email, Validators.minLength(6)]),
-		  password: new FormControl(null, [Validators.required, Validators.minLength(3)])
+		  email: new FormControl(null, [Validators.required, Validators.email, Validators.minLength(5)]),
+		  password: new FormControl(null, [Validators.required])
 		})
 	  }
 	
 	  onSubmit() {
-		  console.log(this.loginForm.invalid);
+		console.log("polo");
+
 		  if(this.loginForm.invalid) {
 			  return;
 			}
@@ -39,4 +40,12 @@ export class LoginComponent implements OnInit {
 		
 		}
 	hide = true;
+	getErrorMessageEmail() {
+		if (this.loginForm.controls.email.hasError('required')) {
+		  return 'You must enter a value';
+		}
+	
+		return this.loginForm.controls.email.hasError('email') ? 'Not a valid email' : '';
+	  }
+
 }

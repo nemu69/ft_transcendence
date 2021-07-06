@@ -1,17 +1,57 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" 
+rel="stylesheet">
 <div class="wrapper">
 	<div class="container-login">
 		<h1 class="login">Register</h1>
-		
-		<form class="form">
-			<input type="text" placeholder="Username">
-			<input type="password" placeholder="Password">
-			<input type="email" placeholder="Email">
-			<button type="submit" id="register-button">Register</button>
-			<a routerLink="/login" class="log-reg-dir">Login</a>
-		<!-- <input type="text" placeholder="Guest" > -->
-		</form>
-	</div>
-	
+		<form class="form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+			<mat-form-field appearance="standard">
+				<input matInput placeholder="Username" formControlName="username">
+				<mat-error *ngIf="registerForm.controls.username.errors">{{getErrorMessageUser()}}</mat-error>
+			</mat-form-field>
+			<mat-form-field appearance="standard">
+				<input matInput placeholder="Email" formControlName="email">
+				<mat-error *ngIf="registerForm.controls.email.errors">{{getErrorMessageEmail()}}</mat-error>
+        	</mat-form-field>
+			<mat-form-field appearance="standard">
+				<input matInput placeholder="Password" formControlName="password"[type]="hide ? 'password' : 'text'">
+					<mat-icon matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+			</mat-form-field>
+			<div class="label">
+				<label class="col" [ngClass]="registerForm.controls['password'].hasError('required') || registerForm.controls['password'].hasError('minlength')  ? 'text-danger' : 'text-success'">
+					<i class="material-icons">{{ registerForm.controls['password'].hasError('required') ||
+						registerForm.controls['password'].hasError('minlength') ? 'cancel' :
+						'check_circle' }}</i>
+						Must be at least 8 characters
+					</label>
+					<label class="col" [ngClass]="registerForm.controls['password'].hasError('required') || registerForm.controls['password'].hasError('hasNumber')  ? 'text-danger' : 'text-success'">
+						<i class="material-icons">{{ registerForm.controls['password'].hasError('required') ||
+							registerForm.controls['password'].hasError('hasNumber') ? 'cancel' :
+							'check_circle' }}</i>
+							Must contain at least 1 number
+						</label>
+						<label class="col" [ngClass]="registerForm.controls['password'].hasError('required') || registerForm.controls['password'].hasError('hasCapitalCase')  ? 'text-danger' : 'text-success'">
+							<i class="material-icons">{{ registerForm.controls['password'].hasError('required') ||
+								registerForm.controls['password'].hasError('hasCapitalCase') ? 'cancel' :
+								'check_circle' }}</i>
+								Must contain at least 1 in Capital Case
+							</label>
+			  <label class="col" [ngClass]="registerForm.controls['password'].hasError('required') || registerForm.controls['password'].hasError('hasSmallCase')  ? 'text-danger' : 'text-success'">
+				<i class="material-icons">{{ registerForm.controls['password'].hasError('required') ||
+					registerForm.controls['password'].hasError('hasSmallCase') ? 'cancel' :
+					'check_circle' }}</i>
+					Must contain at least 1 Letter in Small Case
+				</label>
+				<label class="col" [ngClass]="registerForm.controls['password'].hasError('required') || registerForm.controls['password'].hasError('hasSpecialCharacters') ? 'text-danger' : 'text-success'">
+					<i class="material-icons">{{ registerForm.controls['password'].hasError('required') ||
+						registerForm.controls['password'].hasError('hasSpecialCharacters') ? 'cancel' :
+						'check_circle' }}</i>
+						Must contain at least 1 Special Character
+					</label>
+				</div>
+					<button id="register-button" type="submit">Register</button>
+					<a routerLink="/login" class="log-reg-dir">Login</a>
+				</form>
+			</div>
 	<ul class="bg-bubbles">
 		<li></li>
 		<li class="circle"></li>

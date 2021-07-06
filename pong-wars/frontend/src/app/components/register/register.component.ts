@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 
-class CustomValidators {
-  static passwordContainsNumber(control: AbstractControl): ValidationErrors {
-    const regex= /\d/;
 
-    if(regex.test(control.value) && control.value !== null) {
-      return null as any;
-    } else {
-      return {passwordInvalid: true};
-    }
-  }
+class CustomValidators {
+	static patternValidator(regex: RegExp, error: ValidationErrors): ValidatorFn {
+	  return (control: AbstractControl): { [key: string]: any } => {
+		if (!control.value) {
+		  return null as any;
+		}
+		const valid = regex.test(control.value);
+		return valid ? null as any : error;
+	  };
+	}
 
   static passwordsMatch (control: AbstractControl): ValidationErrors {
     const password = control.get('password')!.value;
@@ -32,6 +33,7 @@ class CustomValidators {
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
+	
 export class RegisterComponent implements OnInit {
 
 	registerForm!: FormGroup;
@@ -44,33 +46,44 @@ export class RegisterComponent implements OnInit {
   
 	ngOnInit(): void {
 	  this.registerForm = this.formBuilder.group({
-		name: [null, [Validators.required]],
 		username: [null, [Validators.required]],
 		email: [null, [
 		  Validators.required,
 		  Validators.email,
-		  Validators.minLength(6)
+		  Validators.minLength(5)
 		]],
 		password: [null, [
-		  Validators.required,
-		  Validators.minLength(3),
-		  CustomValidators.passwordContainsNumber
+			Validators.required,
+			Validators.minLength(8),
+			CustomValidators.patternValidator(/\d/, { hasNumber: true }),
+			CustomValidators.patternValidator(/[A-Z]/, { hasCapitalCase: true }),
+			CustomValidators.patternValidator(/[a-z]/, { hasSmallCase: true }),
+			CustomValidators.patternValidator(/[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,{ hasSpecialCharacters: true }),
 		]],
-		confirmPassword: [null, [Validators.required]]
 	  },{
-		 validators: CustomValidators.passwordsMatch
 	  })
 	}
-  
 	onSubmit(){
-	  if(this.registerForm.invalid) {
-		return;
+		if(this.registerForm.invalid) {
+			return;
+		}
+		console.log(this.registerForm.value);
+		this.authService.register(this.registerForm.value).pipe(
+			map(user => this.router.navigate(['login']))
+			).subscribe()
+		}
+		
+		hide = true;
+	getErrorMessageUser() {
+		if (this.registerForm.controls.username.hasError('required')) {
+		  return 'You must enter a value';
+		}
+		return '';
 	  }
-	  console.log(this.registerForm.value);
-	  this.authService.register(this.registerForm.value).pipe(
-		map(user => this.router.navigate(['login']))
-	  ).subscribe()
-	}
-  
-
+	getErrorMessageEmail() {
+		if (this.registerForm.controls.email.hasError('required')) {
+		  return 'You must enter a value';
+		}
+		return this.registerForm.controls.email.hasError('email') ? 'Not a valid email' : '';
+	  }
 }
