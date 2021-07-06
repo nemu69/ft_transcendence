@@ -46,7 +46,7 @@ export class RegisterComponent implements OnInit {
   
 	ngOnInit(): void {
 	  this.registerForm = this.formBuilder.group({
-		username: [null, [Validators.required]],
+		name: [null, [Validators.required]],
 		email: [null, [
 		  Validators.required,
 		  Validators.email,
@@ -75,7 +75,7 @@ export class RegisterComponent implements OnInit {
 		
 		hide = true;
 	getErrorMessageUser() {
-		if (this.registerForm.controls.username.hasError('required')) {
+		if (this.registerForm.controls.name.hasError('required')) {
 		  return 'You must enter a value';
 		}
 		return '';

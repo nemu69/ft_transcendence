@@ -24,10 +24,10 @@ export class UserEntity {
     level: number;
 
     @OneToMany(() => FriendEntity, friend => friend.following)
-    followings: UserEntity;
+    following: UserEntity[];
 
-	@OneToMany(() => FriendEntity, friend => friend.follower)
-    followers: UserEntity;
+	@OneToMany(() => FriendEntity, friend => friend.followers)
+    followers: UserEntity[];
     
     @Column({type: 'enum', enum: UserStatus, default: UserStatus.OFF})
     status: UserStatus;

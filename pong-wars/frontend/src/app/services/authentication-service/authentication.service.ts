@@ -22,7 +22,7 @@ export class AuthenticationService {
 
   login(loginForm: LoginForm) {  
 
-    return this.http.post<any>('/api/users/login', {email: loginForm.email, password: loginForm.password}).pipe(
+    return this.http.post<any>('http://localhost:3000/users/login', {email: loginForm.email, password: loginForm.password}).pipe(
       map((token) => {
         console.log('token');
         localStorage.setItem(JWT_NAME, token.access_token);
@@ -36,7 +36,8 @@ export class AuthenticationService {
   }
 
   register(user: User) {
-    return this.http.post<any>('/api/users', user).pipe(
+	console.log(user);
+    return this.http.post<any>('http://localhost:3000/users', user).pipe(
       tap(user => console.log(user)),
       map(user => user)
     )

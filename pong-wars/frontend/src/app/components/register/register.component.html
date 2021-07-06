@@ -5,8 +5,8 @@ rel="stylesheet">
 		<h1 class="login">Register</h1>
 		<form class="form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 			<mat-form-field appearance="standard">
-				<input matInput placeholder="Username" formControlName="username">
-				<mat-error *ngIf="registerForm.controls.username.errors">{{getErrorMessageUser()}}</mat-error>
+				<input matInput placeholder="Username" formControlName="name">
+				<mat-error *ngIf="registerForm.controls.name.errors">{{getErrorMessageUser()}}</mat-error>
 			</mat-form-field>
 			<mat-form-field appearance="standard">
 				<input matInput placeholder="Email" formControlName="email">

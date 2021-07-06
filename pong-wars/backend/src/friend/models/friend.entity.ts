@@ -1,16 +1,39 @@
 import { UserEntity } from "src/user/models/user.entity";
-import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, } from "typeorm";
 
-@Entity()
-export class FriendEntity {
-
+export enum Status {
+	blocked = 'blocked',
+	accepted = 'accepted',
+	pending = 'pending',
+  }
+  
+  @Entity({ name: 'user_followers' })
+  export class FriendEntity {
 	@PrimaryGeneratedColumn()
-    id: number;
-
-    @ManyToOne(() => UserEntity, user => user.followings)
-    following: UserEntity[];
-
-	@ManyToOne(type => UserEntity, user => user.followers)
-    follower: UserEntity[];
-    
-}
+	id: number;
+  
+	@Column({ type: 'number' })
+	// tslint:disable-next-line: variable-name
+	following_id: number;
+  
+	@Column({ type: 'number' })
+	// tslint:disable-next-line: variable-name
+	follower_id: number;
+  
+	@ManyToOne(
+	  () => UserEntity,
+	  (u: UserEntity) => u.followers,
+	)
+	@JoinColumn({ name: 'follower_id' })
+	followers: UserEntity;
+  
+	@ManyToOne(
+	  type => UserEntity,
+	  (u: UserEntity) => u.following,
+	)
+	@JoinColumn({ name: 'following_id' })
+	following: UserEntity;
+  
+	@Column({ enum: Status, type: 'enum', default: Status.pending })
+	status: Status;
+  }

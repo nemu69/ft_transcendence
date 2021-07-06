@@ -7,8 +7,8 @@ export interface UserI {
     email?: string;
     avatar?: string;
     level?: number;
-	followings?: FriendEntity;
-	followers?: FriendEntity;
+	following?: FriendEntity[];
+	followers?: FriendEntity[];
     status?: UserStatus;
     role?: UserRole;
 }

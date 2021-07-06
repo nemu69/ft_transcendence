@@ -13,6 +13,8 @@ services:
         working_dir: /usr/src/app/frontend
         depends_on: 
             - api
+        links:
+            - api
 
     api:
         container_name: wars-api
