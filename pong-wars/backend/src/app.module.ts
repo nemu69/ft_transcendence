@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { FriendModule } from './friend/friend.module';
 
 @Module({
   
@@ -17,7 +18,8 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true
     }),
     UserModule,
-    AuthModule
+    AuthModule,
+    FriendModule
   ],
   controllers: [AppController],
   providers: [AppService],
