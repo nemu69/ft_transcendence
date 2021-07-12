@@ -39,6 +39,11 @@ z-index:1000;
 margin:7px 0;
 }
 
+.active {
+	background-color: #8F0000;
+}
+
+
 .main-menu li {
 position:relative;
 display:block;
