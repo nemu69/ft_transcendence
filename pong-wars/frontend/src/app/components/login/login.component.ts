@@ -28,14 +28,13 @@ export class LoginComponent implements OnInit {
 	  }
 	
 	  onSubmit() {
-		console.log("polo");
 
 		  if(this.loginForm.invalid) {
 			  return;
 			}
 		
 		this.authService.login(this.loginForm.value).pipe(
-		  map(token => this.router.navigate(['match']))
+		  map(token => this.router.navigate(['profile']))
 		).subscribe()
 		
 		}

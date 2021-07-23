@@ -90,7 +90,7 @@ const elts = {
 	  
 	  let newTime: Date = new Date();
 	  let shouldIncrementIndex = cooldown > 0;
-	  let dt = (newTime.getMilliseconds() - time.getSeconds()) /20000;
+	  let dt = (newTime.getTime() - time.getTime()) /400;
 	  time = newTime;
 	  
 	  cooldown -= dt;
