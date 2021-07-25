@@ -21,7 +21,6 @@ export class AuthenticationService {
   constructor(private http: HttpClient, private jwtHelper: JwtHelperService) { }
 
   login(loginForm: LoginForm) {  
-
     return this.http.post<any>('/api/users/login', {email: loginForm.email, password: loginForm.password}).pipe(
       map((token) => {
         console.log('token');
@@ -36,8 +35,10 @@ export class AuthenticationService {
   }
 
   register(user: User) {
-	console.log(user);
-    return this.http.post<any>('/api/users', user).pipe(
+	console.log(user.password);
+	console.log(user.email);
+	console.log(user.name);
+    return this.http.post<any>('/api/users', {email: user.email, password: user.password, name: user.name}).pipe(
       tap(user => console.log(user)),
       map(user => user)
     )
