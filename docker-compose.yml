@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: ./api
+    # Mount our host dir to the docker container
+    # Mount api directory (./api) to (:) docker container (/transcendance/src/app)
+    # Reflect File changes from host to container
+    volumes:
+      - ./api:/transcendance/src/app
+      - /transcendance/src/app/node_modules/
+    # RUN in debug mode: npm run start:debug --> Also start your vscode debugger
+    # Run in dev mode: npm run start:dev
+    command: npm run start:debug
+    depends_on: 
+      - postgres
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/db
+      NODE_ENV: development
+      JWT_SECRET: hard_to_guess_secret_123
+      JWT_REFRESH_SECRET: hard_to_guess_secret_refresh_123
+      OAUTH_42_UID: 999c140195c8f4b412254d790158ed245e0fb3b59ca0fa9e916a46e144d4153b
+      OAUTH_42_SECRET: b2c105f52c58b2b200bc73d2644edb0477a7171f34ce5040120ee0d0983081b5
+      PORT: 3000
+    ports:
+      - 3000:3000
+      - 9229:9229
+  
+  frontend:
+    build:
+      dockerfile: Dockerfile
+      context: ./frontend
+    command: npm run start
+    volumes:
+      - ./frontend:/transcendance/frontend/src/app
+      - /transcendance/frontend/src/app/node_modules
+    ports:
+      - 4200:4200
+    links:
+      - api
+
+  postgres:
+    image: postgres:10.4
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    ports:
+      - 35000:5432
+
+  postgres_admin:
+    image: dpage/pgadmin4:4.28
+    depends_on: 
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - 5050:80
+
+

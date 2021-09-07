@@ -1,0 +1,33 @@
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../services/auth-service/auth.service';
+
+
+import { Router, RouterModule, Routes } from '@angular/router';
+
+@Component({
+  selector: 'app-callback',
+  templateUrl: './callback.component.html',
+  styleUrls: ['./callback.component.css']
+})
+export class CallbackComponent implements OnInit {
+
+  constructor(private apiService: AuthService, private router: Router) { }
+
+  ngOnInit(): void {
+	if (localStorage.getItem('token'))
+	{
+		this.router.navigate(['../../private/profile']);
+		return ;
+    }    
+    let uri: string = window.location.href;
+    let auth = "/api/oauth2/school42";
+    uri = uri.replace('public/', '');
+    let output = [uri.slice(0, 21), auth, uri.slice(21)].join('');
+    uri = output;
+    this.apiService.getToken(uri).subscribe((result: any)=>{
+        localStorage.setItem('auth-token', result.token);
+		if (result.two_factor) this.router.navigate(['../../public/two-factor']);
+		else this.router.navigate(['../../private/profile']);
+    })
+  }
+}

@@ -1,0 +1,39 @@
+/* You can add global styles to this file, and also import other style files */
+
+body {
+    margin: 0 0 0 90px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 18px;
+	background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+	position: relative;
+}
+
+#app {
+    margin: 2em;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+a {
+    color: #009579;
+}
+
+button.vlm {
+	background-color: transparent;
+	border-color: transparent;
+}
+.red-snackbar {
+    background: #F44336;
+    color: white;
+}
+.red-snackbar button {
+    background-color: #F44336;
+    color: white !important;
+    border: none;
+}
+.cdk-global-overlay-wrapper, .cdk-overlay-container {
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}

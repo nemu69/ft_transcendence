@@ -1,0 +1,47 @@
+<div class="setting">
+	<h1>Settings :</h1>
+	<input type="checkbox" id="switch" onclick="stopAudio()"/><label for="switch">Volume</label>
+	<h2>Username</h2>
+	<form class="form" [formGroup]="settingForm" (ngSubmit)="update(true)">
+		<mat-form-field appearance="standard">
+			<input matInput placeholder="New Username" formControlName="username">
+			<mat-error *ngIf="settingForm.controls.username.errors">{{getErrorMessageUser()}}</mat-error>
+		</mat-form-field>
+		<button mat-flat-button color="primary" [disabled]="!settingForm.valid" type="submit" id="username-button">Change username</button>
+	</form>
+	<div>
+		<img src="/assets/img/site/security.png" alt="logo" width="50" height="50">
+		<h2>Google Authentification</h2>
+		<p>Protect your account</p>
+		<button mat-button (click)="getQrCode()">{{getStateAuth()}}</button>
+	</div>
+	<input
+  style="display: none"
+  type="file" (change)="onFileChanged($event)"
+  #fileInput>
+<button (click)="fileInput.click()">Select File</button>
+<button (click)="onUpload()">Upload!</button>
+	<script>
+		// const audio = document.querySelector("audio");
+		function stopAudio() {
+			var volume = document.getElementById("switch");
+			if (volume.checked == false) {
+				audio.pause();
+				audio.currentTime = 0;
+			}
+			else{ 
+				audio.play();
+			}
+		}
+		function CheckPosition() {
+			var volume = document.getElementById("switch");
+			if (audio.paused) {
+				volume.checked = false;
+			}
+			else{ 
+				volume.checked = true;
+			}
+		}
+		CheckPosition();
+	</script>   
+</div>
