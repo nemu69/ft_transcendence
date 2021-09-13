@@ -89,7 +89,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   @SubscribeMessage('createRoom')
   async onCreateRoom(socket: Socket, room: RoomI) {
     const createdRoom: RoomI = await this.roomService.createRoom(room, socket.data.user);
-
+    
     for (const user of createdRoom.users) {
       const connections: ConnectedUserI[] = await this.connectedUserService.findByUser(user);
       const rooms = await this.roomService.getRoomsForUser(user.id, { page: 1, limit: 10 });
@@ -111,7 +111,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   @SubscribeMessage('joinRoom')
   async onJoinRoom(socket: Socket, room: RoomI) {
-    const messages = await this.messageService.findMessagesForRoom(room, { limit: 10, page: 1 });
+    const messages = await this.messageService.findMessagesForRoom(room, { limit: 30, page: 1 });
     messages.meta.currentPage = messages.meta.currentPage - 1;
     // Save Connection to Room
     await this.joinedRoomService.create({ socketId: socket.id, user: socket.data.user, room });

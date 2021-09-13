@@ -63,4 +63,8 @@ export class TwoFactorComponent implements OnInit {
 			});
 		  }
 		}
+	cancel() {
+		this.authService.logout();
+		this.router.navigate(['../../public/login']);
+	}
 }

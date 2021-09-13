@@ -134,6 +134,24 @@ form mat-form-field:hover {
   form a:hover {
     background-color: rgba(0, 0, 0, 0.6);
 }
+ .cancel{
+  display: block;
+    margin: 0 auto 10px auto;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    outline: 0;
+    padding: 10px 15px;
+    border-radius: 3px;
+    width: 250px;
+    cursor: pointer;
+    font-size: 18px;
+    transition-duration: 0.25s;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
   form button:hover {
   background-color: #f5f7f9;
   border-radius: 5px;

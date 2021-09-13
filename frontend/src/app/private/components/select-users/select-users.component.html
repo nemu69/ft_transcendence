@@ -1,11 +1,11 @@
-<mat-form-field>
-  <input matInput placeholder="Search User by Username" [matAutocomplete]="auto" [formControl]="searchUsername">
+<mat-form-field appearance="standard">
+  <input matInput placeholder="Search Username" [matAutocomplete]="auto" [formControl]="searchUsername">
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
     (optionSelected)="setSelectedUser($event.option.value)">
     <ng-container>
       <mat-option *ngFor="let user of filteredUsers" [value]="user">
+        <img style="width: 25px;" src="/assets/img/site/{{user.avatar}}" alt="">
         <span>{{user.username}}</span>
-        <small> | ID: {{user.id}}</small>
       </mat-option>
     </ng-container>
   </mat-autocomplete>

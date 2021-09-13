@@ -10,6 +10,7 @@ import { FriendComponent } from './components/friend/friend.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { TwoFactorComponent } from './components/two-factor/two-factor.component';
 import { TwoFactorDisabledComponent } from './components/two-factor-disabled/two-factor-disabled.component';
+import { ProfileusersComponent } from './components/profile-users/profile-users.component';
 
 const routes: Routes = [
   {path: 'dashboard', component: DashboardComponent},
@@ -17,7 +18,12 @@ const routes: Routes = [
   {path: 'setting', component: SettingComponent},
   {path: 'logout', component: LogoutComponent},
   {path: 'match', component: MatchComponent},
-  {path: 'profile', component: ProfileComponent},
+  {path: 'profile',
+    children: [
+      {path: '', component: ProfileComponent},
+      {path: ':id', component: ProfileusersComponent},
+    ]
+  },
   {path: 'friend', component: FriendComponent},
   {path: 'two-factor', component: TwoFactorComponent},
   {path: 'two-factor-disabled', component: TwoFactorDisabledComponent},

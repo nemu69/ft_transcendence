@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/model/user.entity';
+import { FriendEntity } from 'src/friends/model/friends.entity';
 import { UserI } from 'src/user/model/user.interface';
 import { Like, Repository } from 'typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
@@ -74,11 +75,30 @@ export class UserService {
     })
   }
 
+  // follow a user
+  // async follow(username: string, usernameop: string): Promise<any> {
+  //   const follower = await this.userRepository.findOne({username});
+  //   const followed = await this.userRepository.findOne({username});
+  //   follower.following.push(followed);
+  //   await this.userRepository.save(follower);
+  //   return follower;
+  // }
+
   async findOne(id: number): Promise<UserI> {
   	return this.userRepository.findOne({ id });
   }
 
   async updateOne(id: number, user: UserI): Promise<any> {
+	  delete user.email;
+	  delete user.password;
+	  delete user.role;
+	  
+	  return from(this.userRepository.update(id, user)).pipe(
+		  switchMap(() => this.findOne(id))
+		  );
+		}
+
+   updateOneOb(id: number, user: UserI): Observable<any> {
 	  delete user.email;
 	  delete user.password;
 	  delete user.role;

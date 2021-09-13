@@ -21,7 +21,7 @@ export class Oauth2Controller {
     const { user } = request;
 	const userEntity: UserI = {email: user.email, password: 'School42'};
 	const login = await this.usersService.login(userEntity);
-	const resp = {two_factor: user.twoFactorAuthEnabled , token: login.jwt};
+	const resp = {id : user.id ,two_factor: user.twoFactorAuthEnabled , token: login.jwt};
     try {
 		response.send(JSON.stringify(resp));
     } catch (error) {

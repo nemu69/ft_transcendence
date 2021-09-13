@@ -1,9 +1,11 @@
 import { HostListener, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { MessageI, MessagePaginateI } from 'src/app/model/chat/message.interface';
 import { RoomI, RoomPaginateI } from 'src/app/model/chat/room.interface';
 import { GameStateI } from 'src/app/model/game-state.interface';
+import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { CustomSocket } from '../../sockets/custom-socket';
 
 @Injectable({
@@ -11,7 +13,11 @@ import { CustomSocket } from '../../sockets/custom-socket';
 })
 export class ChatService {
 
-  constructor(private socket: CustomSocket, private snackbar: MatSnackBar) {}
+  constructor(
+    private socket: CustomSocket,
+    private snackbar: MatSnackBar,
+    private authService: AuthService,
+    ) {}
 
   @HostListener('window:beforeunload') goToPage() {
     console.log("BLEUUUUUUH");
@@ -31,6 +37,8 @@ export class ChatService {
   }
 
   leaveRoom(room: RoomI) {
+    console.log("leave");
+    
     this.socket.emit('leaveRoom', room);
   }
 
@@ -47,9 +55,20 @@ export class ChatService {
   }
 
   createRoom(room: RoomI) {
+    let iduser : number;
+    this.authService.getUserId().subscribe(val => {
+      iduser = val;
+    })
+    if (room.users.filter(function(e) { return e.id === iduser; }).length > 0) {
+      this.snackbar.open(`You're adding YOU :)`, 'Close', {
+        duration: 5000, horizontalPosition: 'right', verticalPosition: 'top',
+        panelClass: ['red-snackbar','login-snackbar'],
+      });
+      throw iduser;
+    }
     this.socket.emit('createRoom', room);
     this.snackbar.open(`Room ${room.name} created successfully`, 'Close', {
-      duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+      duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
     });
   }
 

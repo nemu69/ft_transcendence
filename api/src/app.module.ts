@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ChatModule } from './chat/chat.module';
+import { FriendsModule } from './friends/friends.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ChatModule } from './chat/chat.module';
     UserModule,
     AuthModule,
     ChatModule,
+    FriendsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -32,6 +34,7 @@ export class AppModule implements NestModule {
         {path: '/api/users', method: RequestMethod.POST},
         {path: '/api/users/:id', method: RequestMethod.GET},
         {path: '/api/users/login', method: RequestMethod.POST},
+        {path: '/api/users/upload', method: RequestMethod.POST},
         {path: '/api/2fa/generate', method: RequestMethod.POST},
         {path: '/api/2fa/authenticate', method: RequestMethod.POST},
         {path: '/api/2fa/turn-on', method: RequestMethod.POST},

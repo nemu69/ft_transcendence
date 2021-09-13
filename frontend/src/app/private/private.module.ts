@@ -28,6 +28,7 @@ import { FriendComponent } from '../private/components/friend/friend.component';
 import { TwoFactorComponent } from './components/two-factor/two-factor.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { TwoFactorDisabledComponent } from './components/two-factor-disabled/two-factor-disabled.component';
+import { ProfileusersComponent } from './components/profile-users/profile-users.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { TwoFactorDisabledComponent } from './components/two-factor-disabled/two
 	LogoutComponent,
 	MatchComponent,
 	ProfileComponent,
+  ProfileusersComponent,
 	FriendComponent,
 	TwoFactorComponent,
 	TwoFactorDisabledComponent

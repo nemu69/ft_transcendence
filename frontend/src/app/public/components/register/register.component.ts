@@ -43,7 +43,7 @@ export class RegisterComponent  {
 		  Validators.email,
 		  Validators.minLength(5)
 		]),
-    username: new FormControl(null, [Validators.required]),
+    username: new FormControl(null, [Validators.required, Validators.maxLength(20)]),
     password: new FormControl(null, [
 			Validators.required,
 			Validators.minLength(8),
@@ -87,13 +87,16 @@ export class RegisterComponent  {
 		hide = true;
 	getErrorMessageUser() {
 		if (this.registerForm.controls.username.hasError('required')) {
-		  return 'You must enter a value';
+		  return 'You must enter a username';
+		}
+		else if (this.registerForm.controls.username.hasError('maxlength')) {
+			return 'Username must be less than 20 characters';
 		}
 		return '';
 	  }
 	getErrorMessageEmail() {
 		if (this.registerForm.controls.email.hasError('required')) {
-		  return 'You must enter a value';
+		  return 'You must enter a email';
 		}
 		return this.registerForm.controls.email.hasError('email') ? 'Not a valid email' : '';
 	  }

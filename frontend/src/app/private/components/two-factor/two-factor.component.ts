@@ -38,7 +38,9 @@ export class TwoFactorComponent implements OnInit {
 		email: [{value: null, disabled: true}, [Validators.required]],
 		twoFactorAuthEnabled: [null],
 		twoFactorAuthenticationSecret : [null],
-		twoFactorAuthenticationCode : [null, [Validators.required]],
+		twoFactorAuthenticationCode : [null, [Validators.required,
+			Validators.minLength(6),
+			Validators.maxLength(6),]],
 	});
 	
 
@@ -98,6 +100,8 @@ export class TwoFactorComponent implements OnInit {
 			this._snackBar.open('Two factor authentication is enabled', 'Close', {
 				duration: 5000,
 			});
+			console.log("next");
+			
 			this.stepper.next();
 			setTimeout(() => {
 				this.router.navigate(['../../private/setting']);

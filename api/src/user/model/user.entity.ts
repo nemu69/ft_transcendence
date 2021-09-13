@@ -5,7 +5,7 @@ import { MessageEntity } from "src/chat/model/message/message.entity";
 import { RoomEntity } from "src/chat/model/room/room.entity";
 import { Exclude } from 'class-transformer';
 
-import { FriendEntity } from "src/friend/models/friend.entity";
+import { FriendEntity } from "src/friends/model/friends.entity";
 // import { UserRole, UserStatus } from "./user.interface";
 
 export enum UserRole {

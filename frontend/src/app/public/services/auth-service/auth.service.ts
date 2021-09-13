@@ -55,7 +55,6 @@ export class AuthService {
 
   get2faActive() {
     const decodedToken = this.jwtService.decodeToken();
-	console.log("decodedToken.user.twoFactorAuthEnabled" ,decodedToken.user.twoFactorAuthEnabled);
     return decodedToken.user.twoFactorAuthEnabled;
   }
   
@@ -72,6 +71,8 @@ export class AuthService {
 
   getUserId(): Observable<number>{
 	const decodedToken = this.jwtService.decodeToken();
+	console.log("decodedToken.user.twoFactorAuthEnabled" ,decodedToken);
+
 	return of(localStorage.getItem(JWT_NAME)).pipe(
 		switchMap((jwt: string) => of(decodedToken).pipe(
 		  map((jwt) => jwt.user.id))

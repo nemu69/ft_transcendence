@@ -21,23 +21,14 @@ export class ProfileComponent implements OnInit {
 	constructor(private formBuilder: FormBuilder, private userService: UserService, private authService: AuthService) { }
 	
 	
-	profileForm: FormGroup;
-	username: string;
-	avatar: string;
+
+	user : Observable<UserI>;
 	ngOnInit(): void {
-	  this.profileForm = this.formBuilder.group({
-		  username: [null, [Validators.required]],
-		  avatar: [null]
-		});
+
 		this.authService.getUserId().pipe(
 		  switchMap((idt: number) => this.userService.findOne(idt).pipe(
 			tap((user) => {
-			  this.profileForm.patchValue({
-				username: user.username,
-				avatar: user.avatar
-			  })
-			  this.username = user.username;
-			  this.avatar = user.avatar;
+			  this.user = this.userService.findOne(user.id)
 			})
 		  ))
 		).subscribe()

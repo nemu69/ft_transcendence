@@ -3,7 +3,10 @@
   <!-- Header -->
   <div style="height: 125px;">
     <span style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
-      <h2>{{chatRoom.name}}</h2>
+      <h2>
+        <mat-icon>group</mat-icon>
+        {{chatRoom.name}}
+      </h2>
       <span style="display: flex; flex-direction: row; align-items: center;">
         <mat-icon>event</mat-icon>
         <p style="margin-left: 10px;">{{chatRoom.updated_at | date}}</p>
@@ -11,7 +14,7 @@
     </span>
     <span>
       <h3 style="color: grey">{{chatRoom.description}}</h3>
-      <span *ngFor="let user of chatRoom.users">{{user.username}}, </span>
+      <span *ngFor="let user of chatRoom.users">{{user.username}}  </span>
     </span>
   </div>
 
@@ -23,12 +26,12 @@
   </div>
 
   <!-- Add Message -->
-  <div style="position: absolute; bottom: 0; display: flex; flex-direction: row; align-items: center;">
-    <mat-form-field style="width: 350px;">
-      <input matInput [formControl]="chatMessage" type="text">
+  <div style="position: absolute;  display: flex; flex-direction: row; align-items: center;">
+    <mat-form-field appearance="standard">
+      <input matInput (keydown.enter)="sendMessage()" [formControl]="chatMessage" placeholder="Send a message in {{chatRoom.name}}" type="text">
     </mat-form-field>
     <button mat-button [disabled]="!chatMessage.valid" (click)="sendMessage()">
-      <span style="display: flex; flex-direction: row; align-items: center;">
+      <span style="width: 100px; display: flex; flex-direction: row; align-items: center;">
         <mat-icon style="margin-left: 20px;">send</mat-icon>
         <p style="margin-left:10px;">Send</p>
       </span>

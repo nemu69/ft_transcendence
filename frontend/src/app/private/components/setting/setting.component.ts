@@ -31,7 +31,7 @@ export class SettingComponent implements OnInit {
   ngOnInit(): void {
 	this.settingForm = this.formBuilder.group({
 		id: [{value: null, disabled: true}, [Validators.required]],
-		username: [null, [Validators.required]],
+		username: [null, [Validators.required, Validators.maxLength(20)]],
 		avatar: [null],
 		email: [{value: null, disabled: true}, [Validators.required]],
 		twoFactorAuthEnabled: [null],
@@ -56,10 +56,13 @@ export class SettingComponent implements OnInit {
 	
 	getErrorMessageUser() {
 		if (this.settingForm.controls.username.hasError('required')) {
-		  return 'You must enter a value';
+		  return 'You must enter a username';
+		}
+		else if (this.settingForm.controls.username.hasError('maxlength')) {
+			return 'Username must be less than 20 characters';
 		}
 		return '';
-  	}
+	  }
 	getStateAuth() {
 		if (this.settingForm.value.twoFactorAuthEnabled) {
 			this.settingForm.controls['twoFactorAuthEnabled'].setValue(true);

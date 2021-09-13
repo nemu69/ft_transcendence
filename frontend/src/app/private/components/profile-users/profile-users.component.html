@@ -1,4 +1,4 @@
-<div *ngIf="(user | async) as user"  class="wrapper">
+<div *ngIf="(user$ | async) as user" class="wrapper">
 	<div class="container">
 
 		<div class="profile">
@@ -13,9 +13,8 @@
 
 				<h1 class="profile-user-name">{{user.username}}</h1>
 
-				<button class="btn profile-edit-btn" routerLink="/private/setting" >
-					<i class="btn profile-settings-btn" aria-label="profile settings" class="fas fa-cog"></i>
-					Edit Profile
+				<button class="btn profile-edit-btn" (click)=follow()>
+					Follow or ask friend
 				</button>
 			
 

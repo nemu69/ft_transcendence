@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { tap } from 'rxjs/operators';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { map, switchMap, tap } from 'rxjs/operators';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { LoginResponseI } from 'src/app/model/auth/login-response.interface';
+import { UserService } from '../../services/user-service/user.service';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { LoginResponseI } from 'src/app/model/auth/login-response.interface';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit{
-	
+
 	constructor(
 		private authService: AuthService,
 		private router: Router,
@@ -22,10 +23,15 @@ export class LoginComponent implements OnInit{
 
 	ngOnInit() {    
 		if (this.authService.isAuthenticated()) {
-			this.router.navigate(['../../private/profile']);
-			this._snackBar.open('You are logged', 'Close', {
-				duration: 3000,
-			});
+			if (this.authService.get2faActive()) {
+				this.router.navigate(['../../public/two-factor']);
+			}
+			else{
+				this.router.navigate(['../../private/profile']);
+				this._snackBar.open('You are logged', 'Close', {
+					duration: 3000,
+				});
+			}
 		}
 	}
 
@@ -42,7 +48,7 @@ loginForm: FormGroup = new FormGroup({
 			}).pipe(
 				tap((res: LoginResponseI)=> {
 					if (res.two_factor) this.router.navigate(['../../public/two-factor']);
-					else this.router.navigate(['../../private/profile'])
+					else this.router.navigate(['../../private/profile/' + res.id]);
 				})
 			).subscribe()
 		  }

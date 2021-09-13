@@ -11,13 +11,13 @@
         <mat-card-content>
           <form [formGroup]="form" (ngSubmit)="create()">
 
-            <mat-form-field>
-              <input type="text" matInput placeholder="Name" formControlName="name">
+            <mat-form-field appearance="standard">
+              <input matInput type="text" matInput placeholder="Name" formControlName="name">
               <mat-error *ngIf="name.touched && name.hasError('required')">Name is required</mat-error>
             </mat-form-field>
 
-            <mat-form-field>
-              <input type="text" matInput placeholder="Description" formControlName="description">
+            <mat-form-field appearance="standard">
+              <input matInput type="text" matInput placeholder="Description" formControlName="description">
             </mat-form-field>
 
             <app-select-users [users]="users.value" (addUser)="addUser(initUser($event))"

@@ -84,3 +84,21 @@ body :-ms-input-placeholder {
 .container mat-card .chatroom{
   margin-top: 40px;
 }
+
+ mat-form-field {
+  display: block;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background-color: #50a3a280;
+  border-radius: 3px;
+  text-align: center;
+  font-size: 18px;
+  color: white;
+  transition-duration: 0.25s;
+  font-weight: 300;
+  width: 350px;
+  /* height: 36px; */
+}

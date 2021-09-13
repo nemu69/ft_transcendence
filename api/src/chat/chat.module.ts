@@ -11,7 +11,7 @@ import { MessageEntity } from './model/message/message.entity';
 import { JoinedRoomEntity } from './model/joined-room/joined-room.entity';
 import { JoinedRoomService } from './service/joined-room/joined-room.service';
 import { MessageService } from './service/message/message.service';
-import { FriendEntity } from 'src/friend/models/friend.entity';
+import { FriendEntity } from 'src/friends/model/friends.entity';
 
 @Module({
   imports: [AuthModule, UserModule,

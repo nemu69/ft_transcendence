@@ -1,4 +1,4 @@
-import { FriendEntity } from "src/friend/models/friend.entity";
+import { FriendEntity } from "src/friends/model/friends.entity";
 
 export interface UserI {
     id?: number;
