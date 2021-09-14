@@ -113,31 +113,9 @@ export class SettingComponent implements OnInit {
 		);
 	  }
 	
-	//patch
-	//  uploadFile() {
-	//	const formData = new FormData();
-	//	formData.append('file', this.file.data);
-	//	this.file.inProgress = true;
-	
-	//	this.userService.uploadProfileImage(formData).pipe(
-	//	  map((event) => {
-	//		switch (event.type) {
-	//		  case HttpEventType.UploadProgress:
-	//			this.file.progress = Math.round(event.loaded * 100 / event.total);
-	//			break;
-	//		  case HttpEventType.Response:
-	//			return event;
-	//		}
-	//	  }),
-	//	  catchError((error: HttpErrorResponse) => {
-	//		this.file.inProgress = false;
-	//		return of('Upload failed');
-	//	  })).subscribe((event: any) => {
-	//		if(typeof (event) === 'object') {
-	//		  this.settingForm.patchValue({profileImage: event.body.profileImage});
-	//		}
-	//	  })
-	//  }
+	 uploadFile() {
+		
+	 }
 
 	update(bool: boolean) {
 		this.userService.updateOne(this.settingForm.getRawValue(), bool).subscribe();

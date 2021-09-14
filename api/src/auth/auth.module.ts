@@ -12,6 +12,7 @@ import { JwtStrategyTwoFactor } from './two-factor/strategies/jwt-two-factor.str
 import { Oauth2Controller } from './oauth2/oauth2.controller';
 import { School42Strategy } from './oauth2/school42/strategies/school42.strategy';
 import { School42AuthenticationGuard } from './oauth2/school42/guards/school42Authentication.guard';
+import { RolesGuard } from './login/guards/roles.guards';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { School42AuthenticationGuard } from './oauth2/school42/guards/school42Au
   ],
   controllers: [TwoFactorAuthenticationController, Oauth2Controller],
   providers: [AuthService, JwtStrategy, JwtAuthGuard,
-			JwtStrategyTwoFactor, TwoFactorService, JwtTwoFactorGuard,
+			JwtStrategyTwoFactor, TwoFactorService, JwtTwoFactorGuard, RolesGuard,
 			School42Strategy, School42AuthenticationGuard],
   exports: [AuthService]
 })

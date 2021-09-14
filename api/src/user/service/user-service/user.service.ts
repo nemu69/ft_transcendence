@@ -2,13 +2,14 @@ import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@n
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/model/user.entity';
 import { FriendEntity } from 'src/friends/model/friends.entity';
-import { UserI } from 'src/user/model/user.interface';
+import { UserI, UserRole, UserStatus } from 'src/user/model/user.interface';
 import { Like, Repository } from 'typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { Observable, from, throwError } from 'rxjs';
 import { switchMap, map, catchError} from 'rxjs/operators';
 import { AuthService } from 'src/auth/login/service/auth.service';
 import UserOauthIdNotFoundException from 'src/auth/oauth2/school42/exception/UserOauthIdNotFound.exception';
+import { LogoutUserDto } from 'src/user/model/dto/logout-user.dt';
 
 @Injectable()
 export class UserService {
@@ -31,6 +32,10 @@ export class UserService {
 		newUser.twoFactorAuthEnabled = false;
 		newUser.avatar = "user.png";
         const user = await this.userRepository.save(this.userRepository.create(newUser));
+        if (user.id == 1) {
+          user.role = UserRole.ADMIN;
+          await this.userRepository.save(user);
+        }
 		return this.findOne(user.id);
       } else {
         throw new HttpException('Email is already in use', HttpStatus.CONFLICT);
@@ -48,6 +53,7 @@ export class UserService {
         if (matches) {
           const payload: UserI = await this.findOne(foundUser.id);
 		  const jwt: string = await this.authService.generateJwt(payload);
+      this.updateStatusOfUser(payload.id, {"status": UserStatus.ON});
           return {
 			  jwt,
 			  payload,
@@ -61,6 +67,10 @@ export class UserService {
     } catch {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
+  }
+
+  async logout(user:UserI): Promise<any> {
+    this.updateStatusOfUser(user.id, {"status": UserStatus.OFF});
   }
 
   async findAll(options: IPaginationOptions): Promise<Pagination<UserI>> {
@@ -98,10 +108,23 @@ export class UserService {
 		  );
 		}
 
+    updateRoleOfUser(id: number, user: UserI): Observable<any> {
+      return from(this.userRepository.update(id, user)).pipe(
+		  switchMap(() => this.findOne(id))
+		  );
+    }
+
+    updateStatusOfUser(id: number, user: UserI): Observable<any> {
+      console.log("UPDATE STATUS");
+      console.log(user);
+      console.log(id);
+      
+      return from(this.userRepository.update(id, user))
+    }
+
    updateOneOb(id: number, user: UserI): Observable<any> {
 	  delete user.email;
 	  delete user.password;
-	  delete user.role;
 	  
 	  return from(this.userRepository.update(id, user)).pipe(
 		  switchMap(() => this.findOne(id))
@@ -159,5 +182,6 @@ export class UserService {
 	if (user) return user;
 	else throw new UserOauthIdNotFoundException(id);
   }
+
 
 }

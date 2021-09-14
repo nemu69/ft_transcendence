@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@nestjs/platform-express": "^8.0.6"
+  }
+}

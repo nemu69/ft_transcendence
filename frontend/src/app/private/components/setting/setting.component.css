@@ -82,11 +82,16 @@ label:after {
 }
 
 form {
-    padding: 50px 0;
+    padding-bottom: 50px;
     border-radius: 300px;
     position: relative;
     z-index: 2;
   }
+
+
+.username {
+  padding-top: 50px;
+}
 
 form mat-form-field {
 	display: block;

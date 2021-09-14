@@ -11,7 +11,6 @@ async function bootstrap() {
   app.enableCors();
   app.use((req, res, next) => {
     console.log('req.body', req.body);
-    console.log('req.user', req.user);
     next();
   });
   app.useGlobalPipes(new ValidationPipe());

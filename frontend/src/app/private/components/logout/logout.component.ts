@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserI, UserStatus } from 'src/app/model/user/user.interface';
+import { UserService } from 'src/app/public/services/user-service/user.service';
 import { AuthService } from '../../../public/services/auth-service/auth.service';
 
 @Component({
@@ -9,7 +11,11 @@ import { AuthService } from '../../../public/services/auth-service/auth.service'
 })
 export class LogoutComponent implements OnInit {
 
-	constructor(private authService: AuthService, private router: Router) { }
+	constructor(
+		private authService: AuthService,
+		private router: Router,
+		private userService: UserService,
+	) { }
 
   ngOnInit(): void {
 
@@ -108,9 +114,13 @@ const elts = {
   
   // Start the animation.
   animate();
+  this.userService.findOne(this.authService.getLoggedInUser().id).subscribe(
+	(user: UserI) => {
+	  user.status = UserStatus.OFF;
+	  this.authService.logout(user).subscribe();
+	});
   setTimeout(() => {
-		this.authService.logout();
 		this.router.navigate(['login']);
-	}, 4000);  //4s
+	}, 5000);  //5s
   }
 }

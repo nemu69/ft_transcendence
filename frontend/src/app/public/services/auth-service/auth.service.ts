@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { LoginResponseI } from 'src/app/model/auth/login-response.interface';
-import { UserI } from 'src/app/model/user/user.interface';
+import { UserI, UserStatus } from 'src/app/model/user/user.interface';
 import { of, Observable, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { UserService } from '../user-service/user.service';
 
 export const JWT_NAME = 'auth-token';
 export const JWT_TWO_NAME = 'two-token';
@@ -15,7 +16,10 @@ export const JWT_TWO_NAME = 'two-token';
 })
 export class AuthService {
 
-  constructor(private http: HttpClient, private snackbar: MatSnackBar, private jwtService: JwtHelperService) { }
+  constructor(private http: HttpClient,
+    private snackbar: MatSnackBar,
+    private userService: UserService,
+    private jwtService: JwtHelperService) { }
 
   login(user: UserI): Observable<LoginResponseI> {
     return this.http.post<LoginResponseI>('api/users/login', user).pipe(
@@ -38,10 +42,15 @@ export class AuthService {
     return this.http.get(uri);
     }
 
-  logout() {
+  logout(user : UserI) : Observable<UserI> {     
+    return this.http.put('api/users/logout', user).pipe(
+      tap((user: UserI) => {
     localStorage.removeItem(JWT_NAME);
-	if (this.isTwofactor) localStorage.removeItem(JWT_TWO_NAME);
+	  if (this.isTwofactor) localStorage.removeItem(JWT_TWO_NAME);
+      }),
+    );
   }
+
 
   getLoggedInUser() {
     const decodedToken = this.jwtService.decodeToken();

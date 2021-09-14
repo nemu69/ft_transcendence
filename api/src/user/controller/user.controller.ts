@@ -4,7 +4,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from '../model/dto/create-user.dto';
 import { LoginUserDto } from '../model/dto/login-user.dto';
 import { LoginResponseI } from '../model/login-response.interface';
-import { UserI } from '../model/user.interface';
+import { UserI, UserRole } from '../model/user.interface';
 import { Response } from 'express';
 import { map, catchError, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
@@ -16,9 +16,13 @@ import path = require('path');
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
+import { RolesGuard } from 'src/auth/login/guards/roles.guards';
+import { hasRoles } from 'src/auth/login/decorator/roles.decorator';
+import { LogoutUserDto } from '../model/dto/logout-user.dt';
+
 export const storage = {
   storage: diskStorage({
-      destination: './uploads/avatar',
+      destination: './src/uploads/avatar',
       filename: (req, file, cb) => {
           const filename: string = path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
           const extension: string = path.parse(file.originalname).ext;
@@ -55,7 +59,7 @@ export class UserController {
   }
 
   @Get(':id')
-  async findOne(@Param() params): Promise<UserI>{
+  async findOne(@Param() params): Promise<UserI>{    
 	  return this.userService.findOne(params.id);
   }
 
@@ -74,24 +78,32 @@ export class UserController {
       id: login.payload.id,
     };
   }
-
-//  @UseGuards(JwtTwoFactorGuard)
+  
+  @UseGuards(JwtAuthGuard)
+  @Put('logout')
+  async logout(@Body() user: UserI): Promise<any> {    
+    return this.userService.logout(user);
+  }
+  
+  @hasRoles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Put(':id/role')
+  updateRoleOfUser(@Param('id') id: string, @Body() user: UserI): Observable<UserI> {
+    return this.userService.updateRoleOfUser(Number(id), user);
+  }
+  
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  async updateOne(@Param('id') id: string, @Body() user: UserI): Promise<any> {
+  async updateOne(@Param('id') id: string, @Body() user: UserI): Promise<any> {    
     return this.userService.updateOne(Number(id), user);
   }
   
-  // to do
+
   @UseGuards(JwtAuthGuard)
     @Post('upload')
     @UseInterceptors(FileInterceptor('file', storage))
     uploadFile(@UploadedFile() file, @Request() req): Observable<Object> {
         const user: UserI = req.user;
-        console.log("user", user);
-        // console.log("file", file);
-        
-
         return this.userService.updateOneOb(user.id, {avatar: file.filename}).pipe(
             tap((user: UserI) => console.log(user)),
             map((user: UserI) => ({avatar: user.avatar}))
@@ -100,7 +112,15 @@ export class UserController {
 
 	@Get('avatar/:imagename')
     findProfileImage(@Param('imagename') imagename, @Res() res): Observable<Object> {
-        return of(res.sendFile(join(process.cwd(), 'uploads/avatar/' + imagename)));
+        return of(res.sendFile(join(process.cwd(), 'src/uploads/avatar/' + imagename)));
+    }
+
+    @Get('avatarById/:id')
+    async findProfileImageById(@Param('id') id, @Res() res): Promise<Object> {
+        const user = await this.userService.findOne(id);
+        console.log("avatar",user.avatar);
+        
+        return of(res.sendFile(join(process.cwd(), 'src/uploads/avatar/' + user.avatar)));
     }
 
 }
