@@ -1,37 +1,21 @@
-import { UserEntity } from "src/user/model/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, } from "typeorm";
+import { UserEntity } from 'src/user/model/user.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { FriendRequest_Status } from './friends.interface';
 
-export enum Status {
-	blocked = 'blocked',
-	accepted = 'accepted',
-	pending = 'pending',
-  }
-  
-  @Entity({ name: 'user_followers' })
-  export class FriendEntity {
-	@PrimaryGeneratedColumn()
-	id: number;
-  
-	@Column({ type: 'number' })
-	following_id: number;
-  
-	@Column({ type: 'number' })
-	follower_id: number;
+@Entity('request')
+export class FriendRequestEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-	@ManyToOne(
-	 () => UserEntity,
-	 (u: UserEntity) => u.followers,
-	)
-	@JoinColumn({ name: 'follower_id' })
-	followers: UserEntity;
-  
-	@ManyToOne(
-	 type => UserEntity,
-	 (u: UserEntity) => u.following,
-	)
-	@JoinColumn({ name: 'following_id' })
-	following: UserEntity;
-  
-	@Column({ enum: Status, type: 'enum', default: Status.pending })
-	status: Status;
-  }
+  @ManyToOne(() => UserEntity, (userEntity) => userEntity.sentFriendRequests)
+  creator: UserEntity;
+
+  @ManyToOne(
+    () => UserEntity,
+    (userEntity) => userEntity.receivedFriendRequests,
+  )
+  receiver: UserEntity;
+
+  @Column()
+  status: FriendRequest_Status;
+}

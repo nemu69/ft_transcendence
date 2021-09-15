@@ -1,5 +1,3 @@
-import { FriendEntity } from "src/friends/model/friends.entity";
-
 export interface UserI {
     id?: number;
     username?: string;
@@ -7,8 +5,6 @@ export interface UserI {
     email?: string;
     avatar?: string;
     level?: number;
-	following?: FriendEntity[];
-	followers?: FriendEntity[];
     status?: UserStatus;
     role?: UserRole;
 	nbWin?: number;

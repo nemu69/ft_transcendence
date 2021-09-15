@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/model/user.entity';
-import { FriendEntity } from 'src/friends/model/friends.entity';
 import { UserI, UserRole, UserStatus } from 'src/user/model/user.interface';
 import { Like, Repository } from 'typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';

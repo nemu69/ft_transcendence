@@ -5,7 +5,7 @@ import { MessageEntity } from "src/chat/model/message/message.entity";
 import { RoomEntity } from "src/chat/model/room/room.entity";
 import { Exclude } from 'class-transformer';
 
-import { FriendEntity } from "src/friends/model/friends.entity";
+import { FriendRequestEntity } from "src/friends/model/friends.entity";
 // import { UserRole, UserStatus } from "./user.interface";
 
 export enum UserRole {
@@ -55,11 +55,17 @@ export class UserEntity {
 	@Column({ nullable: true })
 	twoFactorAuthenticationSecret: string;
 	
-	@OneToMany(() => FriendEntity, friend => friend.following)
-	following: FriendEntity[];
-
-	@OneToMany(() => FriendEntity, friend => friend.followers)
-	followers: FriendEntity[];
+	@OneToMany(
+		() => FriendRequestEntity,
+		(friendRequestEntity) => friendRequestEntity.creator,
+	  )
+	  sentFriendRequests: FriendRequestEntity[];
+	
+	  @OneToMany(
+		() => FriendRequestEntity,
+		(friendRequestEntity) => friendRequestEntity.receiver,
+	  )
+	  receivedFriendRequests: FriendRequestEntity[];
 
 	@Column({type: 'enum', enum: UserStatus, default: UserStatus.OFF})
 	status: UserStatus;
