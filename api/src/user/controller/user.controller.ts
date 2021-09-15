@@ -1,12 +1,11 @@
-import { Body, Controller, Param, Get, Res, Post, Request, Put, Query, Req, SerializeOptions, UseGuards, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Param, Get, Res, Post, Request, Put, Query, UseGuards, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from '../model/dto/create-user.dto';
 import { LoginUserDto } from '../model/dto/login-user.dto';
 import { LoginResponseI } from '../model/login-response.interface';
 import { UserI, UserRole } from '../model/user.interface';
-import { Response } from 'express';
-import { map, catchError, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { UserHelperService } from '../service/user-helper/user-helper.service';
 import { UserService } from '../service/user-service/user.service';
@@ -18,7 +17,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { RolesGuard } from 'src/auth/login/guards/roles.guards';
 import { hasRoles } from 'src/auth/login/decorator/roles.decorator';
-import { LogoutUserDto } from '../model/dto/logout-user.dt';
 
 export const storage = {
   storage: diskStorage({
@@ -56,6 +54,11 @@ export class UserController {
   @Get('/find-by-username')
   async findAllByUsername(@Query('username') username: string) {	  
     return this.userService.findAllByUsername(username);
+  }
+
+  @Get('/find-by-level')
+  async findAllByLevel() {	  
+    return this.userService.findAllByLevel();
   }
 
   @Get(':id')
