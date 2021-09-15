@@ -6,18 +6,7 @@ import { RoomEntity } from "src/chat/model/room/room.entity";
 import { Exclude } from 'class-transformer';
 
 import { FriendRequestEntity } from "src/friends/model/friends.entity";
-// import { UserRole, UserStatus } from "./user.interface";
-
-export enum UserRole {
-    ADMIN = 'admin',
-    USER = 'user',
-}
-
-export enum UserStatus {
-    ON = 'online',
-    OFF = 'offline',
-    GAME = 'in-game'
-}
+import { UserRole, UserStatus } from "./user.interface";
 
 @Entity()
 export class UserEntity {

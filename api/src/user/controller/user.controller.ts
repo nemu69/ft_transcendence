@@ -85,10 +85,10 @@ export class UserController {
     return this.userService.logout(user);
   }
   
-  @hasRoles(UserRole.ADMIN)
+  @hasRoles(UserRole.ADMIN, UserRole.OWNER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Put(':id/role')
-  updateRoleOfUser(@Param('id') id: string, @Body() user: UserI): Observable<UserI> {
+  async updateRoleOfUser(@Param('id') id: string, @Body() user: UserI): Promise<UserI> {
     return this.userService.updateRoleOfUser(Number(id), user);
   }
   

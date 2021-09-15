@@ -32,7 +32,7 @@ export class UserService {
 		newUser.avatar = "user.png";
         const user = await this.userRepository.save(this.userRepository.create(newUser));
         if (user.id == 1) {
-          user.role = UserRole.ADMIN;
+          user.role = UserRole.OWNER;
           await this.userRepository.save(user);
         }
 		return this.findOne(user.id);
@@ -84,15 +84,6 @@ export class UserService {
     })
   }
 
-  // follow a user
-  // async follow(username: string, usernameop: string): Promise<any> {
-  //   const follower = await this.userRepository.findOne({username});
-  //   const followed = await this.userRepository.findOne({username});
-  //   follower.following.push(followed);
-  //   await this.userRepository.save(follower);
-  //   return follower;
-  // }
-
   async findOne(id: number): Promise<UserI> {
   	return this.userRepository.findOne({ id });
   }
@@ -107,17 +98,20 @@ export class UserService {
 		  );
 		}
 
-    updateRoleOfUser(id: number, user: UserI): Observable<any> {
-      return from(this.userRepository.update(id, user)).pipe(
+    async updateRoleOfUser(id: number, user: UserI): Promise<any> {
+		const temp = await this.userRepository.findOne({
+			where: {
+			  id: id,
+			},
+		  });
+		  if (temp.role == UserRole.OWNER) throw new HttpException('I\'m the Owner...', HttpStatus.CONFLICT);
+		if (user.role == UserRole.OWNER) throw new HttpException('Can\'t have 2 owner', HttpStatus.CONFLICT);
+	  return from(this.userRepository.update(id, user)).pipe(
 		  switchMap(() => this.findOne(id))
 		  );
     }
 
     updateStatusOfUser(id: number, user: UserI): Observable<any> {
-      console.log("UPDATE STATUS");
-      console.log(user);
-      console.log(id);
-      
       return from(this.userRepository.update(id, user))
     }
 
