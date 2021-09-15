@@ -21,7 +21,7 @@ export class FriendsService {
 
   findUserById(id: number): Observable<UserEntity> {
     return from(
-      this.userRepository.findOne({ id }, { relations: ['feedPosts'] }),
+      this.userRepository.findOne({ id }),
     ).pipe(
       map((user: UserEntity) => {
         if (!user) {
