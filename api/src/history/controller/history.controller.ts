@@ -28,4 +28,10 @@ export class HistoryController {
     async findHistoryById(@Param('id') id): Promise<Object> {
         return this.historyService.findAllByUserId(id);
     }
+
+	@Get('matchType/:id')
+    async findHistoryByIdAndType(@Param('id') id, @Query('type') type: string): Promise<Object> {
+        if (type ) return this.historyService.findAllByUserIdAndType(id, type);
+		return this.historyService.findAllByUserId(id);
+	}
 }
