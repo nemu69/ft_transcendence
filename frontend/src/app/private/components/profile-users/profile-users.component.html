@@ -4,9 +4,10 @@
 		<div class="profile">
 
 			<div class="profile-image">
-
-				<img src="http://localhost:4200/api/users/avatarById/{{user.id}}" alt="">
-
+				<img [src]="imageToShow" alt="Place image title" *ngIf="!isImageLoading; else noImageFound">
+				<ng-template #noImageFound>
+				     <img src="/assets/img/site/fallbackImage.png" alt="Fallbackimage">
+				</ng-template>
 			</div>
 
 			<div class="profile-user-settings">

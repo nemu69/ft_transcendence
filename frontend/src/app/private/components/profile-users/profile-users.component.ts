@@ -26,30 +26,58 @@ export class ProfileusersComponent implements OnInit {
 		switchMap((userId: number) => this.userService.findOne(userId))
 		)
 		
-		constructor(
-			private activatedRoute: ActivatedRoute,
-			private formBuilder: FormBuilder,
-			private router: Router,
-			private userService: UserService,
-			private authService: AuthService,
-			) { }
+	constructor(
+		private activatedRoute: ActivatedRoute,
+		private formBuilder: FormBuilder,
+		private router: Router,
+		private userService: UserService,
+		private authService: AuthService,
+		) { }
 
+		imageToShow: any;
+		isImageLoading : boolean;
 			ngOnInit(): void {
 				this.authService.getUserId().pipe(
 					switchMap((idt: number) => this.userService.findOne(idt).pipe(
-					  tap((user) => {
+					tap((user) => {
 						this.user$.subscribe(val => {
 							if (val.id == user.id) {
 								this.router.navigate(['../../profile'],{ relativeTo: this.activatedRoute })
 							}
+							this.getImageFromService(val.id);
 							});
 					  })
 					))
 				  ).subscribe()
 				
-	  }
-	  follow(){
-		  console.log("follow");
-	  }
-
-}
+		  }
+		  follow(){
+			  console.log("follow");
+		  }
+	
+		  
+		  createImageFromBlob(image: Blob) {
+			let reader = new FileReader();
+			reader.addEventListener("load", () => {
+			   this.imageToShow = reader.result;
+			}, false);
+		 
+			if (image) {
+			   reader.readAsDataURL(image);
+			}
+		}
+		getImageFromService(id:number) {
+			this.isImageLoading = true;
+			
+			this.userService.getImage("/api/users/avatarById/" + id.toString()).subscribe(data => {
+			  this.createImageFromBlob(data);
+			  this.isImageLoading = false;
+			}, error => {
+			  this.isImageLoading = false;
+			  console.log(error);
+			});
+			console.log(this.isImageLoading);
+			
+		}
+	
+	}
