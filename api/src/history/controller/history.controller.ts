@@ -25,7 +25,7 @@ export class HistoryController {
   	}
 
 	@Get('match/:id')
-    async findProfileImageById(@Param('id') id): Promise<Object> {
+    async findHistoryById(@Param('id') id): Promise<Object> {
         return this.historyService.findAllByUserId(id);
     }
 }
