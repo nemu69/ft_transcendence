@@ -7,6 +7,7 @@ export interface CoordinatesI {
   y: number;
   width: number;
   height: number;
-  dx: number;
-  dy: number;
+  dx?: number;
+  dy?: number;
+  speedmultiplier?: number;
 }

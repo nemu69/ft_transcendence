@@ -1,0 +1,11 @@
+.custom_h_w{
+    top: -60px;
+    left: 400px;
+    position: absolute;
+  }
+
+.score_c{
+    top: -60px;
+    position: absolute;
+    text-align: center;
+  }

@@ -1,12 +1,15 @@
 import { PlayerI } from "../player/player.interface";
 import { CoordinatesI } from "../coordinates/coordinates.interface";
-import { UserI } from "src/user/model/user.interface";
+import { UserService } from "src/user/service/user-service/user.service";
+import { PowerI } from "../powers/powers.interface";
 
 export interface GameStateI {
-    id?: number;
-    socketId: string;
+    userServices?: UserService;
+    id?: NodeJS.Timeout;
     player1: PlayerI;
     player2: PlayerI;
-    spectators: UserI[];
+    spectators?: PlayerI[];
     ball: CoordinatesI;
+    type: number;
+    powers?: PowerI[];
 }

@@ -5,6 +5,7 @@ import { tap } from 'rxjs/operators';
 import { MessageI, MessagePaginateI } from 'src/app/model/chat/message.interface';
 import { RoomI, RoomPaginateI } from 'src/app/model/chat/room.interface';
 import { GameStateI } from 'src/app/model/game-state.interface';
+import { UserI } from 'src/app/model/user/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { CustomSocket } from '../../sockets/custom-socket';
 
@@ -72,13 +73,14 @@ export class ChatService {
     });
   }
 
-  newPlayer() {
-    this.socket.emit('newPlayer');
+  checkExistence()
+  {
+    this.socket.emit('checkExistence', 0);
   }
 
-  PlayerExit() {
-    console.log("HERE");
-    this.socket.emit('PlayerExit');
+  newPlayer(info: number, user: number) {
+    console.log("calling new player");
+    this.socket.emit('newPlayer', [info, user]);
   }
 
   getGameState(): Observable<GameStateI> {
@@ -86,7 +88,7 @@ export class ChatService {
     return this.socket.fromEvent<GameStateI>('gamestate');
   }
 
-  emitInput(data: number){
+  emitInput(data: number[]){
     this.socket.emit("paddle", data);
   }
 }
