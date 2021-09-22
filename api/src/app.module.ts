@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ChatModule } from './chat/chat.module';
 import { FriendsModule } from './friends/friends.module';
+import { HistoryModule } from './history/history.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { FriendsModule } from './friends/friends.module';
     AuthModule,
     ChatModule,
     FriendsModule,
+	HistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,6 +7,7 @@ import { Exclude } from 'class-transformer';
 
 import { FriendRequestEntity } from "src/friends/model/friends.entity";
 import { UserRole, UserStatus } from "./user.interface";
+import { HistoryEntity } from "src/history/model/history.entity";
 
 @Entity()
 export class UserEntity {
@@ -47,14 +48,26 @@ export class UserEntity {
 	@OneToMany(
 		() => FriendRequestEntity,
 		(friendRequestEntity) => friendRequestEntity.creator,
-	  )
-	  sentFriendRequests: FriendRequestEntity[];
-	
-	  @OneToMany(
-		() => FriendRequestEntity,
-		(friendRequestEntity) => friendRequestEntity.receiver,
-	  )
-	  receivedFriendRequests: FriendRequestEntity[];
+	)
+	sentFriendRequests: FriendRequestEntity[];
+
+	@OneToMany(
+	() => FriendRequestEntity,
+	(friendRequestEntity) => friendRequestEntity.receiver,
+	)
+	receivedFriendRequests: FriendRequestEntity[];
+
+	@OneToMany(
+		() => HistoryEntity,
+		(historyEntity) => historyEntity.playerOne,
+	)
+	host: FriendRequestEntity[];
+
+	@OneToMany(
+	() =>HistoryEntity,
+	(historyEntity) => historyEntity.playerTwo,
+	)
+	opponent: FriendRequestEntity[];
 
 	@Column({type: 'enum', enum: UserStatus, default: UserStatus.OFF})
 	status: UserStatus;
