@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
+import { Pagination } from 'nestjs-typeorm-paginate';
 import { Observable } from 'rxjs';
-import { JwtAuthGuard } from 'src/auth/login/guards/jwt.guard';
 import { HistoryEntity } from '../model/history.entity';
 import { HistoryI } from '../model/history.interface';
 import { HistoryService } from '../service/history.service';
@@ -17,4 +17,15 @@ export class HistoryController {
 	add(@Body() match: HistoryI): Observable<HistoryEntity> {
 		return this.historyService.createMatchHistory(match);
 	}
+
+	@Get()
+	async findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<HistoryI>> {
+		limit = limit > 100 ? 100 : limit;
+		return this.historyService.findAll({ page, limit, route: 'http://localhost:3000/api/history' });
+  	}
+
+	@Get('match/:id')
+    async findProfileImageById(@Param('id') id): Promise<Object> {
+        return this.historyService.findUserById(id);
+    }
 }
