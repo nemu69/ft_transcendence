@@ -97,6 +97,7 @@ export class UserService {
 	}
 
 	async updateOne(id: number, user: UserI): Promise<any> {
+		delete user.email;
 		delete user.password;
 		delete user.role;
 		

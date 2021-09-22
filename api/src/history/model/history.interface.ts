@@ -1,9 +1,9 @@
-import { UserEntity } from "src/user/model/user.entity";
+import { UserI } from "src/user/model/user.interface";
 
 export interface HistoryI {
   id?: number;
-  playerOne?: UserEntity;
-  playerTwo?: UserEntity;
+  playerOne?: UserI;
+  playerTwo?: UserI;
   playerOneScore?: number;
   playerTwoScore?: number;
   game?: string;
