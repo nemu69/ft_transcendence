@@ -41,23 +41,18 @@ export class ProfileComponent implements OnInit {
 		reader.addEventListener("load", () => {
 		   this.imageToShow = reader.result;
 		}, false);
-	 
 		if (image) {
 		   reader.readAsDataURL(image);
 		}
 	}
 	getImageFromService(id:number) {
 		this.isImageLoading = true;
-		
 		this.userService.getImage("/api/users/avatarById/" + id.toString()).subscribe(data => {
-		  this.createImageFromBlob(data);
-		  this.isImageLoading = false;
+			this.createImageFromBlob(data);
+			this.isImageLoading = false;
 		}, error => {
-		  this.isImageLoading = false;
-		  console.log(error);
+			this.isImageLoading = false;
 		});
-		console.log(this.isImageLoading);
-		
 	}
 
 }

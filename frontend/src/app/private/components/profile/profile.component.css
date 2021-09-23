@@ -439,6 +439,7 @@ Remove or comment-out the code block below to see how the browser will fall-back
     border: 0;
     height: 2.5em;
     width: 100%;
+	border-radius: 30px;
 }
 
 progress::-webkit-progress-bar {

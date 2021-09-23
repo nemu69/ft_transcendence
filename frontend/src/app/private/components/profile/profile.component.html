@@ -4,7 +4,7 @@
 		<div class="profile">
 
 			<div class="profile-image">
-				<img [src]="imageToShow" alt="Place image title" *ngIf="!isImageLoading; else noImageFound">
+				<img [src]="imageToShow" alt="Place image title" *ngIf="imageToShow; else noImageFound">
 				<ng-template #noImageFound>
 				     <img src="/assets/img/site/fallbackImage.png" alt="Fallbackimage">
 				</ng-template>
@@ -46,9 +46,9 @@
 				<br>
 				{{user.nbWin}}/{{user.nbLoss}}
 				<br>
-				WinRate: {{user.nbWin / (user.nbWin + user.nbLoss) * 100}}%
+				WinRate: {{user.nbWin / (user.nbWin + user.nbLoss) * 100 | number:'1.1-2'}}%
 				<br>
-				<progress value="{user.nbWin / (user.nbWin + user.nbLoss) * 100}}" max="100"></progress>
+				<progress value="{{user.nbWin / (user.nbWin + user.nbLoss) * 100}}" max="100"></progress>
 
 			</div>
 
