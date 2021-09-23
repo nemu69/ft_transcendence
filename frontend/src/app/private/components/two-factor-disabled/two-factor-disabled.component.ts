@@ -71,8 +71,9 @@ export class TwoFactorDisabledComponent implements OnInit {
 			});
 			this.stepper.next();
 			setTimeout(() => {
+				localStorage.removeItem('two-token');
 				this.router.navigate(['../../private/setting']);
-			}, 3000);
+			}, 2500);
 		}, error => {
 			console.log(error);
 		});

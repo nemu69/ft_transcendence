@@ -44,10 +44,22 @@ export class HistoryService {
 	async findAllByUserId(id: number): Promise<HistoryEntity[] | undefined> {
 		const match = await this.historyRepository
 			.createQueryBuilder("h")
-			.where("h.playerOne = :id Or h.playerTwo = :id")
+			.where("h.playerOne = :id OR h.playerTwo = :id")
 			.take(5)
 			.setParameters({ id: id })
-			.orderBy('h.id', 'DESC')
+			.orderBy('h.date', 'DESC')
+			.getMany();
+
+    	return match;
+	}
+
+	async findAllByUserIdAndType(id: number, type: string): Promise<HistoryEntity[] | undefined> {
+		const match = await this.historyRepository
+			.createQueryBuilder("h")
+			.where("h.playerOne = :id OR h.playerTwo = :id AND h.game= :type")
+			.take(5)
+			.setParameters({ id: id, type: type })
+			.orderBy('h.date', 'DESC')
 			.getMany();
 
     	return match;

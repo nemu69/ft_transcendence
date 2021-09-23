@@ -64,7 +64,7 @@ export class TwoFactorComponent implements OnInit {
 		  }
 		}
 	cancel() {
-		this.authService.logout(this.twofactorForm.value);
+		localStorage.removeItem('auth-token');
 		this.router.navigate(['../../public/login']);
 	}
 }

@@ -57,14 +57,18 @@ export class UserService {
 	  )
   }
 
-  uploadFile(avatar : File): Observable<UserI> {
-	return this.http.post('api/users/avatar', avatar);
+  uploadFile(avatar : FormData): Observable<UserI> {
+	return this.http.post('api/users/upload', avatar);
   }
   
   findOne(id: number): Observable<UserI> {
     return this.http.get('/api/users/' + id).pipe(
       map((user:UserI) => user)
     )
+  }
+
+  getImage(imageUrl: string): Observable<Blob> {
+	return this.http.get(imageUrl, { responseType: 'blob' });
   }
 
 }

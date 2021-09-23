@@ -1,6 +1,6 @@
 <div class="setting">
 	<h1>Settings :</h1>
-	<div class="username">
+	<div id="username">
 		<h2>Change username:</h2>
 		<form class="form" [formGroup]="settingForm" (ngSubmit)="update(true)">
 			<mat-form-field appearance="standard">
@@ -10,16 +10,17 @@
 			<button mat-flat-button color="primary" [disabled]="!settingForm.valid" type="submit" id="username-button">Valid</button>
 		</form>
 	</div>
-		<div>
+	<div id="username">
 		<img src="/assets/img/site/security.png" alt="logo" width="50" height="50">
 		<h2>Google Authentification</h2>
 		<p>Protect your account</p>
 		<button mat-button (click)="getQrCode()">{{getStateAuth()}}</button>
 	</div>
-	<input
-  style="display: none"
-  type="file" (change)="onFileChanged($event)"
-  #fileInput>
-<button (click)="fileInput.click()">Select File</button>
-<button (click)="onUpload()">Upload!</button>
+	<div id="username">
+		<h2>Update profile picture</h2>
+		<input
+			type="file" (change)="onFileChanged($event)"
+			#fileInput>
+		<button mat-flat-button color="primary" (click)="onUpload()">Upload!</button>
+	</div>
 </div>

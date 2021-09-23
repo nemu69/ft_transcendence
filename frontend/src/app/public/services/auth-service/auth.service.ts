@@ -45,8 +45,8 @@ export class AuthService {
   logout(user : UserI) : Observable<UserI> {     
     return this.http.put('api/users/logout', user).pipe(
       tap((user: UserI) => {
-    localStorage.removeItem(JWT_NAME);
-	  if (this.isTwofactor) localStorage.removeItem(JWT_TWO_NAME);
+		localStorage.removeItem(JWT_NAME);
+		if (this.isTwofactor) localStorage.removeItem(JWT_TWO_NAME);
       }),
     );
   }
@@ -80,8 +80,6 @@ export class AuthService {
 
   getUserId(): Observable<number>{
 	const decodedToken = this.jwtService.decodeToken();
-	console.log("decodedToken.user.twoFactorAuthEnabled" ,decodedToken);
-
 	return of(localStorage.getItem(JWT_NAME)).pipe(
 		switchMap((jwt: string) => of(decodedToken).pipe(
 		  map((jwt) => jwt.user.id))
