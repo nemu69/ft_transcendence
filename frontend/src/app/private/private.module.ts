@@ -42,7 +42,7 @@ import { ProfileusersComponent } from './components/profile-users/profile-users.
 	LogoutComponent,
 	MatchComponent,
 	ProfileComponent,
-  ProfileusersComponent,
+	ProfileusersComponent,
 	FriendComponent,
 	TwoFactorComponent,
 	TwoFactorDisabledComponent
