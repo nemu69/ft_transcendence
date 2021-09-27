@@ -73,6 +73,8 @@ export class FriendsService {
               receiver,
               status: 'pending',
             };
+			console.log(friendRequest);
+			
             return from(this.friendRequestRepository.save(friendRequest));
           }),
         );

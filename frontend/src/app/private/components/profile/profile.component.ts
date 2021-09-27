@@ -23,15 +23,36 @@ export class ProfileComponent implements OnInit {
 	
 
 	user : Observable<UserI>;
+	imageToShow: any;
+	isImageLoading : boolean;
 	ngOnInit(): void {
-
 		this.authService.getUserId().pipe(
 		  switchMap((idt: number) => this.userService.findOne(idt).pipe(
 			tap((user) => {
-			  this.user = this.userService.findOne(user.id)
+			  this.user = this.userService.findOne(user.id);
+			  this.getImageFromService(user.id);
 			})
 		  ))
-		).subscribe()
+		).subscribe();
 	  }	
+
+	  createImageFromBlob(image: Blob) {
+		let reader = new FileReader();
+		reader.addEventListener("load", () => {
+		   this.imageToShow = reader.result;
+		}, false);
+		if (image) {
+		   reader.readAsDataURL(image);
+		}
+	}
+	getImageFromService(id:number) {
+		this.isImageLoading = true;
+		this.userService.getImage("/api/users/avatarById/" + id.toString()).subscribe(data => {
+			this.createImageFromBlob(data);
+			this.isImageLoading = false;
+		}, error => {
+			this.isImageLoading = false;
+		});
+	}
 
 }

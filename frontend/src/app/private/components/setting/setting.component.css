@@ -43,12 +43,6 @@
     font-weight: 300;
   }
 
-input[type=checkbox] {
-    height: 0;
-    width: 0;
-    visibility: hidden;
-}
-
 label{
 	-webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -82,15 +76,15 @@ label:after {
 }
 
 form {
-    padding-bottom: 50px;
     border-radius: 300px;
     position: relative;
     z-index: 2;
   }
 
 
-.username {
+#username {
   padding-top: 50px;
+  padding-bottom: 50px;
 }
 
 form mat-form-field {
@@ -113,7 +107,7 @@ form mat-form-field {
 	padding-top: 0px;
   }
 
-input:checked + label {
+/*input:checked + label {
     background: #bada55;
 }
 
@@ -124,7 +118,70 @@ input:checked + label:after {
 
 label:active:after {
     width: 70px;
-}
+}*/
+
+input[type="file"]::file-selector-button {
+	box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+	background: #ffd740;
+	box-sizing: border-box;
+	position: relative;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: pointer;
+	outline: none;
+	border: none;
+	-webkit-tap-highlight-color: transparent;
+	display: inline-block;
+	white-space: nowrap;
+	text-decoration: none;
+	vertical-align: baseline;
+	text-align: center;
+	margin: 0;
+	min-width: 64px;
+	line-height: 36px;
+	padding: 0 16px;
+	border-radius: 4px;
+	overflow: visible;
+	transform: translate3d(0, 0, 0);
+	transition: background 400ms cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+	margin: 1rem;
+  }
+  
+  
+  /*  fallback for older browsers supporting the -webkit prefix */
+  
+  input[type="file"]::-webkit-file-upload-button {
+	box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+	background: #ffd740;
+	box-sizing: border-box;
+	position: relative;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: pointer;
+	outline: none;
+	border: none;
+	-webkit-tap-highlight-color: transparent;
+	display: inline-block;
+	white-space: nowrap;
+	text-decoration: none;
+	vertical-align: baseline;
+	text-align: center;
+	margin: 0;
+	min-width: 64px;
+	line-height: 36px;
+	padding: 0 16px;
+	border-radius: 4px;
+	overflow: visible;
+	transform: translate3d(0, 0, 0);
+	transition: background 400ms cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+	margin: 1rem;
+	font-weight: 500;
+  }
+
 div.setting {
 		margin: 0 auto;
 		text-align: center;

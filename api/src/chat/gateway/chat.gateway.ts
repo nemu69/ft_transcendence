@@ -3,6 +3,8 @@ import { AuthService } from 'src/auth/login/service/auth.service';
 import { Socket, Server } from 'socket.io';
 import { UserI } from 'src/user/model/user.interface';
 import { UserService } from 'src/user/service/user-service/user.service';
+import { HistoryService } from 'src/history/service/history.service';
+import { HistoryI } from 'src/history/model/history.interface';
 import { OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import { RoomService } from '../service/room-service/room.service';
 import { PageI } from '../model/page.interface';
@@ -50,6 +52,7 @@ export class ChatGateway{
   //Setting up base Interfaces for both game modes
   n_gamestate: GameStateI = {
     userServices: this.userService,
+    historyServices: this.historyService,
     player1: null,
     player2: null,
     spectators: [],
@@ -59,6 +62,7 @@ export class ChatGateway{
   //Setting up base Interfaces for both game modes
   b_gamestate: GameStateI = {
     userServices: this.userService,
+    historyServices: this.historyService,
     player1: null,
     player2: null,
     spectators: [],
@@ -75,6 +79,7 @@ export class ChatGateway{
   constructor(
     private authService: AuthService,
     private userService: UserService,
+    private historyService: HistoryService,
     private roomService: RoomService,
     private connectedUserService: ConnectedUserService,
     private joinedRoomService: JoinedRoomService,
@@ -241,7 +246,7 @@ export class ChatGateway{
     }
 
     //Setup The end of the game through score or disconnect
-    function endGame(gamestate: GameStateI, disc: number, userservice: UserService, server: Server)
+    async function endGame(gamestate: GameStateI, disc: number, userservice: UserService, server: Server)
     {
       
       if (disc)
@@ -268,6 +273,22 @@ export class ChatGateway{
         gamestate.player1.user.nbLoss++;
         gamestate.player2.points = 5;
       }
+      let type: string;
+      if (gamestate.type == 0)
+        type = "normal";
+      else
+        type = "blitz";
+      /*let p1 : UserI = await this.userService.findOne(gamestate.player1.user.id);
+      let p2 : UserI = await this.userService.findOne(gamestate.player2.user.id);*/
+      let history: HistoryI = {
+        playerOne: gamestate.player1.user,
+        playerTwo: gamestate.player2.user,
+        playerOneScore: gamestate.player1.points,
+        playerTwoScore: gamestate.player2.points,
+        game: type,
+        date: new Date(),
+      };
+      gamestate.historyServices.createMatchHistory(history);
       userservice.updateOne(gamestate.player2.user.id, gamestate.player2.user);
       userservice.updateOne(gamestate.player1.user.id, gamestate.player1.user);
       //Stop Loop from running
@@ -280,7 +301,6 @@ export class ChatGateway{
         });
       }
       clearInterval(gamestate.id);
-      console.log("after");
     }
 
     //Check if Users are still connected properly
@@ -350,7 +370,6 @@ export class ChatGateway{
       let disc: number = 0;
       if ((disc = checkConnection(gamestate)) || player1.points >= 5 || player2.points >= 5)
         endGame(gamestate, disc, gamestate.userServices, server);
-      console.log("double after");
       //PLAYER MOVEMENTS based on input variables recieved
       player1.paddle.y += player1.paddle.dy;
       if (player1.paddle.y < 0)
@@ -549,6 +568,7 @@ export class ChatGateway{
       };
       this.n_gamestate = {
         userServices: this.userService,
+        historyServices: this.historyService,
         player1: null,
         player2: null,
         spectators: [],
@@ -592,6 +612,7 @@ export class ChatGateway{
       };
       this.b_gamestate = {
         userServices: this.userService,
+        historyServices: this.historyService,
         player1: null,
         player2: null,
         spectators: [],

@@ -4,17 +4,19 @@
 		<div class="profile">
 
 			<div class="profile-image">
-
-				<img src="http://localhost:4200/api/users/avatarById/{{user.id}}" alt="">
-
+				<img [src]="imageToShow" alt="Place image title" *ngIf="imageToShow; else noImageFound">
+				<ng-template #noImageFound>
+				     <img src="/assets/img/site/fallbackImage.png" alt="Fallbackimage">
+				</ng-template>
 			</div>
 
 			<div class="profile-user-settings">
 
 				<h1 class="profile-user-name">{{user.username}} {{user.status}}</h1>
 
-				<button class="btn profile-edit-btn" (click)=follow()>
-					Follow or ask friend
+				<button class="btn profile-edit-btn" (click)=addFriend()>
+					<i class="btn profile-settings-btn" aria-label="profile settings" class="fas fa-user-plus"></i>
+					Add Friend
 				</button>
 			
 
@@ -44,9 +46,9 @@
 				<br>
 				{{user.nbWin}}/{{user.nbLoss}}
 				<br>
-				WinRate: {{user.nbWin / (user.nbWin + user.nbLoss) * 100}}%
+				WinRate: {{user.nbWin / (user.nbWin + user.nbLoss) * 100 | number:'1.1-2'}}%
 				<br>
-				<progress value="{user.nbWin / (user.nbWin + user.nbLoss) * 100}}" max="100"></progress>
+				<progress value="{{user.nbWin / (user.nbWin + user.nbLoss) * 100}}" max="100"></progress>
 
 			</div>
 

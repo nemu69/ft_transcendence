@@ -114,7 +114,13 @@ img {
 }
 
 .profile-image img {
-    border-radius: 50%;
+	border-radius: 50%;
+	overflow: hidden;
+    width: 200px;
+    height: 200px;
+    max-width: 200px;
+    max-height: 200px;
+	object-fit:cover;
 }
 
 .profile-user-settings,
@@ -269,10 +275,6 @@ img {
     .profile-stats {
         float: none;
         width: auto;
-    }
-
-    .profile-image img {
-        width: 7.7rem;
     }
 
     .profile-user-settings {
@@ -437,6 +439,7 @@ Remove or comment-out the code block below to see how the browser will fall-back
     border: 0;
     height: 2.5em;
     width: 100%;
+	border-radius: 30px;
 }
 
 progress::-webkit-progress-bar {

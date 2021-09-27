@@ -1,5 +1,7 @@
 import { FriendEntity } from "src/app/friend/models/friend.entity";
 import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { FriendRequestEntity } from "../friends/friends.entity";
+import { HistoryEntity } from "../history/history.entity";
 import { UserRole, UserStatus } from "./user.interface";
 
 @Entity()
@@ -46,6 +48,30 @@ export class UserEntity {
 
 	@Column({ nullable: true })
 	twoFactorAuthenticationSecret: string;
+
+	@OneToMany(
+		() => FriendRequestEntity,
+		(friendRequestEntity) => friendRequestEntity.creator,
+	)
+	sentFriendRequests: FriendRequestEntity[];
+
+	@OneToMany(
+	() => FriendRequestEntity,
+	(friendRequestEntity) => friendRequestEntity.receiver,
+	)
+	receivedFriendRequests: FriendRequestEntity[];
+
+	@OneToMany(
+		() => HistoryEntity,
+		(historyEntity) => historyEntity.playerOne,
+	)
+	host: FriendRequestEntity[];
+
+	@OneToMany(
+	() =>HistoryEntity,
+	(historyEntity) => historyEntity.playerTwo,
+	)
+	opponent: FriendRequestEntity[];
 	
 	@BeforeInsert()
 	emailToLowerCase() {

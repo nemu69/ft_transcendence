@@ -106,16 +106,16 @@ export class SettingComponent implements OnInit {
 	
 	}
 	onUpload() {
-		this.userService.uploadFile(this.selectedFile).subscribe(
-			data => {
-				console.log(data);
-			}
-		);
+		let formData = new FormData();
+    	formData.append('file', this.selectedFile);
+		 this.userService.uploadFile(formData).subscribe(
+		 	data => {
+		 	this._snackBar.open(`User update.`, 'Close', {
+		 		duration: 5000, horizontalPosition: 'right', verticalPosition: 'top'
+		 	  })
+		 	}
+		 );
 	  }
-	
-	 uploadFile() {
-		
-	 }
 
 	update(bool: boolean) {
 		this.userService.updateOne(this.settingForm.getRawValue(), bool).subscribe();
