@@ -246,7 +246,7 @@ export class ChatGateway{
     }
 
     //Setup The end of the game through score or disconnect
-    function endGame(gamestate: GameStateI, disc: number, userservice: UserService, server: Server)
+    async function endGame(gamestate: GameStateI, disc: number, userservice: UserService, server: Server)
     {
       
       if (disc)
@@ -273,6 +273,22 @@ export class ChatGateway{
         gamestate.player1.user.nbLoss++;
         gamestate.player2.points = 5;
       }
+      let type: string;
+      if (gamestate.type == 0)
+        type = "normal";
+      else
+        type = "blitz";
+      /*let p1 : UserI = await this.userService.findOne(gamestate.player1.user.id);
+      let p2 : UserI = await this.userService.findOne(gamestate.player2.user.id);*/
+      let history: HistoryI = {
+        playerOne: gamestate.player1.user,
+        playerTwo: gamestate.player2.user,
+        playerOneScore: gamestate.player1.points,
+        playerTwoScore: gamestate.player2.points,
+        game: type,
+        date: new Date(),
+      };
+      gamestate.historyServices.createMatchHistory(history);
       userservice.updateOne(gamestate.player2.user.id, gamestate.player2.user);
       userservice.updateOne(gamestate.player1.user.id, gamestate.player1.user);
       //Stop Loop from running
