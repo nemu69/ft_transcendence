@@ -4,6 +4,8 @@ import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginat
 import { Observable, from, of, throwError } from 'rxjs';
 import { switchMap, map, catchError} from 'rxjs/operators';
 import { UserEntity } from 'src/user/model/user.entity';
+import { UserStatus } from 'src/user/model/user.interface';
+import { UserService } from 'src/user/service/user-service/user.service';
 import { getRepository, Like, Repository } from 'typeorm';
 import { HistoryEntity } from '../model/history.entity';
 import { HistoryI } from '../model/history.interface';
@@ -33,9 +35,18 @@ export class HistoryService {
 		);
 	}
 
-	createMatchHistory(match: HistoryI): Observable<HistoryEntity> {
-		return from(this.historyRepository.save(match));
+	async createMatchHistory(match: HistoryI): Promise<HistoryI>{
+		try {
+			const n_match = await this.historyRepository.save(this.historyRepository.create(match));
+			return this.findOne(n_match.id);
+		} catch {
+			throw new HttpException('BLEBLEBLE', HttpStatus.CONFLICT);
+		}
   	}
+
+	async findOne(id: number): Promise<HistoryI> {
+		return this.historyRepository.findOne({ id });
+	}
 
 	async findAll(options: IPaginationOptions): Promise<Pagination<HistoryI>> {
 		return paginate<HistoryEntity>(this.historyRepository, options);

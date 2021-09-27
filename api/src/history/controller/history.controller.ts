@@ -14,7 +14,7 @@ export class HistoryController {
 	) { }
 
   	@Post()
-	add(@Body() match: HistoryI): Observable<HistoryEntity> {
+	async create(@Body() match: HistoryI): Promise<HistoryI> {
 		return this.historyService.createMatchHistory(match);
 	}
 

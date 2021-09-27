@@ -246,7 +246,7 @@ export class ChatGateway{
     }
 
     //Setup The end of the game through score or disconnect
-    async function endGame(gamestate: GameStateI, disc: number, userservice: UserService, server: Server)
+    function endGame(gamestate: GameStateI, disc: number, userservice: UserService, server: Server)
     {
       
       if (disc)
@@ -281,8 +281,8 @@ export class ChatGateway{
       /*let p1 : UserI = await this.userService.findOne(gamestate.player1.user.id);
       let p2 : UserI = await this.userService.findOne(gamestate.player2.user.id);*/
       let history: HistoryI = {
-        playerOne: gamestate.player1.user,
-        playerTwo: gamestate.player2.user,
+        /*playerOne: gamestate.player1.user,
+        playerTwo: gamestate.player2.user,*/
         playerOneScore: gamestate.player1.points,
         playerTwoScore: gamestate.player2.points,
         game: type,
