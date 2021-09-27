@@ -11,12 +11,17 @@
 			</div>
 
 			<div class="profile-user-settings">
-
+				
 				<h1 class="profile-user-name">{{user.username}} {{user.status}}</h1>
-
+			</div>
+				<div class="profile-user-settings">
 				<button class="btn profile-edit-btn" (click)=addFriend()>
 					<i class="btn profile-settings-btn" aria-label="profile settings" class="fas fa-user-plus"></i>
 					Add Friend
+				</button>
+				<button class="btn profile-edit-btn" (click)=blockUser()>
+					<i class="btn profile-settings-btn" aria-label="profile settings" class="fas fa-user-times"></i>
+					Block User
 				</button>
 			
 
