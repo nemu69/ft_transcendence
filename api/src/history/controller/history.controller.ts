@@ -19,7 +19,7 @@ export class HistoryController {
 	}
 
 	@Get()
-	async findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<HistoryI>> {
+	async findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<HistoryEntity>> {
 		limit = limit > 100 ? 100 : limit;
 		return this.historyService.findAll({ page, limit, route: 'http://localhost:3000/api/history' });
   	}

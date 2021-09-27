@@ -1,5 +1,5 @@
 import { UserEntity } from 'src/user/model/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('request')
 export class HistoryEntity {
@@ -26,6 +26,6 @@ export class HistoryEntity {
   game: string;
 
 
-  @Column({ nullable: true })
+  @CreateDateColumn({ nullable: true })
   date: Date;
 }
