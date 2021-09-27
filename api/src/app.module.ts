@@ -40,12 +40,19 @@ export class AppModule implements NestModule {
         {path: '/api/users/upload', method: RequestMethod.POST},
         {path: '/api/users/:id/role', method: RequestMethod.PUT},
         {path: '/api/users/avatarById/:id', method: RequestMethod.GET},
+		//
+		{path: '/api/friend/friend-request/send/:receiverId', method: RequestMethod.POST},
+		{path: '/api/friend/friend-request/status/:receiverId', method: RequestMethod.GET},
+		{path: '/api/friend/friend-request/response/:friendRequestId', method: RequestMethod.PUT},
+		{path: '/api/friend/friend-request/me/received-requests', method: RequestMethod.GET},
+		//
         {path: '/api/2fa/generate', method: RequestMethod.POST},
         {path: '/api/2fa/authenticate', method: RequestMethod.POST},
         {path: '/api/2fa/turn-on', method: RequestMethod.POST},
         {path: '/api/2fa/turn-off', method: RequestMethod.POST},
         {path: '/api/2fa/secret', method: RequestMethod.GET},
         {path: '/api/2fa/qrcode', method: RequestMethod.GET},
+		//
         {path: '/api/oauth2/school42', method: RequestMethod.GET},
         {path: '/api/oauth2/school42/callback', method: RequestMethod.GET},
       )

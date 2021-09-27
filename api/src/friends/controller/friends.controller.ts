@@ -18,7 +18,7 @@ export class FriendsController {
     @Param('receiverId') receiverStringId: string,
     @Request() req,
   ): Observable<FriendRequest | { error: string }> {
-    const receiverId = parseInt(receiverStringId);
+    const receiverId = parseInt(receiverStringId);	
     return this.friendService.sendFriendRequest(receiverId, req.user);
   }
 
