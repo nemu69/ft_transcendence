@@ -1,3 +1,5 @@
+import { RoomI } from "src/chat/model/room/room.interface";
+
 export interface UserI {
     id?: number;
     username?: string;
@@ -12,6 +14,7 @@ export interface UserI {
 	nbLoss?: number;
 	twoFactorAuthEnabled?: boolean;
 	twoFactorAuthenticationSecret?: string;
+	chatOwner?: RoomI[];
 }
 
 export enum UserRole {

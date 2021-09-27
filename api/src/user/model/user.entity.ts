@@ -75,8 +75,11 @@ export class UserEntity {
 	@Column({type: 'enum', enum: UserRole, default: UserRole.USER})
 	role: UserRole;
 
- 	@ManyToMany(() => RoomEntity, room => room.users)
- 	rooms: RoomEntity[]
+	@ManyToMany(() => RoomEntity, room => room.users)
+	rooms: RoomEntity[]
+
+	@ManyToMany(() => RoomEntity, room => room.admin)
+ 	admin: RoomEntity[]
 
  	@OneToMany(() => ConnectedUserEntity, connection => connection.user)
  	connections: ConnectedUserEntity[];
@@ -86,6 +89,9 @@ export class UserEntity {
 
  	@OneToMany(() => MessageEntity, message => message.user)
  	messages: MessageEntity[];
+
+	@OneToMany(() => RoomEntity, room => room.owner)
+	chatOwner: RoomEntity[];
 
  	@BeforeInsert()
  	@BeforeUpdate()

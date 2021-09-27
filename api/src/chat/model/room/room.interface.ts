@@ -5,6 +5,8 @@ export interface RoomI {
   name?: string;
   description?: string;
   users?: UserI[];
+  admin?: UserI[];
+  owner?: UserI;
   created_at?: Date;
   updated_at?: Date;
 }
