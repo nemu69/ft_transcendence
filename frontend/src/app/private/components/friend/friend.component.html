@@ -1,1 +1,48 @@
-<p>http://localhost:4200/api/friend/friend-request/me/received-requests</p>
+<div *ngIf="(user | async) as user"  class="wrapper">
+	<div class="container">
+		<h1>Friends</h1>
+		<!--<div class="profile">
+			
+			<p>http://localhost:4200/api/friend/friend-request/me/received-requests</p>
+			<div class="profile-image">
+				<img [src]="imageToShow" alt="Place image title" *ngIf="imageToShow; else noImageFound">
+				<ng-template #noImageFound>
+				     <img src="/assets/img/site/fallbackImage.png" alt="Fallbackimage">
+				</ng-template>
+
+			</div>
+
+			<div class="profile-user-settings">
+
+				<h1 class="profile-user-name">{{user.username}} {{user.status}}</h1>
+
+				<button class="btn profile-edit-btn" routerLink="/private/setting" >
+					<i class="btn profile-settings-btn" aria-label="profile settings" class="fas fa-cog"></i>
+					Edit Profile
+				</button>
+
+			</div>
+
+			<div class="profile-stats">
+
+				<ul>
+					<li><span class="profile-stat-count">188</span> followers</li>
+					<li><span class="profile-stat-count">206</span> following</li>
+				</ul>
+
+			</div>
+
+		</div>-->
+		<!-- End of profile section -->
+	</div>
+	<div class="container-block">
+		<div class="friends">Your Friends
+			<i class="fad fa-user-friends"></i>
+		</div>
+		<div class="requests">Friends Requests
+			<i class="fad fa-user-clock"></i>
+
+			</div>
+		</div>
+		<!-- End of container -->
+	</div>
