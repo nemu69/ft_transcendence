@@ -36,7 +36,7 @@ export class FriendsService {
 	}
 	
 	blockOrUnblockUsers(userId: string): Observable<FriendRequest | { error: string } | { success: string }> {
-		return this.http.post<FriendRequest | { error: string } | { success: string }>(`/api/friend/friend-request/response/` + userId,{});
+		return this.http.post<FriendRequest | { error: string } | { success: string }>(`/api/friend/friend-request/block/` + userId,{});
 	}
 
 	getFriendRequests(): Observable<FriendRequestStatus[]> {

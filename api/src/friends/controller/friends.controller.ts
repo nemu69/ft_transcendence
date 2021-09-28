@@ -50,7 +50,7 @@ export class FriendsController {
   blockUnblockFriendRequest(
     @Param('friendRequestId') friendRequestStringId: string,
     @Request() req
-  ): Observable<FriendRequest | { error: string } | { success: string }> {
+  ): Observable<FriendRequest | { error: string } | { success: string }> {	  
     const friendRequestId = parseInt(friendRequestStringId);
     return this.friendService.blockUnblockFriendRequest(friendRequestId, req.user);
   }

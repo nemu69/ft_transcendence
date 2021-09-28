@@ -52,8 +52,8 @@ export class ProfileusersComponent implements OnInit {
 							});
 					  })
 					))
-				  ).subscribe()
-				
+				).subscribe()
+				this.friendsService
 		  }
 		  
 		  addFriend(){
@@ -63,6 +63,7 @@ export class ProfileusersComponent implements OnInit {
 				  }
 			  )		
 		  }
+
 		  blockUser(){
 			  this.friendsService.blockOrUnblockUsers(this.idProfile.toString()).subscribe(
 				(data) => {
