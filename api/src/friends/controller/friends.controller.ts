@@ -46,7 +46,7 @@ export class FriendsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put('friend-request/response/:friendRequestId')
+  @Post('friend-request/block/:friendRequestId')
   blockUnblockFriendRequest(
     @Param('friendRequestId') friendRequestStringId: string,
     @Request() req
@@ -61,5 +61,21 @@ export class FriendsController {
     @Request() req,
   ): Observable<FriendRequestStatus[]> {
     return this.friendService.getFriendRequestsFromRecipients(req.user);
+  }
+  
+  @UseGuards(JwtAuthGuard)
+  @Get('friend-request/me/my-friends')
+  getMyFriendRequests(
+    @Request() req,
+  ): Promise<FriendRequestStatus[] | undefined> {
+    return this.friendService.getMyFriendRequests(req.user);
+  }
+  
+  @UseGuards(JwtAuthGuard)
+  @Get('friend-request/me/my-blocked')
+  getMyBlockedUsersRequests(
+    @Request() req,
+  ): Promise<FriendRequestStatus[] | undefined> {
+    return this.friendService.getMyBlockedUsersRequests(req.user);
   }
 }

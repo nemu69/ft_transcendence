@@ -195,4 +195,29 @@ export class FriendsService {
     );
   }
 
+  getMyFriendRequests(
+    currentUser: UserEntity,
+  ): Promise<FriendRequest[]  | undefined> {
+    const query = this.friendRequestRepository
+			.createQueryBuilder("f")
+			.leftJoinAndSelect('f.creator', 'c')
+			.leftJoinAndSelect('f.receiver', 'r')
+			.where("c.id = :id OR r.id = :id AND f.status = 'accepted'")
+			.setParameters({ id : currentUser.id })
+			.getMany();
+    	return query;
+  }
+  
+  getMyBlockedUsersRequests(
+    currentUser: UserEntity,
+  ): Promise<FriendRequest[]  | undefined> {
+    const query = this.friendRequestRepository
+			.createQueryBuilder("f")
+			.leftJoinAndSelect('f.creator', 'c')
+			.where("c.id = :id AND f.status = 'blocked'")
+			.setParameters({ id : currentUser.id })
+			.getMany();
+    	return query;
+  }
+
 }

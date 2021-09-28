@@ -71,7 +71,7 @@ export class UserController {
   async login(@Body() loginUserDto: LoginUserDto): Promise<LoginResponseI> {
     const userEntity: UserI = this.userHelperService.loginUserDtoToEntity(loginUserDto);
     const login = await this.userService.login(userEntity);
-    let expiresIn = 10000;
+    let expiresIn = 5000;
     if (login.payload.twoFactorAuthEnabled)
       expiresIn = 30;
 	return {
