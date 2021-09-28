@@ -16,10 +16,10 @@ import { HistoryI } from '../model/history.interface';
 export class HistoryService {
 
 	constructor(
-		@InjectRepository(UserEntity)
-		private readonly userRepository: Repository<UserEntity>,
 		@InjectRepository(HistoryEntity)
 		private readonly historyRepository: Repository<HistoryEntity>,
+		@InjectRepository(UserEntity)
+		private readonly userRepository: Repository<UserEntity>,
 	) { }
 
 	findUserById(id: number): Observable<UserEntity> {
@@ -31,7 +31,7 @@ export class HistoryService {
 				throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 			}
 			delete user.password;
-			return user;
+			return user; 
 			}),
 		);
 	}
@@ -39,6 +39,7 @@ export class HistoryService {
 	async createMatchHistory(match: HistoryI): Promise<HistoryI>{
 		try {
 			const n_match = await this.historyRepository.save(this.historyRepository.create(match));
+			console.log()
 			return this.findOne(n_match.id);
 		} catch {
 			throw new HttpException('BLEBLEBLE', HttpStatus.CONFLICT);
@@ -54,16 +55,15 @@ export class HistoryService {
 	}
 
 	async findAllByUserId(id: number): Promise<HistoryEntity[] | undefined> {
-		const query = this.historyRepository
+		const query = await this.historyRepository
 			.createQueryBuilder("h")
 			.leftJoin('h.playerOne', 'one')
 			.leftJoin('h.playerTwo', 'two')
-			.where("one.id = :id OR two.id = :id AND h.game= :type")
+			.where("one.id = :id OR two.id = :id")
 			.take(5)
 			.setParameters({ id: id })
 			.orderBy('h.date', 'DESC')
 			.getMany();
-
     	return query;
 	}
 
@@ -77,7 +77,6 @@ export class HistoryService {
 			.setParameters({ id: id, type: type })
 			.orderBy('h.date', 'DESC')
 			.getMany();
-
     	return query;
 	}
 
