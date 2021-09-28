@@ -1,7 +1,7 @@
 import { UserEntity } from 'src/user/model/user.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('request')
+@Entity()
 export class HistoryEntity {
   @PrimaryGeneratedColumn()
   id: number;

@@ -227,7 +227,6 @@ export class ChatGateway{
   //When a new player connects to the game (data -> gamemode | user id)
   @SubscribeMessage('newPlayer')
   async onNewPlayer(n_socket: Socket, data: number[]) {
-
     if (checkConnection(this.n_gamestate) == 2)
       this.n_gamestate.player1 = null;
     if (checkConnection(this.b_gamestate) == 2)
@@ -344,7 +343,11 @@ export class ChatGateway{
     //Setup The end of the game through score or disconnect
     function endGame(gamestate: GameStateI, disc: number, userservice: UserService, server: Server)
     {
-      
+      let type: string;
+      if (gamestate.type == 0)
+        type = "normal";
+      else
+        type = "blitz";
       if (disc)
         gamestate.type = disc * -1;
       if (gamestate.player1.points >= 5)
@@ -369,16 +372,11 @@ export class ChatGateway{
         gamestate.player1.user.nbLoss++;
         gamestate.player2.points = 5;
       }
-      let type: string;
-      if (gamestate.type == 0)
-        type = "normal";
-      else
-        type = "blitz";
       /*let p1 : UserI = await this.userService.findOne(gamestate.player1.user.id);
       let p2 : UserI = await this.userService.findOne(gamestate.player2.user.id);*/
       let history: HistoryI = {
-        /*playerOne: gamestate.player1.user,
-        playerTwo: gamestate.player2.user,*/
+        playerOne: gamestate.player1.user,
+        playerTwo: gamestate.player2.user,
         playerOneScore: gamestate.player1.points,
         playerTwoScore: gamestate.player2.points,
         game: type,
