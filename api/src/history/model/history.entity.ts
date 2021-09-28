@@ -21,10 +21,8 @@ export class HistoryEntity {
   @Column({ nullable: true })
   playerTwoScore: number;
 
-
   @Column({ nullable: true })
   game: string;
-
 
   @CreateDateColumn({ nullable: true })
   date: Date;

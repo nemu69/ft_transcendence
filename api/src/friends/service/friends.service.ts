@@ -52,6 +52,24 @@ export class FriendsService {
     );
   }
 
+  userIsBlockedOrNot(
+    creator: UserEntity,
+    receiver: UserEntity,
+  ): Observable<boolean> {
+    return from(
+      this.friendRequestRepository.findOne({
+        where: [
+          { creator, receiver, status: 'blocked' },
+        ],
+      }),
+    ).pipe(
+      switchMap((friendRequest: FriendRequest) => {
+        if (!friendRequest) return of(false);
+        return of(true);
+      }),
+    );
+  }
+
   sendFriendRequest(
     receiverId: number,
     creator: UserEntity,
@@ -132,6 +150,39 @@ export class FriendsService {
       }),
     );
   }
+
+  blockUnblockFriendRequest(
+    receiverId: number,
+    creator: UserEntity,
+	): Observable<FriendRequest | { error: string }| { success: string }> {
+		if (receiverId === creator.id)
+		  	return of({ error: 'It is not possible to block yourself!' });
+		return this.findUserById(receiverId).pipe(
+			switchMap((receiver: UserEntity) => {
+				return from(
+				this.friendRequestRepository.findOne({
+				where: [
+					{ creator, receiver, status: 'blocked' }
+				],
+				}),
+			).pipe(
+				switchMap((friendRequest: FriendRequest) => {
+				if (!friendRequest) {
+					let friendRequest: FriendRequest = {
+						creator,
+						receiver,
+						status: 'blocked',
+					};
+					console.log(friendRequest);
+					
+					return from(this.friendRequestRepository.save(friendRequest));
+				}
+				this.friendRequestRepository.delete(friendRequest);
+				return of({ success: 'The user is now unblocked!' });
+				}),
+			);
+		}));
+	}
 
   getFriendRequestsFromRecipients(
     currentUser: UserEntity,

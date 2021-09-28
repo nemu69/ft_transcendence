@@ -61,13 +61,13 @@ export class UserEntity {
 		() => HistoryEntity,
 		(historyEntity) => historyEntity.playerOne,
 	)
-	host: FriendRequestEntity[];
+	host: HistoryEntity[];
 
 	@OneToMany(
 	() =>HistoryEntity,
 	(historyEntity) => historyEntity.playerTwo,
 	)
-	opponent: FriendRequestEntity[];
+	opponent: HistoryEntity[];
 
 	@Column({type: 'enum', enum: UserStatus, default: UserStatus.OFF})
 	status: UserStatus;

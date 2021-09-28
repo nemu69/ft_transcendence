@@ -46,6 +46,16 @@ export class FriendsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Put('friend-request/response/:friendRequestId')
+  blockUnblockFriendRequest(
+    @Param('friendRequestId') friendRequestStringId: string,
+    @Request() req
+  ): Observable<FriendRequest | { error: string } | { success: string }> {
+    const friendRequestId = parseInt(friendRequestStringId);
+    return this.friendService.blockUnblockFriendRequest(friendRequestId, req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('friend-request/me/received-requests')
   getFriendRequestsFromRecipients(
     @Request() req,
