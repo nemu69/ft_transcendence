@@ -84,6 +84,102 @@ export class ChatGateway{
     private connectedUserService: ConnectedUserService,
     private joinedRoomService: JoinedRoomService,
     private messageService: MessageService) { }
+  
+  // Don't remove this :)
+
+  async onModuleInit() {
+    await this.connectedUserService.deleteAll();
+    await this.joinedRoomService.deleteAll();
+  }
+
+  async handleConnection(socket: Socket) {
+    try {
+      const decodedToken = await this.authService.verifyJwt(socket.handshake.headers.authorization);
+      const user: UserI = await this.userService.getOne(decodedToken.user.id);
+      if (!user) {
+        return this.disconnect(socket);
+      } else {
+        socket.data.user = user;
+        const rooms = await this.roomService.getRoomsForUser(user.id, { page: 1, limit: 10 });
+        // substract page -1 to match the angular material paginator
+        rooms.meta.currentPage = rooms.meta.currentPage - 1;
+        // Save connection to DB
+        await this.connectedUserService.create({ socketId: socket.id, user });
+        // Only emit rooms to the specific connected client
+        return this.server.to(socket.id).emit('rooms', rooms);
+      }
+    } catch {
+      return this.disconnect(socket);
+    }
+  }
+
+  async handleDisconnect(socket: Socket) {
+    // remove connection from DB
+    await this.connectedUserService.deleteBySocketId(socket.id);
+    socket.disconnect();
+  }
+
+  private disconnect(socket: Socket) {
+    socket.emit('Error', new UnauthorizedException());
+    socket.disconnect();
+  }
+
+  @SubscribeMessage('createRoom')
+  async onCreateRoom(socket: Socket, room: RoomI) {
+    const createdRoom: RoomI = await this.roomService.createRoom(room, socket.data.user);
+    
+    for (const user of createdRoom.users) {
+      const connections: ConnectedUserI[] = await this.connectedUserService.findByUser(user);
+      const rooms = await this.roomService.getRoomsForUser(user.id, { page: 1, limit: 10 });
+      // substract page -1 to match the angular material paginator
+      rooms.meta.currentPage = rooms.meta.currentPage - 1;
+      for (const connection of connections) {
+        await this.server.to(connection.socketId).emit('rooms', rooms);
+      }
+    }
+  }
+
+  @SubscribeMessage('paginateRooms')
+  async onPaginateRoom(socket: Socket, page: PageI) {
+    const rooms = await this.roomService.getRoomsForUser(socket.data.user.id, this.handleIncomingPageRequest(page));
+    // substract page -1 to match the angular material paginator
+    rooms.meta.currentPage = rooms.meta.currentPage - 1;
+    return this.server.to(socket.id).emit('rooms', rooms);
+  }
+
+  @SubscribeMessage('joinRoom')
+  async onJoinRoom(socket: Socket, room: RoomI) {
+    const messages = await this.messageService.findMessagesForRoom(room, { limit: 30, page: 1 });
+    messages.meta.currentPage = messages.meta.currentPage - 1;
+    // Save Connection to Room
+    await this.joinedRoomService.create({ socketId: socket.id, user: socket.data.user, room });
+    // Send last messages from Room to User
+    await this.server.to(socket.id).emit('messages', messages);
+  }
+
+  @SubscribeMessage('leaveRoom')
+  async onLeaveRoom(socket: Socket) {
+    // remove connection from JoinedRooms
+    await this.joinedRoomService.deleteBySocketId(socket.id);
+  }
+
+  @SubscribeMessage('addMessage')
+  async onAddMessage(socket: Socket, message: MessageI) {
+    const createdMessage: MessageI = await this.messageService.create({...message, user: socket.data.user});
+    const room: RoomI = await this.roomService.getRoom(createdMessage.room.id);
+    const joinedUsers: JoinedRoomI[] = await this.joinedRoomService.findByRoom(room);
+    // TODO: Send new Message to all joined Users of the room (currently online)
+    for(const user of joinedUsers) {
+      await this.server.to(user.socketId).emit('messageAdded', createdMessage);
+    }
+  }
+
+  private handleIncomingPageRequest(page: PageI) {
+    page.limit = page.limit > 100 ? 100 : page.limit;
+    // add page +1 to match angular material paginator
+    page.page = page.page + 1;
+    return page;
+  }
 
   //Remove unused Rooms and change id's to coincide with new order
   private UpdateRooms()
@@ -131,7 +227,6 @@ export class ChatGateway{
   //When a new player connects to the game (data -> gamemode | user id)
   @SubscribeMessage('newPlayer')
   async onNewPlayer(n_socket: Socket, data: number[]) {
-
     if (checkConnection(this.n_gamestate) == 2)
       this.n_gamestate.player1 = null;
     if (checkConnection(this.b_gamestate) == 2)
@@ -246,9 +341,13 @@ export class ChatGateway{
     }
 
     //Setup The end of the game through score or disconnect
-    async function endGame(gamestate: GameStateI, disc: number, userservice: UserService, server: Server)
+    function endGame(gamestate: GameStateI, disc: number, userservice: UserService, server: Server)
     {
-      
+      let type: string;
+      if (gamestate.type == 0)
+        type = "normal";
+      else
+        type = "blitz";
       if (disc)
         gamestate.type = disc * -1;
       if (gamestate.player1.points >= 5)
@@ -273,11 +372,6 @@ export class ChatGateway{
         gamestate.player1.user.nbLoss++;
         gamestate.player2.points = 5;
       }
-      let type: string;
-      if (gamestate.type == 0)
-        type = "normal";
-      else
-        type = "blitz";
       /*let p1 : UserI = await this.userService.findOne(gamestate.player1.user.id);
       let p2 : UserI = await this.userService.findOne(gamestate.player2.user.id);*/
       let history: HistoryI = {

@@ -16,6 +16,6 @@ export class FriendRequestEntity {
   )
   receiver: UserEntity;
 
-  @Column()
+  @Column({ nullable: true })
   status: FriendRequest_Status;
 }

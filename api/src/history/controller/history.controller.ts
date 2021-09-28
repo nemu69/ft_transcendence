@@ -14,7 +14,7 @@ export class HistoryController {
 	) { }
 
   	@Post()
-	add(@Body() match: HistoryI): Observable<HistoryEntity> {
+	async create(@Body() match: HistoryI): Promise<HistoryI> {
 		return this.historyService.createMatchHistory(match);
 	}
 
@@ -26,7 +26,7 @@ export class HistoryController {
 
 	@Get('match/:id')
     async findHistoryById(@Param('id') id): Promise<Object> {
-        return this.historyService.findAllByUserId(id);
+		return this.historyService.findAllByUserId(id);
     }
 
 	@Get('matchType/:id')

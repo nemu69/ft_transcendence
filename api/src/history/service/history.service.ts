@@ -5,6 +5,8 @@ import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginat
 import { Observable, from, of, throwError } from 'rxjs';
 import { switchMap, map, catchError} from 'rxjs/operators';
 import { UserEntity } from 'src/user/model/user.entity';
+import { UserStatus } from 'src/user/model/user.interface';
+import { UserService } from 'src/user/service/user-service/user.service';
 import { getRepository, Like, Repository } from 'typeorm';
 import { HistoryEntity } from '../model/history.entity';
 import { HistoryI } from '../model/history.interface';
@@ -14,10 +16,10 @@ import { HistoryI } from '../model/history.interface';
 export class HistoryService {
 
 	constructor(
-		@InjectRepository(UserEntity)
-		private readonly userRepository: Repository<UserEntity>,
 		@InjectRepository(HistoryEntity)
 		private readonly historyRepository: Repository<HistoryEntity>,
+		@InjectRepository(UserEntity)
+		private readonly userRepository: Repository<UserEntity>,
 	) { }
 
 	findUserById(id: number): Observable<UserEntity> {
@@ -29,30 +31,39 @@ export class HistoryService {
 				throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 			}
 			delete user.password;
-			return user;
+			return user; 
 			}),
 		);
 	}
 
-	createMatchHistory(match: HistoryI): Observable<HistoryEntity> {
-		return from(this.historyRepository.save(match));
+	async createMatchHistory(match: HistoryI): Promise<HistoryI>{
+		try {
+			const n_match = await this.historyRepository.save(this.historyRepository.create(match));
+			console.log()
+			return this.findOne(n_match.id);
+		} catch {
+			throw new HttpException('BLEBLEBLE', HttpStatus.CONFLICT);
+		}
   	}
+
+	async findOne(id: number): Promise<HistoryI> {
+		return this.historyRepository.findOne({ id });
+	}
 
 	async findAll(options: IPaginationOptions): Promise<Pagination<HistoryEntity>> {
 		return paginate<HistoryEntity>(this.historyRepository, options);
 	}
 
 	async findAllByUserId(id: number): Promise<HistoryEntity[] | undefined> {
-		const query = this.historyRepository
+		const query = await this.historyRepository
 			.createQueryBuilder("h")
 			.leftJoin('h.playerOne', 'one')
 			.leftJoin('h.playerTwo', 'two')
-			.where('one.id = :id OR two.id = :id AND h.game= :type')
+			.where("one.id = :id OR two.id = :id")
 			.take(5)
 			.setParameters({ id: id })
 			.orderBy('h.date', 'DESC')
 			.getMany();
-
     	return query;
 	}
 
@@ -66,7 +77,6 @@ export class HistoryService {
 			.setParameters({ id: id, type: type })
 			.orderBy('h.date', 'DESC')
 			.getMany();
-
     	return query;
 	}
 
