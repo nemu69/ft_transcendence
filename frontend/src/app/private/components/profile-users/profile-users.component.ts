@@ -64,10 +64,10 @@ export class ProfileusersComponent implements OnInit {
 			  )		
 		  }
 		  blockUser(){
-			  this.friendsService.sendFriendRequest(this.idProfile.toString()).subscribe(
-				  (data) => {
-					  console.log(data);
-				  }
+			  this.friendsService.blockOrUnblockUsers(this.idProfile.toString()).subscribe(
+				(data) => {
+					console.log(data);
+				}
 			  )		
 		  }
 	
