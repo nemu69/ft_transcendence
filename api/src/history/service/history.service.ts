@@ -39,7 +39,7 @@ export class HistoryService {
 	async createMatchHistory(match: HistoryI): Promise<HistoryI>{
 		try {
 			const n_match = await this.historyRepository.save(this.historyRepository.create(match));
-			console.log()
+			console.log(match)
 			return this.findOne(n_match.id);
 		} catch {
 			throw new HttpException('BLEBLEBLE', HttpStatus.CONFLICT);
@@ -55,10 +55,10 @@ export class HistoryService {
 	}
 
 	async findAllByUserId(id: number): Promise<HistoryEntity[] | undefined> {
-		const query = await this.historyRepository
+		const query = this.historyRepository
 			.createQueryBuilder("h")
-			.leftJoin('h.playerOne', 'one')
-			.leftJoin('h.playerTwo', 'two')
+			.leftJoinAndSelect('h.playerOne', 'one')
+			.leftJoinAndSelect('h.playerTwo', 'two')
 			.where("one.id = :id OR two.id = :id")
 			.take(5)
 			.setParameters({ id: id })
@@ -70,8 +70,8 @@ export class HistoryService {
 	async findAllByUserIdAndType(id: number, type: string): Promise<HistoryEntity[] | undefined> {
 		const query = this.historyRepository
 			.createQueryBuilder("h")
-			.leftJoin('h.playerOne', 'one')
-			.leftJoin('h.playerTwo', 'two')
+			.leftJoinAndSelect('h.playerOne', 'one')
+			.leftJoinAndSelect('h.playerTwo', 'two')
 			.where("one.id = :id OR two.id = :id AND h.game= :type")
 			.take(5)
 			.setParameters({ id: id, type: type })
