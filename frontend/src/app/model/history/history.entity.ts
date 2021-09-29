@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 
-@Entity('request')
+@Entity()
 export class HistoryEntity {
   @PrimaryGeneratedColumn()
   id: number;

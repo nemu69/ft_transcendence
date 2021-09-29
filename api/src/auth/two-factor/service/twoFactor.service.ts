@@ -45,7 +45,7 @@ export class TwoFactorService {
     const payload: TokenPayload = { userId, isSecondFactorAuthenticated };
     const token = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_SECRET'),
-      expiresIn: `10000`
+      expiresIn: `5000`
     });
     const cookie = `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('10000')}`;
 	return {

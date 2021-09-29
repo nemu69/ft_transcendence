@@ -26,17 +26,29 @@ export class FriendsService {
 	sendFriendRequest(userId: string): Observable<FriendRequest | { error: string }> {
 		return this.http.post<FriendRequest | { error: string }>(`/api/friend/friend-request/send/` + userId, {});
 	}
-
-	responseFriendRequest(userId: string, statusResponse:string): Observable<FriendRequestStatus> {
-		return this.http.put<FriendRequestStatus>(`/api/friend/friend-request/response/` + userId, {statusResponse});
-	}
-
+	
 	statusFriendRequest(userId: string): Observable<FriendRequestStatus> {
 		return this.http.get<FriendRequestStatus>(`/api/friend/friend-request/status/` + userId);
 	}
 
+	responseFriendRequest(userId: string, statusResponse:string): Observable<FriendRequestStatus> {
+		return this.http.put<FriendRequestStatus>(`/api/friend/friend-request/response/` + userId, {statusResponse});
+	}
+	
+	blockOrUnblockUsers(userId: string): Observable<FriendRequest | { error: string } | { success: string }> {
+		return this.http.post<FriendRequest | { error: string } | { success: string }>(`/api/friend/friend-request/block/` + userId,{});
+	}
+
 	getFriendRequests(): Observable<FriendRequestStatus[]> {
-		return this.http.get<FriendRequestStatus[]>(`/api/friend/friend-request/me/received-requests`);
+		return this.http.get<FriendRequest[]>(`/api/friend/friend-request/me/received-requests`);
+	}
+
+	getMyFriends(): Observable<FriendRequestStatus[] | undefined> {
+		return this.http.get<FriendRequest[] | undefined>(`/api/friend/friend-request/me/my-friends`);
+	}
+
+	getMyBlockedUsers(): Observable<FriendRequest[] | undefined> {
+		return this.http.get<FriendRequest[] | undefined>(`/api/friend/friend-request/me/my-blocked`);
 	}
 
 }

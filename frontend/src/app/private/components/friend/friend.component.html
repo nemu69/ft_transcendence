@@ -1,1 +1,68 @@
-<p>http://localhost:4200/api/friend/friend-request/me/received-requests</p>
+<div *ngIf="(user | async) as user"  class="wrapper">
+	<div class="container">
+		<h1>Friends</h1>
+		<!--<div class="profile">
+			
+			<p>http://localhost:4200/api/friend/friend-request/me/received-requests</p>
+			<div class="profile-image">
+				<img [src]="imageToShow" alt="Place image title" *ngIf="imageToShow; else noImageFound">
+				<ng-template #noImageFound>
+				     <img src="/assets/img/site/fallbackImage.png" alt="Fallbackimage">
+				</ng-template>
+
+			</div>
+
+			<div class="profile-user-settings">
+
+				<h1 class="profile-user-name">{{user.username}} {{user.status}}</h1>
+
+				<button class="btn profile-edit-btn" routerLink="/private/setting" >
+					<i class="btn profile-settings-btn" aria-label="profile settings" class="fas fa-cog"></i>
+					Edit Profile
+				</button>
+
+			</div>
+
+			<div class="profile-stats">
+
+				<ul>
+					<li><span class="profile-stat-count">188</span> followers</li>
+					<li><span class="profile-stat-count">206</span> following</li>
+				</ul>
+
+			</div>
+
+		</div>-->
+		<!-- End of profile section -->
+	</div>
+	<div class="container-block">
+		<div class="requests">Friends Requests
+			<i class="fad fa-user-clock"></i>
+			<div *ngIf="(requests$|async)?.length > 0; else no_requests" class="requests-list">
+				
+			</div>
+			<ng-template #no_requests>
+				<mat-error>0 friends request</mat-error>
+			</ng-template>
+		</div>
+		<div class="friends">Your Friends
+			<i class="fad fa-user-friends"></i>
+			<div *ngIf="(friends$|async)?.length > 0; else no_friends" class="friends-list">
+
+			</div>
+			<ng-template #no_friends>
+				<mat-error>`I have no friends and no enemies - only competitors`</mat-error>
+			</ng-template>
+		</div>
+		<div class="blocked">Muted users
+			<i class="fad fa-user-slash"></i>
+			<div *ngIf="(blocked$|async)?.length > 0; else no_blocked" class="blocked-list">
+
+			</div>
+			<ng-template #no_blocked>
+				<mat-error>`Everybody speaks with me`</mat-error>
+			</ng-template>
+			</div>
+		</div>
+		<!-- End of container -->
+	</div>
