@@ -203,6 +203,7 @@ export class FriendsService {
 			.leftJoinAndSelect('f.creator', 'c')
 			.leftJoinAndSelect('f.receiver', 'r')
 			.where("c.id = :id OR r.id = :id AND f.status = 'accepted'")
+			.andWhere("f.status = 'accepted'")
 			.setParameters({ id : currentUser.id })
 			.getMany();
 			return query;
@@ -216,6 +217,7 @@ export class FriendsService {
 			.leftJoin('f.creator', 'c')
 			.leftJoinAndSelect('f.receiver', 'r')
 			.where("c.id = :id AND f.status = 'blocked'")
+			.andWhere("f.status = 'blocked'")
 			.setParameters({ id : currentUser.id })
 			.getMany();
     	return query;

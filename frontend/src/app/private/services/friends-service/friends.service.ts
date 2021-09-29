@@ -40,15 +40,15 @@ export class FriendsService {
 	}
 
 	getFriendRequests(): Observable<FriendRequestStatus[]> {
-		return this.http.get<FriendRequestStatus[]>(`/api/friend/friend-request/me/received-requests`);
+		return this.http.get<FriendRequest[]>(`/api/friend/friend-request/me/received-requests`);
 	}
 
 	getMyFriends(): Observable<FriendRequestStatus[] | undefined> {
-		return this.http.get<FriendRequestStatus[] | undefined>(`/api/friend/friend-request/me/my-friends`);
+		return this.http.get<FriendRequest[] | undefined>(`/api/friend/friend-request/me/my-friends`);
 	}
 
-	getMyBlockedUsers(): Observable<FriendRequestStatus[] | undefined> {
-		return this.http.get<FriendRequestStatus[] | undefined>(`/api/friend/friend-request/me/my-blocked`);
+	getMyBlockedUsers(): Observable<FriendRequest[] | undefined> {
+		return this.http.get<FriendRequest[] | undefined>(`/api/friend/friend-request/me/my-blocked`);
 	}
 
 }

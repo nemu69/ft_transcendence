@@ -59,7 +59,7 @@ export class FriendsController {
   @Get('friend-request/me/received-requests')
   getFriendRequestsFromRecipients(
     @Request() req,
-  ): Observable<FriendRequestStatus[]> {
+  ): Observable<FriendRequest[]> {
     return this.friendService.getFriendRequestsFromRecipients(req.user);
   }
   
@@ -67,7 +67,7 @@ export class FriendsController {
   @Get('friend-request/me/my-friends')
   getMyFriendRequests(
     @Request() req,
-  ): Promise<FriendRequestStatus[] | undefined> {
+  ): Promise<FriendRequest[] | undefined> {
     return this.friendService.getMyFriendRequests(req.user);
   }
   
@@ -75,7 +75,7 @@ export class FriendsController {
   @Get('friend-request/me/my-blocked')
   getMyBlockedUsersRequests(
     @Request() req,
-  ): Promise<FriendRequestStatus[] | undefined> {
+  ): Promise<FriendRequest[] | undefined> {
     return this.friendService.getMyBlockedUsersRequests(req.user);
   }
 }

@@ -36,12 +36,32 @@
 		<!-- End of profile section -->
 	</div>
 	<div class="container-block">
-		<div class="friends">Your Friends
-			<i class="fad fa-user-friends"></i>
-		</div>
 		<div class="requests">Friends Requests
 			<i class="fad fa-user-clock"></i>
+			<div *ngIf="(requests$|async)?.length > 0; else no_requests" class="requests-list">
+				
+			</div>
+			<ng-template #no_requests>
+				<mat-error>0 friends request</mat-error>
+			</ng-template>
+		</div>
+		<div class="friends">Your Friends
+			<i class="fad fa-user-friends"></i>
+			<div *ngIf="(friends$|async)?.length > 0; else no_friends" class="friends-list">
 
+			</div>
+			<ng-template #no_friends>
+				<mat-error>`I have no friends and no enemies - only competitors`</mat-error>
+			</ng-template>
+		</div>
+		<div class="blocked">Muted users
+			<i class="fad fa-user-slash"></i>
+			<div *ngIf="(blocked$|async)?.length > 0; else no_blocked" class="blocked-list">
+
+			</div>
+			<ng-template #no_blocked>
+				<mat-error>`Everybody speaks with me`</mat-error>
+			</ng-template>
 			</div>
 		</div>
 		<!-- End of container -->
