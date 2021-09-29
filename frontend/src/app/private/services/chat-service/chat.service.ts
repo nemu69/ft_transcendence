@@ -78,6 +78,11 @@ export class ChatService {
     this.socket.emit('checkExistence', 0);
   }
 
+  gameLogout()
+  {
+    this.socket.emit('logoutPlayer', 0);
+  }
+
   newPlayer(info: number, user: number) {
     console.log("calling new player");
     this.socket.emit('newPlayer', [info, user]);
