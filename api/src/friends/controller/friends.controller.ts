@@ -78,4 +78,14 @@ export class FriendsController {
   ): Promise<FriendRequest[] | undefined> {
     return this.friendService.getMyBlockedUsersRequests(req.user);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('friend-request/remove/:friendRequestId')
+  removeFriendRequest(
+    @Param('friendRequestId') friendRequestStringId: string,
+    @Request() req
+  ): Observable<FriendRequest | { error: string } | { success: string }> {	  
+    const friendRequestId = parseInt(friendRequestStringId);
+    return this.friendService.removeFriendRequest(friendRequestId, req.user);
+  }
 }

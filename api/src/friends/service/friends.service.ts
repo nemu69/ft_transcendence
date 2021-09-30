@@ -196,10 +196,10 @@ export class FriendsService {
     );
   }
 
-  getMyFriendRequests(
-    currentUser: UserEntity,
-  ): Promise<FriendRequest[]  | undefined> {
-    const query = this.friendRequestRepository
+	getMyFriendRequests(
+		currentUser: UserEntity,
+	): Promise<FriendRequest[]  | undefined> {
+		const query = this.friendRequestRepository
 			.createQueryBuilder("f")
 			.leftJoinAndSelect('f.creator', 'c')
 			.leftJoinAndSelect('f.receiver', 'r')
@@ -207,21 +207,49 @@ export class FriendsService {
 			.orWhere("r.id = :id AND f.status = 'accepted'")
 			.setParameters({ id : currentUser.id })
 			.getMany();
-			return query;
+		return query;
 	}
 		
 	getMyBlockedUsersRequests(
-		currentUser: UserEntity,
-		): Promise<FriendRequest[]  | undefined> {
-			const query = this.friendRequestRepository
-		.createQueryBuilder("f")
-		.leftJoin('f.creator', 'c')
-		.leftJoinAndSelect('f.receiver', 'r')
-		.where("c.id = :id")
-		.andWhere("f.status = 'blocked'")
-		.setParameters({ id : currentUser.id })
-		.getMany();
-	return query;
-  }
+	currentUser: UserEntity,
+	): Promise<FriendRequest[]  | undefined> {
+		const query = this.friendRequestRepository
+			.createQueryBuilder("f")
+			.leftJoin('f.creator', 'c')
+			.leftJoinAndSelect('f.receiver', 'r')
+			.where("c.id = :id")
+			.andWhere("f.status = 'blocked'")
+			.setParameters({ id : currentUser.id })
+			.getMany();
+		return query;
+  	}
+
+	removeFriendRequest(
+	receiverId: number,
+	creator: UserEntity,
+	): Observable<{ error: string }| { success: string }> {
+		if (receiverId === creator.id)
+			return of({ error: 'It is not possible!' });
+		return this.findUserById(receiverId).pipe(
+			switchMap((receiver: UserEntity) => {
+				return from(
+				this.friendRequestRepository.findOne({
+				where: [
+					{ creator, receiver, status: Not("blocked") },
+					{ creator: receiver, receiver: creator },
+				],
+				}),
+			).pipe(
+				switchMap((friendRequest: FriendRequest) => {
+				if (!friendRequest) {
+					if (receiverId === creator.id)
+						return of({ error: 'No relation!' });
+				}
+				this.friendRequestRepository.delete(friendRequest);
+				return of({ success: 'Relation deleted!' });
+				}),
+			);
+		}));
+	}
 
 }
