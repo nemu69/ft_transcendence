@@ -202,8 +202,8 @@ export class FriendsService {
 			.createQueryBuilder("f")
 			.leftJoinAndSelect('f.creator', 'c')
 			.leftJoinAndSelect('f.receiver', 'r')
-			.where("c.id = :id AND f.status = 'accepted' OR r.id = :id")
-			.andWhere("f.status = 'accepted'")
+			.where("c.id = :id AND f.status = 'accepted'")
+			.orWhere("r.id = :id AND f.status = 'accepted'")
 			.setParameters({ id : currentUser.id })
 			.getMany();
 			return query;
