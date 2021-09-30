@@ -36,6 +36,7 @@ export class FriendComponent implements OnInit {
 	imageToShow: any[];
 	imageFriends: any[];
 	imageRequest: any[];
+	FriendsUser: UserI[] = [];
 	isImageLoading : boolean;
 	selectedRoom = null;
 	ngOnInit(): void {
@@ -43,6 +44,7 @@ export class FriendComponent implements OnInit {
 		  switchMap((idt: number) => this.userService.findOne(idt).pipe(
 			tap((user) => {
 			  this.user = this.userService.findOne(user.id);
+			  let id = user.id
 			//this.blocked$.pipe(
 			//	tap((x) => {
 			//		console.log(x);
@@ -70,7 +72,15 @@ export class FriendComponent implements OnInit {
 					
 			//	})
 			//).subscribe();
-			
+			this.friends$.pipe(
+				tap((x) => {
+					for (let index = 0; index < x.length; index++) {
+						if (x[index].creator.id == id)
+							this.FriendsUser.push(x[index].receiver)
+						else
+							this.FriendsUser.push(x[index].creator)
+				}
+			})).subscribe()
 			})
 		  ))
 		).subscribe();
@@ -137,8 +147,17 @@ export class FriendComponent implements OnInit {
 	//}
 
 	onSelectBlocked(event: MatSelectionListChange) {
-		this.router.navigate(['../profile/' + event.source.selectedOptions.selected[0].value.receiver.id], { relativeTo: this.activatedRoute });
-		console.log(event.source.selectedOptions.selected[0].value);
-	  }
-
+		this.user.pipe(
+			tap((x) =>{
+				if (x.id == event.source.selectedOptions.selected[0].value.receiver.id)
+				this.router.navigate(['../profile/' + event.source.selectedOptions.selected[0].value.creator.id], { relativeTo: this.activatedRoute });
+				else
+				this.router.navigate(['../profile/' + event.source.selectedOptions.selected[0].value.receiver.id], { relativeTo: this.activatedRoute });
+			}
+			)
+		).subscribe()
+	}
+	onSelectFriend(event: MatSelectionListChange) {		
+		this.router.navigate(['../profile/' + event.source.selectedOptions.selected[0].value.id], { relativeTo: this.activatedRoute });
+	}
 }
