@@ -1,9 +1,17 @@
 import { UserI } from "src/user/model/user.interface";
 
+export enum RoomType {
+    PUBLIC = 'public',
+    PRIVATE = 'private',
+    PROTECTED = 'protected',
+}
+
 export interface RoomI {
   id?: number;
   name?: string;
   description?: string;
+  password?: string;
+  type?: RoomType;
   users?: UserI[];
   admin?: UserI[];
   owner?: UserI;

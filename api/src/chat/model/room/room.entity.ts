@@ -2,6 +2,7 @@ import { UserEntity } from "src/user/model/user.entity";
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { JoinedRoomEntity } from "../joined-room/joined-room.entity";
 import { MessageEntity } from "../message/message.entity";
+import { RoomType } from "./room.interface";
 
 @Entity()
 export class RoomEntity {
@@ -14,6 +15,12 @@ export class RoomEntity {
 
   @Column({nullable: true})
   description: string;
+
+  @Column({type: 'enum', enum: RoomType, default: RoomType.PUBLIC})
+  type: RoomType;
+  
+  @Column({select: false, nullable: true})
+  password: string;
 
   @ManyToMany(() => UserEntity)
   @JoinTable()

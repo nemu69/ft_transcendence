@@ -5,7 +5,7 @@ import { Observable, from, of, throwError } from 'rxjs';
 import { switchMap, map, catchError} from 'rxjs/operators';
 import { FriendRequestEntity } from 'src/friends/model/friends.entity';
 import { UserEntity } from 'src/user/model/user.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { FriendRequest, FriendRequestStatus, FriendRequest_Status } from '../model/friends.interface';
 
 
@@ -109,7 +109,7 @@ export class FriendsService {
         return from(
           this.friendRequestRepository.findOne({
             where: [
-              { creator: currentUser, receiver: receiver },
+              { creator: currentUser, receiver: receiver, status: Not("blocked") },
               { creator: receiver, receiver: currentUser },
             ],
             relations: ['creator', 'receiver'],
@@ -189,7 +189,7 @@ export class FriendsService {
   ): Observable<FriendRequest[]> {
     return from(
       this.friendRequestRepository.find({
-        where: [{ receiver: currentUser }],
+        where: [{ receiver: currentUser, status: 'pending' }],
         relations: ['receiver', 'creator'],
       }),
     );
@@ -202,25 +202,25 @@ export class FriendsService {
 			.createQueryBuilder("f")
 			.leftJoinAndSelect('f.creator', 'c')
 			.leftJoinAndSelect('f.receiver', 'r')
-			.where("c.id = :id OR r.id = :id AND f.status = 'accepted'")
+			.where("c.id = :id AND f.status = 'accepted' OR r.id = :id")
 			.andWhere("f.status = 'accepted'")
 			.setParameters({ id : currentUser.id })
 			.getMany();
 			return query;
-		}
+	}
 		
-		getMyBlockedUsersRequests(
-			currentUser: UserEntity,
-			): Promise<FriendRequest[]  | undefined> {
-				const query = this.friendRequestRepository
-			.createQueryBuilder("f")
-			.leftJoin('f.creator', 'c')
-			.leftJoinAndSelect('f.receiver', 'r')
-			.where("c.id = :id AND f.status = 'blocked'")
-			.andWhere("f.status = 'blocked'")
-			.setParameters({ id : currentUser.id })
-			.getMany();
-    	return query;
+	getMyBlockedUsersRequests(
+		currentUser: UserEntity,
+		): Promise<FriendRequest[]  | undefined> {
+			const query = this.friendRequestRepository
+		.createQueryBuilder("f")
+		.leftJoin('f.creator', 'c')
+		.leftJoinAndSelect('f.receiver', 'r')
+		.where("c.id = :id")
+		.andWhere("f.status = 'blocked'")
+		.setParameters({ id : currentUser.id })
+		.getMany();
+	return query;
   }
 
 }
