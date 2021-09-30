@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { MatSelectionList } from '@angular/material/list';
+import { MatSelectionListChange } from '@angular/material/list';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
@@ -31,36 +33,112 @@ export class FriendComponent implements OnInit {
   
 
 	user : Observable<UserI>;
-	imageToShow: any;
+	imageToShow: any[];
+	imageFriends: any[];
+	imageRequest: any[];
 	isImageLoading : boolean;
+	selectedRoom = null;
 	ngOnInit(): void {
 		this.authService.getUserId().pipe(
 		  switchMap((idt: number) => this.userService.findOne(idt).pipe(
 			tap((user) => {
 			  this.user = this.userService.findOne(user.id);
-			//  this.getImageFromService(user.id);
+			//this.blocked$.pipe(
+			//	tap((x) => {
+			//		console.log(x);
+			//		for (let index = 0; index < x.length; index++) {
+			//			this.getImageFromService(x[index].id)	
+			//		}
+					
+			//	})
+			//).subscribe();
+			//this.friends$.pipe(
+			//	tap((x) => {
+			//		console.log(x);
+			//		for (let index = 0; index < x.length; index++) {
+			//			this.getImageFromServiceFriend(x[index].id)	
+			//		}
+					
+			//	})
+			//).subscribe();
+			//this.requests$.pipe(
+			//	tap((x) => {
+			//		console.log(x);
+			//		for (let index = 0; index < x.length; index++) {
+			//			this.getImageFromServiceRequest(x[index].id)	
+			//		}
+					
+			//	})
+			//).subscribe();
+			
 			})
 		  ))
 		).subscribe();
 	  }	
 
-	  createImageFromBlob(image: Blob) {
-		let reader = new FileReader();
-		reader.addEventListener("load", () => {
-		   this.imageToShow = reader.result;
-		}, false);
-		if (image) {
-		   reader.readAsDataURL(image);
-		}
-	}
-	getImageFromService(id:number) {
-		this.isImageLoading = true;
-		this.userService.getImage("/api/users/avatarById/" + id.toString()).subscribe(data => {
-			this.createImageFromBlob(data);
-			this.isImageLoading = false;
-		}, error => {
-			this.isImageLoading = false;
-		});
-	}
+	//  createImageFromBlob(image: Blob) {
+	//	let reader = new FileReader();
+	//	reader.addEventListener("load", () => {
+	//		if (typeof reader.result !== 'undefined')
+	//			this.imageToShow.push(reader.result);
+	//	}, false);
+	//	if (image) {
+	//	   reader.readAsDataURL(image);
+	//	}
+	//}
+	//getImageFromService(id:number) {
+	//	this.isImageLoading = true;
+	//	this.userService.getImage("/api/users/avatarById/" + id.toString()).subscribe(data => {
+	//		this.createImageFromBlob(data);
+	//		this.isImageLoading = false;
+	//	}, error => {
+	//		this.isImageLoading = false;
+	//	});
+	//}
+	
+	//createImageFromBlobFriend(image: Blob) {
+	//	let reader = new FileReader();
+	//	reader.addEventListener("load", () => {
+	//		if (typeof reader.result !== 'undefined')
+	//			this.imageFriends.push(reader.result);
+	//	}, false);
+	//	if (image) {
+	//	   reader.readAsDataURL(image);
+	//	}
+	//}
+	//getImageFromServiceFriend(id:number) {
+	//	this.isImageLoading = true;
+	//	this.userService.getImage("/api/users/avatarById/" + id.toString()).subscribe(data => {
+	//		this.createImageFromBlob(data);
+	//		this.isImageLoading = false;
+	//	}, error => {
+	//		this.isImageLoading = false;
+	//	});
+	//}
+	
+	//createImageFromBlobRequest(image: Blob) {
+	//	let reader = new FileReader();
+	//	reader.addEventListener("load", () => {
+	//		if (typeof reader.result !== 'undefined')
+	//			this.imageRequest.push(reader.result);
+	//	}, false);
+	//	if (image) {
+	//	   reader.readAsDataURL(image);
+	//	}
+	//}
+	//getImageFromServiceRequest(id:number) {
+	//	this.isImageLoading = true;
+	//	this.userService.getImage("/api/users/avatarById/" + id.toString()).subscribe(data => {
+	//		this.createImageFromBlob(data);
+	//		this.isImageLoading = false;
+	//	}, error => {
+	//		this.isImageLoading = false;
+	//	});
+	//}
+
+	onSelectBlocked(event: MatSelectionListChange) {
+		this.router.navigate(['../profile/' + event.source.selectedOptions.selected[0].value.receiver.id], { relativeTo: this.activatedRoute });
+		console.log(event.source.selectedOptions.selected[0].value);
+	  }
 
 }
