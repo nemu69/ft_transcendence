@@ -10,6 +10,7 @@ import { UserService } from '../../../public/services/user-service/user.service'
 import { switchMap, tap, map, catchError } from 'rxjs/operators';
 import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { FriendsService } from '../../services/friends-service/friends.service';
+import { FriendRequest } from 'src/app/model/friends/friends.interface';
 
 
 @Component({
@@ -19,6 +20,9 @@ import { FriendsService } from '../../services/friends-service/friends.service';
 })
 export class ProfileusersComponent implements OnInit {
 
+	blocked$: Observable<FriendRequest[]> = this.friendsService.getMyBlockedUsers();
+	friends$: Observable<FriendRequest[]> = this.friendsService.getMyFriends();
+	requests$: Observable<FriendRequest[]> = this.friendsService.getFriendRequests();
 	private userId$: Observable<number> = this.activatedRoute.params.pipe(
 	  map((params: Params) => parseInt(params['id']))
 	)
@@ -64,12 +68,36 @@ export class ProfileusersComponent implements OnInit {
 			  )		
 		  }
 
+		  isFriend(){
+			let bool = false;
+			this.friends$.pipe(
+				tap((x) => {
+					for (let index = 0; index < x.length; index++) {
+						if (x[index].creator.id == this.idProfile || x[index].receiver.id == this.idProfile)
+							bool = true;
+				}
+			})).subscribe()
+			  return bool;
+		  }
+
 		  blockUser(){
 			  this.friendsService.blockOrUnblockUsers(this.idProfile.toString()).subscribe(
 				(data) => {
 					console.log(data);
 				}
 			  )		
+		  }
+
+		  isblockedUser(){
+			let bool = false;
+			this.blocked$.pipe(
+				tap((x) => {
+					for (let index = 0; index < x.length; index++) {
+						if (x[index].receiver.id == this.idProfile)
+							bool = true;
+				}
+			})).subscribe()
+			  return bool;
 		  }
 	
 		  

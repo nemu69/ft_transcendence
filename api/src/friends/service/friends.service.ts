@@ -74,6 +74,7 @@ export class FriendsService {
     receiverId: number,
     creator: UserEntity,
   ): Observable<FriendRequest | { error: string }> {
+	console.log("sendfriendRequest");
     if (receiverId === creator.id)
       return of({ error: 'It is not possible to add yourself!' });
 

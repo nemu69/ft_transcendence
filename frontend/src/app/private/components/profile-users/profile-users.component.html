@@ -17,7 +17,8 @@
 				<div class="profile-user-settings">
 				<button class="btn profile-edit-btn" (click)=addFriend()>
 					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-plus"></i>
-					Add Friend
+					<p *ngIf="isFriend(); else addFriend">Add Friend</p>
+					<ng-template #addFriend>Add Friend</ng-template>
 				</button>
 				<button class="btn profile-edit-btn" (click)=blockUser()>
 					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-times"></i>
