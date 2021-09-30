@@ -234,7 +234,8 @@ export class FriendsService {
 				return from(
 				this.friendRequestRepository.findOne({
 				where: [
-					{ creator, receiver, status: Not("blocked") }
+					{ creator, receiver, status: Not("blocked") },
+					{ creator: receiver, receiver: creator },
 				],
 				}),
 			).pipe(
