@@ -242,8 +242,7 @@ export class FriendsService {
 			).pipe(
 				switchMap((friendRequest: FriendRequest) => {
 				if (!friendRequest) {
-					if (receiverId === creator.id)
-						return of({ error: 'No relation!' });
+					return of({ error: 'No relation!' });
 				}
 				this.friendRequestRepository.delete(friendRequest);
 				return of({ success: 'Relation deleted!' });

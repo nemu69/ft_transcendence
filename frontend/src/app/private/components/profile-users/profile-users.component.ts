@@ -23,6 +23,8 @@ export class ProfileusersComponent implements OnInit {
 	blocked$: Observable<FriendRequest[]> = this.friendsService.getMyBlockedUsers();
 	friends$: Observable<FriendRequest[]> = this.friendsService.getMyFriends();
 	requests$: Observable<FriendRequest[]> = this.friendsService.getFriendRequests();
+	yourFriend : boolean;
+	yourBlocked : boolean;
 	private userId$: Observable<number> = this.activatedRoute.params.pipe(
 	  map((params: Params) => parseInt(params['id']))
 	)
@@ -43,65 +45,72 @@ export class ProfileusersComponent implements OnInit {
 		imageToShow: any;
 		isImageLoading : boolean;
 		idProfile: number;
-			ngOnInit(): void {
-				this.authService.getUserId().pipe(
-					switchMap((idt: number) => this.userService.findOne(idt).pipe(
-					tap((user) => {
-						this.user$.subscribe(val => {
-							if (val.id == user.id) {
-								this.router.navigate(['../../profile'],{ relativeTo: this.activatedRoute })
-							}
-							this.getImageFromService(val.id);
-							this.idProfile = val.id;
-							});
-					  })
-					))
-				).subscribe()
-				this.friendsService
+		ngOnInit(): void {
+			this.authService.getUserId().pipe(
+				switchMap((idt: number) => this.userService.findOne(idt).pipe(
+				tap((user) => {
+					this.user$.subscribe(val => {
+						if (val.id == user.id) {
+							this.router.navigate(['../../profile'],{ relativeTo: this.activatedRoute })
+						}
+						this.getImageFromService(val.id);
+						this.idProfile = val.id;
+						this.isFriend();
+						this.isblockedUser();
+						});
+				  })
+				))
+			).subscribe()
 		  }
 		  
-		  addFriend(){
+		addFriend(){
 			  this.friendsService.sendFriendRequest(this.idProfile.toString()).subscribe(
 				  (data) => {
 					  console.log(data);
+					  this.yourFriend = true;
 				  }
-			  )		
-		  }
+			  )
+		}
 
-		  isFriend(){
-			let bool = false;
+		isFriend(){
+			this.yourFriend = false;
 			this.friends$.pipe(
-				tap((x) => {
+				tap((x) => {					
 					for (let index = 0; index < x.length; index++) {
 						if (x[index].creator.id == this.idProfile || x[index].receiver.id == this.idProfile)
-							bool = true;
+							this.yourFriend = true;
 				}
-			})).subscribe()
-			  return bool;
-		  }
-
-		  blockUser(){
-			  this.friendsService.blockOrUnblockUsers(this.idProfile.toString()).subscribe(
+			})).subscribe();
+		}
+			
+		blockUser(){
+			this.friendsService.blockOrUnblockUsers(this.idProfile.toString()).subscribe(
 				(data) => {
 					console.log(data);
-				}
-			  )		
-		  }
-
-		  isblockedUser(){
-			let bool = false;
+					this.yourBlocked = !this.yourBlocked;
+				})		
+		}
+			
+		isblockedUser(){
+			this.yourBlocked = false;
 			this.blocked$.pipe(
 				tap((x) => {
 					for (let index = 0; index < x.length; index++) {
 						if (x[index].receiver.id == this.idProfile)
-							bool = true;
-				}
-			})).subscribe()
-			  return bool;
+							this.yourBlocked = true;
+			}})).subscribe();
 		  }
+
+		removeFriend(){
+			this.friendsService.removeFriendRequest(this.idProfile.toString()).subscribe(
+				(data) => {
+					console.log(data);
+					this.yourFriend = false;
+				})
+		}
 	
 		  
-		  createImageFromBlob(image: Blob) {
+		createImageFromBlob(image: Blob) {
 			let reader = new FileReader();
 			reader.addEventListener("load", () => {
 			   this.imageToShow = reader.result;
@@ -111,6 +120,7 @@ export class ProfileusersComponent implements OnInit {
 			   reader.readAsDataURL(image);
 			}
 		}
+
 		getImageFromService(id:number) {
 			this.isImageLoading = true;
 			
@@ -119,7 +129,6 @@ export class ProfileusersComponent implements OnInit {
 			  this.isImageLoading = false;
 			}, error => {
 			  this.isImageLoading = false;
-			  console.log(error);
 			});
 			console.log(this.isImageLoading);
 			
