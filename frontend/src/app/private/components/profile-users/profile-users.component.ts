@@ -10,7 +10,7 @@ import { UserService } from '../../../public/services/user-service/user.service'
 import { switchMap, tap, map, catchError } from 'rxjs/operators';
 import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { FriendsService } from '../../services/friends-service/friends.service';
-import { FriendRequest } from 'src/app/model/friends/friends.interface';
+import { FriendRequest, FriendRequestStatus } from 'src/app/model/friends/friends.interface';
 
 
 @Component({
@@ -23,8 +23,8 @@ export class ProfileusersComponent implements OnInit {
 	blocked$: Observable<FriendRequest[]> = this.friendsService.getMyBlockedUsers();
 	friends$: Observable<FriendRequest[]> = this.friendsService.getMyFriends();
 	requests$: Observable<FriendRequest[]> = this.friendsService.getFriendRequests();
-	yourFriend : boolean;
-	yourBlocked : boolean;
+
+	
 	private userId$: Observable<number> = this.activatedRoute.params.pipe(
 	  map((params: Params) => parseInt(params['id']))
 	)
@@ -45,6 +45,9 @@ export class ProfileusersComponent implements OnInit {
 		imageToShow: any;
 		isImageLoading : boolean;
 		idProfile: number;
+
+		yourFriend : number;
+		yourBlocked : boolean;
 		ngOnInit(): void {
 			this.authService.getUserId().pipe(
 				switchMap((idt: number) => this.userService.findOne(idt).pipe(
@@ -67,20 +70,46 @@ export class ProfileusersComponent implements OnInit {
 			  this.friendsService.sendFriendRequest(this.idProfile.toString()).subscribe(
 				  (data) => {
 					  console.log(data);
-					  this.yourFriend = true;
+					  this.yourFriend = 1;
 				  }
 			  )
 		}
 
 		isFriend(){
-			this.yourFriend = false;
-			this.friends$.pipe(
-				tap((x) => {					
-					for (let index = 0; index < x.length; index++) {
-						if (x[index].creator.id == this.idProfile || x[index].receiver.id == this.idProfile)
-							this.yourFriend = true;
-				}
-			})).subscribe();
+			this.yourFriend = 0;
+			this.friendsService.statusFriendRequest(this.idProfile.toString()).pipe(
+				tap((x) => {
+					
+						console.log(x.status);
+						
+						if(x.status == 'not-sent'){
+							this.yourFriend = 0;
+						}
+						else if(x.status == 'pending'){
+							this.yourFriend = 1;
+						}
+						else if(x.status == 'accepted'){
+							this.yourFriend = 2;
+						}
+						else if(x.status == 'declined'){
+							this.yourFriend = 3;
+						}
+						else if(x.status == 'waiting-for-current-user-response'){
+							this.yourFriend = 4;
+						}
+						else if(x.status == 'blocked'){
+							this.yourFriend = 5;
+						}
+
+				})
+			).subscribe();
+			//this.friends$.pipe(
+			//	tap((x) => {					
+			//		for (let index = 0; index < x.length; index++) {
+			//			if (x[index].creator.id == this.idProfile || x[index].receiver.id == this.idProfile)
+			//				this.yourFriend = 2;
+			//	}
+			//})).subscribe();
 		}
 			
 		blockUser(){
@@ -105,8 +134,20 @@ export class ProfileusersComponent implements OnInit {
 			this.friendsService.removeFriendRequest(this.idProfile.toString()).subscribe(
 				(data) => {
 					console.log(data);
-					this.yourFriend = false;
+					this.yourFriend = 0;
 				})
+		}
+
+		responseToFriend(res:string){
+			this.friendsService.responseFriendRequest(this.idProfile.toString(),res).subscribe(
+				(data) => {
+					console.log(data.status);
+					if (res == 'accepted')
+						this.yourFriend = 2;
+					if (res == 'declined')
+						this.yourFriend = 3;
+				}
+			)
 		}
 	
 		  

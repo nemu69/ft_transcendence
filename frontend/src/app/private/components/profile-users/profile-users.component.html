@@ -14,17 +14,49 @@
 				
 				<h1 class="profile-user-name">{{user.username}} {{user.status}}</h1>
 			</div>
-				<div class="profile-user-settings">
-				<button *ngIf="yourFriend; else addUser" class=btn profile-edit-btn (click)=addFriend()>
+			<div class="profile-user-settings">
+				<button *ngIf="yourFriend==0; else pending" class="btn profile-edit-btn" (click)=addFriend()>
 					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-plus"></i>
 					Add Friend
 				</button>
-				<ng-template #addUser>
-				<button class="btn profile-edit-btn" (click)=removeFriend()>
+				<ng-template #pending>
+				<button *ngIf="yourFriend==1; else rmFriend" class="btn profile-edit-btn" (click)=removeFriend()>
+					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-minus"></i>
+					Cancel request
+				</button>
+				</ng-template>
+				<ng-template #rmFriend>
+				<button *ngIf="yourFriend==2; else declined" class="btn profile-edit-btn" (click)=removeFriend()>
 					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-minus"></i>
 					Delete Friend
 				</button>
-			</ng-template>
+				</ng-template>
+				<ng-template #declined>
+				<button *ngIf="yourFriend==3; else waiting" class="btn profile-edit-btn">
+					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-minus"></i>
+					User declined
+				</button>
+				</ng-template>
+				<ng-template #waiting>
+				<div *ngIf="yourFriend==4; else blocked">
+					<button class="btn profile-edit-btn" (click)="responseToFriend('accepted')">
+						<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-minus"></i>
+						Accepte
+					</button>
+					<button  class="btn profile-edit-btn" (click)="responseToFriend('declined')">
+						<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-minus"></i>
+						Decline
+					</button>
+				</div>
+				</ng-template>
+				<ng-template #blocked>
+					<button class="btn profile-edit-btn">
+						<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-minus"></i>
+						User not found
+					</button>
+				</ng-template>
+
+
 				<button *ngIf="yourBlocked; else muteUSer" class="btn profile-edit-btn" (click)=blockUser()>
 					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-comment"></i>
 					Unmute User
@@ -59,15 +91,22 @@
 				<br>
 				image or
 			</div>
-			<div class="several">Victory/Loss
+			<div *ngIf="user.nbLoss + user.nbWin!=0; else Zero" class="several">Victory/Loss
 				<br>
 				{{user.nbWin}}/{{user.nbLoss}}
 				<br>
 				WinRate: {{user.nbWin / (user.nbWin + user.nbLoss) * 100 | number:'1.1-2'}}%
 				<br>
 				<progress value="{{user.nbWin / (user.nbWin + user.nbLoss) * 100}}" max="100"></progress>
-
 			</div>
+
+			<ng-template #Zero>
+			<div class="several">
+				<br>
+				<br>
+				This player has no games played yet
+			</div>
+			</ng-template>
 
 		</div>
 			<div class="achievements">Achievements
