@@ -119,10 +119,11 @@ export class FriendsService {
       switchMap((friendRequest: FriendRequest) => {
         if (friendRequest?.receiver.id === currentUser.id && friendRequest.status == 'pending') {
           return of({
+			id: friendRequest?.id,
             status: 'waiting-for-current-user-response' as FriendRequest_Status,
           });
         }
-        return of({ status: friendRequest?.status || 'not-sent' });
+        return of({ id: friendRequest?.id, status: friendRequest?.status || 'not-sent' });
       }),
     );
   }
