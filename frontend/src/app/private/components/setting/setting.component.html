@@ -10,12 +10,14 @@
 			<button mat-flat-button color="primary" [disabled]="!settingForm.valid" type="submit" id="username-button">Valid</button>
 		</form>
 	</div>
+	<mat-divider></mat-divider>
 	<div id="username">
 		<img src="/assets/img/site/security.png" alt="logo" width="50" height="50">
 		<h2>Google Authentification</h2>
 		<p>Protect your account</p>
 		<button mat-button (click)="getQrCode()">{{getStateAuth()}}</button>
 	</div>
+	<mat-divider></mat-divider>
 	<div id="username">
 		<h2>Update profile picture</h2>
 		<input

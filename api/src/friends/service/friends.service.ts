@@ -74,6 +74,7 @@ export class FriendsService {
     receiverId: number,
     creator: UserEntity,
   ): Observable<FriendRequest | { error: string }> {
+	console.log("sendfriendRequest");
     if (receiverId === creator.id)
       return of({ error: 'It is not possible to add yourself!' });
 
@@ -242,8 +243,7 @@ export class FriendsService {
 			).pipe(
 				switchMap((friendRequest: FriendRequest) => {
 				if (!friendRequest) {
-					if (receiverId === creator.id)
-						return of({ error: 'No relation!' });
+					return of({ error: 'No relation!' });
 				}
 				this.friendRequestRepository.delete(friendRequest);
 				return of({ success: 'Relation deleted!' });

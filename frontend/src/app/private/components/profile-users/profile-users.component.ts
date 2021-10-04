@@ -10,6 +10,7 @@ import { UserService } from '../../../public/services/user-service/user.service'
 import { switchMap, tap, map, catchError } from 'rxjs/operators';
 import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { FriendsService } from '../../services/friends-service/friends.service';
+import { FriendRequest, FriendRequestStatus } from 'src/app/model/friends/friends.interface';
 
 
 @Component({
@@ -19,6 +20,11 @@ import { FriendsService } from '../../services/friends-service/friends.service';
 })
 export class ProfileusersComponent implements OnInit {
 
+	blocked$: Observable<FriendRequest[]> = this.friendsService.getMyBlockedUsers();
+	friends$: Observable<FriendRequest[]> = this.friendsService.getMyFriends();
+	requests$: Observable<FriendRequest[]> = this.friendsService.getFriendRequests();
+
+	
 	private userId$: Observable<number> = this.activatedRoute.params.pipe(
 	  map((params: Params) => parseInt(params['id']))
 	)
@@ -39,41 +45,113 @@ export class ProfileusersComponent implements OnInit {
 		imageToShow: any;
 		isImageLoading : boolean;
 		idProfile: number;
-			ngOnInit(): void {
-				this.authService.getUserId().pipe(
-					switchMap((idt: number) => this.userService.findOne(idt).pipe(
-					tap((user) => {
-						this.user$.subscribe(val => {
-							if (val.id == user.id) {
-								this.router.navigate(['../../profile'],{ relativeTo: this.activatedRoute })
-							}
-							this.getImageFromService(val.id);
-							this.idProfile = val.id;
-							});
-					  })
-					))
-				).subscribe()
-				this.friendsService
+
+		yourFriend : number;
+		yourBlocked : boolean;
+		ngOnInit(): void {
+			this.authService.getUserId().pipe(
+				switchMap((idt: number) => this.userService.findOne(idt).pipe(
+				tap((user) => {
+					this.user$.subscribe(val => {
+						if (val.id == user.id) {
+							this.router.navigate(['../../profile'],{ relativeTo: this.activatedRoute })
+						}
+						this.getImageFromService(val.id);
+						this.idProfile = val.id;
+						this.isFriend();
+						this.isblockedUser();
+						});
+				  })
+				))
+			).subscribe()
 		  }
 		  
-		  addFriend(){
+		addFriend(){
 			  this.friendsService.sendFriendRequest(this.idProfile.toString()).subscribe(
 				  (data) => {
 					  console.log(data);
+					  this.yourFriend = 1;
 				  }
-			  )		
-		  }
+			  )
+		}
 
-		  blockUser(){
-			  this.friendsService.blockOrUnblockUsers(this.idProfile.toString()).subscribe(
+		isFriend(){
+			this.yourFriend = 0;
+			this.friendsService.statusFriendRequest(this.idProfile.toString()).pipe(
+				tap((x) => {
+					
+						console.log(x.status);
+						
+						if(x.status == 'not-sent'){
+							this.yourFriend = 0;
+						}
+						else if(x.status == 'pending'){
+							this.yourFriend = 1;
+						}
+						else if(x.status == 'accepted'){
+							this.yourFriend = 2;
+						}
+						else if(x.status == 'declined'){
+							this.yourFriend = 3;
+						}
+						else if(x.status == 'waiting-for-current-user-response'){
+							this.yourFriend = 4;
+						}
+						else if(x.status == 'blocked'){
+							this.yourFriend = 5;
+						}
+
+				})
+			).subscribe();
+			//this.friends$.pipe(
+			//	tap((x) => {					
+			//		for (let index = 0; index < x.length; index++) {
+			//			if (x[index].creator.id == this.idProfile || x[index].receiver.id == this.idProfile)
+			//				this.yourFriend = 2;
+			//	}
+			//})).subscribe();
+		}
+			
+		blockUser(){
+			this.friendsService.blockOrUnblockUsers(this.idProfile.toString()).subscribe(
 				(data) => {
 					console.log(data);
-				}
-			  )		
+					this.yourBlocked = !this.yourBlocked;
+				})		
+		}
+			
+		isblockedUser(){
+			this.yourBlocked = false;
+			this.blocked$.pipe(
+				tap((x) => {
+					for (let index = 0; index < x.length; index++) {
+						if (x[index].receiver.id == this.idProfile)
+							this.yourBlocked = true;
+			}})).subscribe();
 		  }
+
+		removeFriend(){
+			this.friendsService.removeFriendRequest(this.idProfile.toString()).subscribe(
+				(data) => {
+					console.log(data);
+					this.yourFriend = 0;
+				})
+		}
+
+		responseToFriend(res:string){
+			this.friendsService.responseFriendRequest(this.idProfile.toString(),res).subscribe(
+				(data) => {
+					console.log(data.status);
+					if (res == 'accepted')
+						this.yourFriend = 2;
+					if (res == 'declined')
+						this.yourFriend = 3;
+				}
+			)
+		}
 	
 		  
-		  createImageFromBlob(image: Blob) {
+		createImageFromBlob(image: Blob) {
 			let reader = new FileReader();
 			reader.addEventListener("load", () => {
 			   this.imageToShow = reader.result;
@@ -83,6 +161,7 @@ export class ProfileusersComponent implements OnInit {
 			   reader.readAsDataURL(image);
 			}
 		}
+
 		getImageFromService(id:number) {
 			this.isImageLoading = true;
 			
@@ -91,7 +170,6 @@ export class ProfileusersComponent implements OnInit {
 			  this.isImageLoading = false;
 			}, error => {
 			  this.isImageLoading = false;
-			  console.log(error);
 			});
 			console.log(this.isImageLoading);
 			

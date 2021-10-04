@@ -42,15 +42,22 @@
 				<br>
 				image or
 			</div>
-			<div class="several">Victory/Loss
+			<div *ngIf="user.nbLoss + user.nbWin!=0; else Zero" class="several">Victory/Loss
 				<br>
 				{{user.nbWin}}/{{user.nbLoss}}
 				<br>
 				WinRate: {{user.nbWin / (user.nbWin + user.nbLoss) * 100 | number:'1.1-2'}}%
 				<br>
 				<progress value="{{user.nbWin / (user.nbWin + user.nbLoss) * 100}}" max="100"></progress>
-
 			</div>
+
+			<ng-template #Zero>
+			<div class="several">
+				<br>
+				<br>
+				Play a game to see your stats
+			</div>
+			</ng-template>
 
 		</div>
 			<div class="achievements">Achievements

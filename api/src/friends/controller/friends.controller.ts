@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/login/guards/jwt.guard';
-import { FriendRequest, FriendRequestStatus } from '../model/friends.interface';
+import { FriendRequest, FriendRequestStatus, FriendRequest_Status } from '../model/friends.interface';
 import { FriendsService } from '../service/friends.service';
 
 
@@ -36,11 +36,13 @@ export class FriendsController {
   @Put('friend-request/response/:friendRequestId')
   respondToFriendRequest(
     @Param('friendRequestId') friendRequestStringId: string,
-    @Body() statusResponse: FriendRequestStatus,
+    @Body() statusResponse: FriendRequest_Status,
   ): Observable<FriendRequestStatus> {
     const friendRequestId = parseInt(friendRequestStringId);
+	console.log(statusResponse);
+	
     return this.friendService.respondToFriendRequest(
-      statusResponse.status,
+      statusResponse,
       friendRequestId,
     );
   }

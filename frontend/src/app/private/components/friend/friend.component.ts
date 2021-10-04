@@ -43,109 +43,22 @@ export class FriendComponent implements OnInit {
 		this.authService.getUserId().pipe(
 		  switchMap((idt: number) => this.userService.findOne(idt).pipe(
 			tap((user) => {
-			  this.user = this.userService.findOne(user.id);
-			  let id = user.id
-			//this.blocked$.pipe(
-			//	tap((x) => {
-			//		console.log(x);
-			//		for (let index = 0; index < x.length; index++) {
-			//			this.getImageFromService(x[index].id)	
-			//		}
-					
-			//	})
-			//).subscribe();
-			//this.friends$.pipe(
-			//	tap((x) => {
-			//		console.log(x);
-			//		for (let index = 0; index < x.length; index++) {
-			//			this.getImageFromServiceFriend(x[index].id)	
-			//		}
-					
-			//	})
-			//).subscribe();
-			//this.requests$.pipe(
-			//	tap((x) => {
-			//		console.log(x);
-			//		for (let index = 0; index < x.length; index++) {
-			//			this.getImageFromServiceRequest(x[index].id)	
-			//		}
-					
-			//	})
-			//).subscribe();
-			this.friends$.pipe(
-				tap((x) => {
-					for (let index = 0; index < x.length; index++) {
-						if (x[index].creator.id == id)
-							this.FriendsUser.push(x[index].receiver)
-						else
-							this.FriendsUser.push(x[index].creator)
-				}
-			})).subscribe()
-			})
+				this.user = this.userService.findOne(user.id);
+				let id = user.id
+				this.friends$.pipe(
+					tap((x) => {
+						for (let index = 0; index < x.length; index++) {
+							if (x[index].creator.id == id)
+								this.FriendsUser.push(x[index].receiver)
+							else
+								this.FriendsUser.push(x[index].creator)
+					}
+				})).subscribe()
+				})
 		  ))
 		).subscribe();
 	  }	
-
-	//  createImageFromBlob(image: Blob) {
-	//	let reader = new FileReader();
-	//	reader.addEventListener("load", () => {
-	//		if (typeof reader.result !== 'undefined')
-	//			this.imageToShow.push(reader.result);
-	//	}, false);
-	//	if (image) {
-	//	   reader.readAsDataURL(image);
-	//	}
-	//}
-	//getImageFromService(id:number) {
-	//	this.isImageLoading = true;
-	//	this.userService.getImage("/api/users/avatarById/" + id.toString()).subscribe(data => {
-	//		this.createImageFromBlob(data);
-	//		this.isImageLoading = false;
-	//	}, error => {
-	//		this.isImageLoading = false;
-	//	});
-	//}
 	
-	//createImageFromBlobFriend(image: Blob) {
-	//	let reader = new FileReader();
-	//	reader.addEventListener("load", () => {
-	//		if (typeof reader.result !== 'undefined')
-	//			this.imageFriends.push(reader.result);
-	//	}, false);
-	//	if (image) {
-	//	   reader.readAsDataURL(image);
-	//	}
-	//}
-	//getImageFromServiceFriend(id:number) {
-	//	this.isImageLoading = true;
-	//	this.userService.getImage("/api/users/avatarById/" + id.toString()).subscribe(data => {
-	//		this.createImageFromBlob(data);
-	//		this.isImageLoading = false;
-	//	}, error => {
-	//		this.isImageLoading = false;
-	//	});
-	//}
-	
-	//createImageFromBlobRequest(image: Blob) {
-	//	let reader = new FileReader();
-	//	reader.addEventListener("load", () => {
-	//		if (typeof reader.result !== 'undefined')
-	//			this.imageRequest.push(reader.result);
-	//	}, false);
-	//	if (image) {
-	//	   reader.readAsDataURL(image);
-	//	}
-	//}
-	//getImageFromServiceRequest(id:number) {
-	//	this.isImageLoading = true;
-	//	this.userService.getImage("/api/users/avatarById/" + id.toString()).subscribe(data => {
-	//		this.createImageFromBlob(data);
-	//		this.isImageLoading = false;
-	//	}, error => {
-	//		this.isImageLoading = false;
-	//	});
-	//}
-
 	onSelectBlocked(event: MatSelectionListChange) {
 		this.user.pipe(
 			tap((x) =>{
