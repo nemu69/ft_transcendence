@@ -5,15 +5,15 @@ rel="stylesheet">
 		<h1 class="login">Register</h1>
 		<form class="form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 			<mat-form-field appearance="standard">
-				<input matInput disabled placeholder="Username">
+				<input matInput placeholder="Username" formControlName="username">
 				<mat-error *ngIf="registerForm.controls.username.errors">{{getErrorMessageUser()}}</mat-error>
 			</mat-form-field>
 			<mat-form-field appearance="standard">
-				<input matInput disabled placeholder="Email">
+				<input matInput placeholder="Email" formControlName="email">
 				<mat-error *ngIf="registerForm.controls.email.errors">{{getErrorMessageEmail()}}</mat-error>
         	</mat-form-field>
 			<mat-form-field appearance="standard">
-				<input matInput disabled placeholder="Password" [type]="hide ? 'password' : 'text'">
+				<input matInput placeholder="Password" formControlName="password"[type]="hide ? 'password' : 'text'">
 					<mat-icon matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
 			</mat-form-field>
 			<div class="label">
