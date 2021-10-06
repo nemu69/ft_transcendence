@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/login/guards/jwt.guard';
-import { FriendRequest, FriendRequestStatus } from '../model/friends.interface';
+import { FriendRequest, FriendRequestStatus, FriendRequest_Status } from '../model/friends.interface';
 import { FriendsService } from '../service/friends.service';
 
 
@@ -36,13 +36,13 @@ export class FriendsController {
   @Put('friend-request/response/:friendRequestId')
   respondToFriendRequest(
     @Param('friendRequestId') friendRequestStringId: string,
-    @Body() statusResponse: FriendRequestStatus,
+    @Request() req,
   ): Observable<FriendRequestStatus> {
     const friendRequestId = parseInt(friendRequestStringId);
-    return this.friendService.respondToFriendRequest(
-      statusResponse.status,
-      friendRequestId,
-    );
+	return this.friendService.respondToFriendRequest(
+		req.body.res,
+		friendRequestId,
+	  );
   }
 
   @UseGuards(JwtAuthGuard)
@@ -77,5 +77,15 @@ export class FriendsController {
     @Request() req,
   ): Promise<FriendRequest[] | undefined> {
     return this.friendService.getMyBlockedUsersRequests(req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('friend-request/remove/:friendRequestId')
+  removeFriendRequest(
+    @Param('friendRequestId') friendRequestStringId: string,
+    @Request() req
+  ): Observable<FriendRequest | { error: string } | { success: string }> {	  
+    const friendRequestId = parseInt(friendRequestStringId);
+    return this.friendService.removeFriendRequest(friendRequestId, req.user);
   }
 }

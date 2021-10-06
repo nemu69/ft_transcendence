@@ -1,65 +1,67 @@
 <div *ngIf="(user | async) as user"  class="wrapper">
 	<div class="container">
-		<h1>Friends</h1>
-		<!--<div class="profile">
-			
-			<p>http://localhost:4200/api/friend/friend-request/me/received-requests</p>
-			<div class="profile-image">
-				<img [src]="imageToShow" alt="Place image title" *ngIf="imageToShow; else noImageFound">
-				<ng-template #noImageFound>
-				     <img src="/assets/img/site/fallbackImage.png" alt="Fallbackimage">
-				</ng-template>
-
-			</div>
-
-			<div class="profile-user-settings">
-
-				<h1 class="profile-user-name">{{user.username}} {{user.status}}</h1>
-
-				<button class="btn profile-edit-btn" routerLink="/private/setting" >
-					<i class="btn profile-settings-btn" aria-label="profile settings" class="fas fa-cog"></i>
-					Edit Profile
-				</button>
-
-			</div>
-
-			<div class="profile-stats">
-
-				<ul>
-					<li><span class="profile-stat-count">188</span> followers</li>
-					<li><span class="profile-stat-count">206</span> following</li>
-				</ul>
-
-			</div>
-
-		</div>-->
-		<!-- End of profile section -->
+		<h1>Friends</h1>		
+		<h2>Click for see profile</h2>
+		<div class=search-bar>
+			<mat-form-field appearance="standard">
+				<input matInput placeholder="Search a friend" [matAutocomplete]="auto" [formControl]="searchUsername">
+				<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+				(optionSelected)="SelectedUser($event.option.value)">
+				<ng-container>
+					<mat-option *ngFor="let user of filteredUsers" [value]="user">
+						<span>{{user.username}}</span>
+					</mat-option>
+				</ng-container>
+			</mat-autocomplete>
+		</mat-form-field>
 	</div>
+</div>
 	<div class="container-block">
 		<div class="requests">Friends Requests
 			<i class="fad fa-user-clock"></i>
+			<mat-divider></mat-divider>
 			<div *ngIf="(requests$|async)?.length > 0; else no_requests" class="requests-list">
-				
+				<mat-selection-list [multiple]="false" (selectionChange)="onSelectBlocked($event)">
+					<mat-list-option *ngFor="let requests of (requests$ | async)" [value]="requests">
+						{{requests.creator.username}} View Profile
+					  <mat-divider></mat-divider>
+					</mat-list-option>
+				  </mat-selection-list>
 			</div>
 			<ng-template #no_requests>
+				<br>
 				<mat-error>0 friends request</mat-error>
 			</ng-template>
 		</div>
 		<div class="friends">Your Friends
 			<i class="fad fa-user-friends"></i>
+			<mat-divider></mat-divider>
 			<div *ngIf="(friends$|async)?.length > 0; else no_friends" class="friends-list">
-
+				<mat-selection-list [multiple]="false" (selectionChange)="onSelectFriend($event)">
+					<mat-list-option *ngFor="let friends of FriendsUser" [value]="friends">
+						{{friends.username}} is {{friends.status}}
+					  <mat-divider></mat-divider>
+					</mat-list-option>
+				  </mat-selection-list>
 			</div>
 			<ng-template #no_friends>
+				<br>
 				<mat-error>`I have no friends and no enemies - only competitors`</mat-error>
 			</ng-template>
 		</div>
 		<div class="blocked">Muted users
 			<i class="fad fa-user-slash"></i>
+			<mat-divider></mat-divider>
 			<div *ngIf="(blocked$|async)?.length > 0; else no_blocked" class="blocked-list">
-
+				<mat-selection-list [multiple]="false" (selectionChange)="onSelectBlocked($event)">
+					<mat-list-option *ngFor="let blocked of (blocked$ | async)" [value]="blocked">
+					{{blocked.receiver.username}}
+					  <mat-divider></mat-divider>
+					</mat-list-option>
+				  </mat-selection-list>
 			</div>
 			<ng-template #no_blocked>
+				<br>
 				<mat-error>`Everybody speaks with me`</mat-error>
 			</ng-template>
 			</div>

@@ -2,9 +2,12 @@ import { UserEntity } from "src/app/model/user/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, } from "typeorm";
 
 export enum Status {
-	blocked = 'blocked',
-	accepted = 'accepted',
+	nosent = 'no-sent',
 	pending = 'pending',
+	accepted = 'accepted',
+	declined = 'declined',
+	waiting = 'waiting-for-current-user-response',
+	blocked = 'blocked',
   }
   
   @Entity({ name: 'user_followers' })
