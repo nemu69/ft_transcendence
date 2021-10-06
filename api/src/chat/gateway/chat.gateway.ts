@@ -375,6 +375,10 @@ export class ChatGateway{
         gamestate.player1.user.nbLoss++;
         gamestate.player2.points = 5;
       }
+      if (gamestate.player2.user.status == UserStatus.GAME)
+        gamestate.player2.user.status = UserStatus.ON;
+      if (gamestate.player1.user.status == UserStatus.GAME)
+        gamestate.player1.user.status = UserStatus.ON;
       /*let p1 : UserI = await this.userService.findOne(gamestate.player1.user.id);
       let p2 : UserI = await this.userService.findOne(gamestate.player2.user.id);*/
       let history: HistoryI = {
@@ -392,12 +396,10 @@ export class ChatGateway{
       //Stop Loop from running
       if (gamestate.player1.paddle.speedmultiplier != -1)
       {
-        gamestate.player1.user.status = UserStatus.ON;
         server.to(gamestate.player1.socket.id).emit('done', 0);
       }
       if (gamestate.player2.paddle.speedmultiplier != -1)
       {
-        gamestate.player2.user.status = UserStatus.ON;
         server.to(gamestate.player2.socket.id).emit('done', 0);
       }
       if (gamestate.spectators.length)
@@ -424,9 +426,15 @@ export class ChatGateway{
         });
       }
       if (gamestate.player1 && !gamestate.player1.socket.connected)
+      {
+        gamestate.player1.user.status = UserStatus.OFF;
         return (2);
+      }
       else if (gamestate.player2 && !gamestate.player2.socket.connected)
+      {
+        gamestate.player2.user.status = UserStatus.OFF;
         return (1);
+      }
       return (0);
     }
 
@@ -745,11 +753,13 @@ export class ChatGateway{
         {
           found = true;
           this.server.to(room.player1.socket.id).emit('exists', [room.player1.points,room.player2.points]);
+          this.server.to(room.player1.socket.id).emit('name', 0);
         }
         if (room.player2 && room.player2.socket.id == socket.id)
         {
           found = true;
           this.server.to(room.player2.socket.id).emit('exists', [room.player1.points,room.player2.points]);
+          this.server.to(room.player2.socket.id).emit('name', 1);
         }
       }
     });
@@ -762,11 +772,13 @@ export class ChatGateway{
           {
             found = true;
             this.server.to(room.player1.socket.id).emit('exists', [room.player1.points,room.player2.points]);
+            this.server.to(room.player1.socket.id).emit('name', 0);
           }
           if (room.player2 && room.player2.socket.id == socket.id)
           {
             found = true;
             this.server.to(room.player2.socket.id).emit('exists', [room.player1.points,room.player2.points]);
+            this.server.to(room.player2.socket.id).emit('name', 1);
           }
         }
       });
