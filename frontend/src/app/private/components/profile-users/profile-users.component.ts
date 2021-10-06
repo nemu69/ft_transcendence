@@ -10,7 +10,7 @@ import { UserService } from '../../../public/services/user-service/user.service'
 import { switchMap, tap, map, catchError } from 'rxjs/operators';
 import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { FriendsService } from '../../services/friends-service/friends.service';
-import { FriendRequest, FriendRequestStatus } from 'src/app/model/friends/friends.interface';
+import { FriendRequest } from 'src/app/model/friends/friends.interface';
 
 
 @Component({
@@ -45,6 +45,7 @@ export class ProfileusersComponent implements OnInit {
 		imageToShow: any;
 		isImageLoading : boolean;
 		idProfile: number;
+		idRequest: number;
 
 		yourFriend : number;
 		yourBlocked : boolean;
@@ -69,7 +70,6 @@ export class ProfileusersComponent implements OnInit {
 		addFriend(){
 			  this.friendsService.sendFriendRequest(this.idProfile.toString()).subscribe(
 				  (data) => {
-					  console.log(data);
 					  this.yourFriend = 1;
 				  }
 			  )
@@ -79,9 +79,7 @@ export class ProfileusersComponent implements OnInit {
 			this.yourFriend = 0;
 			this.friendsService.statusFriendRequest(this.idProfile.toString()).pipe(
 				tap((x) => {
-					
-						console.log(x.status);
-						
+						this.idRequest = x.id;
 						if(x.status == 'not-sent'){
 							this.yourFriend = 0;
 						}
@@ -103,13 +101,6 @@ export class ProfileusersComponent implements OnInit {
 
 				})
 			).subscribe();
-			//this.friends$.pipe(
-			//	tap((x) => {					
-			//		for (let index = 0; index < x.length; index++) {
-			//			if (x[index].creator.id == this.idProfile || x[index].receiver.id == this.idProfile)
-			//				this.yourFriend = 2;
-			//	}
-			//})).subscribe();
 		}
 			
 		blockUser(){
@@ -139,12 +130,11 @@ export class ProfileusersComponent implements OnInit {
 		}
 
 		responseToFriend(res:string){
-			this.friendsService.responseFriendRequest(this.idProfile.toString(),res).subscribe(
+			this.friendsService.responseFriendRequest(this.idRequest.toString(),res).subscribe(
 				(data) => {
-					console.log(data.status);
-					if (res == 'accepted')
+					if (data.status == 'accepted')
 						this.yourFriend = 2;
-					if (res == 'declined')
+					if (data.status == 'declined')
 						this.yourFriend = 3;
 				}
 			)

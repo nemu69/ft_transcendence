@@ -36,15 +36,13 @@ export class FriendsController {
   @Put('friend-request/response/:friendRequestId')
   respondToFriendRequest(
     @Param('friendRequestId') friendRequestStringId: string,
-    @Body() statusResponse: FriendRequest_Status,
+    @Request() req,
   ): Observable<FriendRequestStatus> {
     const friendRequestId = parseInt(friendRequestStringId);
-	console.log(statusResponse);
-	
-    return this.friendService.respondToFriendRequest(
-      statusResponse,
-      friendRequestId,
-    );
+	return this.friendService.respondToFriendRequest(
+		req.body.res,
+		friendRequestId,
+	  );
   }
 
   @UseGuards(JwtAuthGuard)

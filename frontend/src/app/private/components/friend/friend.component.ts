@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { MatSelectionList } from '@angular/material/list';
 import { MatSelectionListChange } from '@angular/material/list';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { FriendRequest } from 'src/app/model/friends/friends.interface';
 import { UserI } from 'src/app/model/user/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
@@ -33,12 +33,14 @@ export class FriendComponent implements OnInit {
   
 
 	user : Observable<UserI>;
-	imageToShow: any[];
 	imageFriends: any[];
 	imageRequest: any[];
 	FriendsUser: UserI[] = [];
 	isImageLoading : boolean;
 	selectedRoom = null;
+
+	filteredUsers: UserI[] = [];
+	searchUsername = new FormControl();
 	ngOnInit(): void {
 		this.authService.getUserId().pipe(
 		  switchMap((idt: number) => this.userService.findOne(idt).pipe(
@@ -57,6 +59,13 @@ export class FriendComponent implements OnInit {
 				})
 		  ))
 		).subscribe();
+		this.searchUsername.valueChanges.pipe(
+			debounceTime(500),
+			distinctUntilChanged(),
+			switchMap((username: string) => this.userService.findByUsername(username).pipe(
+			  tap((users: UserI[]) => this.filteredUsers = users)
+			))
+		  ).subscribe();
 	  }	
 	
 	onSelectBlocked(event: MatSelectionListChange) {
@@ -73,4 +82,15 @@ export class FriendComponent implements OnInit {
 	onSelectFriend(event: MatSelectionListChange) {		
 		this.router.navigate(['../profile/' + event.source.selectedOptions.selected[0].value.id], { relativeTo: this.activatedRoute });
 	}
+
+	displayFn(user: UserI) {
+		if(user) {
+		  return user.username;
+		} else {
+		  return '';
+		}
+	  }
+	  SelectedUser(user: UserI) {
+		this.router.navigate(['../profile/' + user.id], { relativeTo: this.activatedRoute });
+	  }
 }

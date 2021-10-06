@@ -10,6 +10,7 @@ export type FriendRequest_Status =
 
 export interface FriendRequestStatus {
   status?: FriendRequest_Status;
+  id?: number;
 }
 
 export interface FriendRequest {
