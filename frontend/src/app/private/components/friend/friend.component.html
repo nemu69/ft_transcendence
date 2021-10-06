@@ -2,7 +2,20 @@
 	<div class="container">
 		<h1>Friends</h1>		
 		<h2>Click for see profile</h2>
+		<div class=search-bar>
+			<mat-form-field appearance="standard">
+				<input matInput placeholder="Search a friend" [matAutocomplete]="auto" [formControl]="searchUsername">
+				<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+				(optionSelected)="SelectedUser($event.option.value)">
+				<ng-container>
+					<mat-option *ngFor="let user of filteredUsers" [value]="user">
+						<span>{{user.username}}</span>
+					</mat-option>
+				</ng-container>
+			</mat-autocomplete>
+		</mat-form-field>
 	</div>
+</div>
 	<div class="container-block">
 		<div class="requests">Friends Requests
 			<i class="fad fa-user-clock"></i>

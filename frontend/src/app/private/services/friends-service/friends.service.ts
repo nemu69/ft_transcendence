@@ -31,8 +31,8 @@ export class FriendsService {
 		return this.http.get<FriendRequestStatus>(`/api/friend/friend-request/status/` + userId);
 	}
 	
-	responseFriendRequest(userId: string, statusResponse:string): Observable<FriendRequestStatus> {
-		return this.http.put<FriendRequestStatus>(`/api/friend/friend-request/response/` + userId, {statusResponse});
+	responseFriendRequest(requestId: string, res:string): Observable<FriendRequestStatus> {
+		return this.http.put<FriendRequestStatus>(`/api/friend/friend-request/response/` + requestId, {res});
 	}
 	
 	blockOrUnblockUsers(userId: string): Observable<FriendRequest | { error: string } | { success: string }> {

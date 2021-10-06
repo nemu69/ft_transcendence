@@ -455,3 +455,7 @@ Remove or comment-out the code block below to see how the browser will fall-back
 	grid-column: 3 / 3;
 	grid-row: 1 / 8;
   }
+  mat-form-field {
+	width: 100%;
+	min-width: 300px;
+  }
