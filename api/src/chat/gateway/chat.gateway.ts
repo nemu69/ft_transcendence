@@ -149,7 +149,7 @@ export class ChatGateway{
 
   @SubscribeMessage('joinRoom')
   async onJoinRoom(socket: Socket, room: RoomI) {
-    const messages = await this.messageService.findMessagesForRoom(room, { limit: 30, page: 1 });
+    const messages = await this.messageService.findMessagesForRoom(room, socket.data.user, { limit: 30, page: 1 });
     messages.meta.currentPage = messages.meta.currentPage - 1;
     // Save Connection to Room
     await this.joinedRoomService.create({ socketId: socket.id, user: socket.data.user, room });
