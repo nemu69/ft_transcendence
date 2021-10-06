@@ -6,11 +6,11 @@ rel="stylesheet">
 		
 		<form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 			<mat-form-field appearance="standard">
-				<input matInput placeholder="Email" formControlName="email">
+				<input matInput disabled placeholder="Email">
 				 <mat-error *ngIf="loginForm.controls.email.errors">{{getErrorMessageEmail()}}</mat-error>
 			</mat-form-field>
 			<mat-form-field appearance="standard">
-				<input matInput placeholder="Password" formControlName="password"[type]="hide ? 'password' : 'text'">
+				<input matInput disabled placeholder="Password" [type]="hide ? 'password' : 'text'">
 					<mat-icon matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
 			</mat-form-field>
 			<button mat-flat-button color="primary" [disabled]="!loginForm.valid" type="submit" id="login-button">Log in</button>
