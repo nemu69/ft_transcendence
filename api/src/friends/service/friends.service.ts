@@ -176,7 +176,6 @@ export class FriendsService {
 						status: 'blocked',
 					};
 					console.log(friendRequest);
-					
 					return from(this.friendRequestRepository.save(friendRequest));
 				}
 				this.friendRequestRepository.delete(friendRequest);
@@ -222,6 +221,7 @@ export class FriendsService {
 			.andWhere("f.status = 'blocked'")
 			.setParameters({ id : currentUser.id })
 			.getMany();
+
 		return query;
   	}
 
