@@ -475,3 +475,34 @@ progress::-moz-progress-bar {
 	grid-column: 2 / 5;
 	grid-row: 3 / 5;
 }
+
+.parent {
+    display: grid;
+    height: 50px;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: 20px;
+    grid-template-areas:
+    "h h h a a a j j j"
+    "b b b c c c d d d";
+    align-items: center;
+  }
+
+.player-One {
+    grid-area: b;
+}
+
+.player-Two {
+    text-align: right;
+    grid-area: d;
+}
+
+.score {
+    text-align: center;
+    grid-area: c;
+}
+
+.result {
+    font-weight: bold;
+    text-align: center;
+    grid-area: a;
+}
