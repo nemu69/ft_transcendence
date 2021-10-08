@@ -5,7 +5,7 @@ import { tokenGetter } from 'src/app/app.module';
 const config: SocketIoConfig = {
   url: window.location.hostname + ":3000", options: {
     extraHeaders: {
-      Authorization: tokenGetter()
+      Authorization: tokenGetter(),
     }
   }
 };

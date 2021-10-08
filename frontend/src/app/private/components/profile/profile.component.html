@@ -64,7 +64,26 @@
 
 			</div>
 			<div class="battles">Last 5 matches
-
+				<div *ngIf="(history|async)?.length > 0;" class="requests-list">
+					<mat-selection-list [multiple]="false" (selectionChange)="onSelectOpp($event)">
+						<mat-list-option *ngFor="let history of (history | async)" [value]="history">
+							<div class="parent">
+								<div class="result" *ngIf="(history.playerOne.id == user.id && history.playerOneScore == 5) || (history.playerTwo.id == user.id && history.playerTwoScore == 5); else lost" style="color: green">
+									WIN {{history.game}}
+								</div>
+								<ng-template #lost>
+									<div class="result" style="color: rgb(107, 5, 5)">
+										LOSE {{history.game}}
+									</div>
+								</ng-template>
+									<span class="player-One">{{history.playerOne.username}}</span>
+									<span class="score">{{history.playerOneScore}} - {{history.playerTwoScore}}</span>
+									<span class="player-Two">{{history.playerTwo.username}}</span>
+							</div>
+							<mat-divider></mat-divider>
+						</mat-list-option>
+					  </mat-selection-list>
+				</div>
 			</div>
 		</div>
 		<!-- End of container -->

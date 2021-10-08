@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { UserI, UserStatus } from 'src/app/model/user/user.interface';
 import { UserService } from 'src/app/public/services/user-service/user.service';
 import { AuthService } from '../../../public/services/auth-service/auth.service';
+import { ChatService } from '../../services/chat-service/chat.service';
 
 @Component({
   selector: 'app-logout',
@@ -15,6 +16,7 @@ export class LogoutComponent implements OnInit {
 		private authService: AuthService,
 		private router: Router,
 		private userService: UserService,
+		private chatService: ChatService,
 	) { }
 
   ngOnInit(): void {
@@ -118,6 +120,7 @@ const elts = {
 	(user: UserI) => {
 	  user.status = UserStatus.OFF;
 	  this.authService.logout(user).subscribe();
+	  this.chatService.gameLogout();
 	});
   setTimeout(() => {
 		this.router.navigate(['login']);

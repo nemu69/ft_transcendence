@@ -11,6 +11,8 @@ import { switchMap, tap, map, catchError } from 'rxjs/operators';
 import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { FriendsService } from '../../services/friends-service/friends.service';
 import { FriendRequest } from 'src/app/model/friends/friends.interface';
+import { HistoryI } from 'src/app/model/history/history.interface';
+import { HistoryService } from '../../../public/services/history-service/history.service';
 
 
 @Component({
@@ -23,6 +25,7 @@ export class ProfileusersComponent implements OnInit {
 	blocked$: Observable<FriendRequest[]> = this.friendsService.getMyBlockedUsers();
 	friends$: Observable<FriendRequest[]> = this.friendsService.getMyFriends();
 	requests$: Observable<FriendRequest[]> = this.friendsService.getFriendRequests();
+	history : Observable<HistoryI[]>;
 
 	
 	private userId$: Observable<number> = this.activatedRoute.params.pipe(
@@ -33,12 +36,12 @@ export class ProfileusersComponent implements OnInit {
 		switchMap((userId: number) => this.userService.findOne(userId))
 		)
 		
-	constructor(
+	constructor(private formBuilder: FormBuilder,
 		private activatedRoute: ActivatedRoute,
-		private formBuilder: FormBuilder,
-		private router: Router,
 		private userService: UserService,
+		private router: Router,
 		private authService: AuthService,
+		private historyService: HistoryService,
 		private friendsService: FriendsService,
 		) { }
 
@@ -57,6 +60,7 @@ export class ProfileusersComponent implements OnInit {
 						if (val.id == user.id) {
 							this.router.navigate(['../../profile'],{ relativeTo: this.activatedRoute })
 						}
+						this.history = this.historyService.findAllByUserId(val.id);
 						this.getImageFromService(val.id);
 						this.idProfile = val.id;
 						this.isFriend();
@@ -163,7 +167,21 @@ export class ProfileusersComponent implements OnInit {
 			  this.isImageLoading = false;
 			});
 			console.log(this.isImageLoading);
-			
+		}
+
+		onSelectOpp(event: MatSelectionListChange) {
+			this.user$.pipe(
+				tap((x) =>{
+					if (event.source.selectedOptions.selected[0])
+					{
+						if (x.id == event.source.selectedOptions.selected[0].value.playerOne.id)
+							this.router.navigate(['../' + event.source.selectedOptions.selected[0].value.playerTwo.id], { relativeTo: this.activatedRoute });
+						else
+							this.router.navigate(['../' + event.source.selectedOptions.selected[0].value.playerOne.id], { relativeTo: this.activatedRoute });
+					}
+				}
+				)
+			).subscribe()
 		}
 	
 	}

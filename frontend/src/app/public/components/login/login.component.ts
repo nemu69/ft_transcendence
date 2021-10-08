@@ -6,6 +6,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { LoginResponseI } from 'src/app/model/auth/login-response.interface';
 import { UserService } from '../../services/user-service/user.service';
+import { CustomSocket } from '../../../private/sockets/custom-socket';
 
 
 @Component({
