@@ -4,6 +4,8 @@ import { combineLatest, Observable } from 'rxjs';
 import { map, startWith, tap } from 'rxjs/operators';
 import { MessagePaginateI } from 'src/app/model/chat/message.interface';
 import { RoomI } from 'src/app/model/chat/room.interface';
+import { UserI } from 'src/app/model/user/user.interface';
+import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { ChatService } from '../../services/chat-service/chat.service';
 
 @Component({
@@ -15,6 +17,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   @Input() chatRoom: RoomI;
   @ViewChild('messages') private messagesScroller: ElementRef;
+  user: UserI = this.authService.getLoggedInUser();
 
   messagesPaginate$: Observable<MessagePaginateI> = combineLatest([this.chatService.getMessages(), this.chatService.getAddedMessage().pipe(startWith(null))]).pipe(
     map(([messagePaginate, message]) => {
@@ -30,10 +33,13 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   chatMessage: FormControl = new FormControl(null, [Validators.required]);
 
-  constructor(private chatService: ChatService) { }
+  constructor(
+	  private chatService: ChatService,
+	  private authService: AuthService
+	) { }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.chatService.leaveRoom(changes['chatRoom'].previousValue);
+    this.chatService.leaveJoinRoom(changes['chatRoom'].previousValue);
     if (this.chatRoom) {
       this.chatService.joinRoom(this.chatRoom);
     }
@@ -46,7 +52,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.chatService.leaveRoom(this.chatRoom);
+    this.chatService.leaveJoinRoom(this.chatRoom);
   }
 
   sendMessage() {
@@ -61,6 +67,12 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       setTimeout(() => { this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight }, 1);
     } catch { }
 
+  }
+
+  LeaveChatRoom() {
+	  console.log(this.chatRoom);
+	  
+	this.chatService.leaveRoom(this.chatRoom.id, this.user.id);
   }
 
 }

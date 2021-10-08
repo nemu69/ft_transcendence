@@ -160,10 +160,18 @@ export class ChatGateway{
     await this.server.to(socket.id).emit('messages', messages);
   }
 
-  @SubscribeMessage('leaveRoom')
-  async onLeaveRoom(socket: Socket) {
+  @SubscribeMessage('leaveJoinRoom')
+  async onleaveJoinRoom(socket: Socket) {
     // remove connection from JoinedRooms
     await this.joinedRoomService.deleteBySocketId(socket.id);
+  }
+
+  @SubscribeMessage('leaveRoom')
+  async leaveRoom(socket: Socket, roomId: number, userId: number) {
+    // remove connection from JoinedRooms
+	//console.log(socket);
+	
+    await this.roomService.deleteAUserFromRoom(roomId, userId);
   }
 
   @SubscribeMessage('addMessage')
