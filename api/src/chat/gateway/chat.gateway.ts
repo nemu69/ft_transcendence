@@ -155,7 +155,7 @@ export class ChatGateway{
     const messages = await this.messageService.findMessagesForRoom(room, socket.data.user, { limit: 30, page: 1 });
     messages.meta.currentPage = messages.meta.currentPage - 1;
     // Save Connection to Room
-    await this.joinedRoomService.create({ socketId: socket.id, user: socket.data.user, room });
+    await this.joinedRoomService.create({ socketId: socket.id, user: socket.data.user, userId: socket.data.user.id, room });
     // Send last messages from Room to User
     await this.server.to(socket.id).emit('messages', messages);
   }
@@ -173,7 +173,8 @@ export class ChatGateway{
     const joinedUsers: JoinedRoomI[] = await this.joinedRoomService.findByRoom(room);
     // TODO: Send new Message to all joined Users of the room (currently online)
     for(const user of joinedUsers) {
-		await this.server.to(user.socketId).emit('messageAdded', createdMessage);
+		const nu = await this.friendsService.boolUserIsBlocked(user.userId, createdMessage.user.id);
+		if (!nu) await this.server.to(user.socketId).emit('messageAdded', createdMessage);
     }
   }
 
