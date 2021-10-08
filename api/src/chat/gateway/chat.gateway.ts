@@ -1,7 +1,7 @@
 import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { AuthService } from 'src/auth/login/service/auth.service';
 import { Socket, Server } from 'socket.io';
-import { UserI } from 'src/user/model/user.interface';
+import { UserI, UserStatus } from 'src/user/model/user.interface';
 import { UserService } from 'src/user/service/user-service/user.service';
 import { HistoryService } from 'src/history/service/history.service';
 import { HistoryI } from 'src/history/model/history.interface';
@@ -23,6 +23,7 @@ import { LobbyI } from 'src/match/model/lobby/lobby.interface';
 import { type } from 'os';
 import { Console } from 'console';
 import { FriendsService } from 'src/friends/service/friends.service';
+import { UpdateDateColumn } from 'typeorm';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway{
@@ -184,7 +185,7 @@ export class ChatGateway{
   }
 
   //Remove unused Rooms and change id's to coincide with new order
-  private UpdateRooms()
+  private async UpdateRooms()
   {
     let i : number = 0;
     let y : number = 0;
@@ -222,6 +223,61 @@ export class ChatGateway{
     this.b_id = this.lobby_list.blitzRooms.length - 1;
   }
 
+  private checkIfAlready(lobbies: LobbyI, user: UserI, socket: Socket)
+  {
+    let id: number = 0;
+    for (const room of lobbies.normalRooms)
+    {
+      if (room.player1 && room.player1.user.id == user.id)
+      {
+        console.log("1 NOW");
+        room.player1.socket = socket;
+        if (room.player1 && room.player2)
+          this.server.to(room.player1.socket.id).emit('score', [room.player1.points, room.player2.points]);
+        this.server.to(room.player1.socket.id).emit('name', 0);
+        this.server.to(room.player1.socket.id).emit('id', [id,0]);
+        return 1;
+      }
+      if (room.player2 && room.player2.user.id == user.id)
+      {
+        console.log("2 NOW");
+        room.player2.socket = socket;
+        if (room.player1 && room.player2)
+          this.server.to(room.player2.socket.id).emit('score', [room.player1.points, room.player2.points]);
+        this.server.to(room.player2.socket.id).emit('name', 1);
+        this.server.to(room.player2.socket.id).emit('id', [id,0]);
+        return 1;
+      }
+      id++;
+    }
+    id = 0;
+    for (const room of lobbies.blitzRooms)
+    {
+      if (room.player1 && room.player1.user == user)
+      {
+        console.log("3 NOW");
+        room.player1.socket = socket;
+        if (room.player1 && room.player2)
+          this.server.to(room.player1.socket.id).emit('score', [room.player1.points, room.player2.points]);
+        this.server.to(room.player1.socket.id).emit('name', 0);
+        this.server.to(room.player1.socket.id).emit('id', [id,1]);
+        return 1;
+      }
+      if (room.player2 && room.player2.user == user)
+      {
+        console.log("4 NOW");
+        room.player2.socket = socket;
+        if (room.player1 && room.player2)
+          this.server.to(room.player2.socket.id).emit('score', [room.player1.points, room.player2.points]);
+        this.server.to(room.player2.socket.id).emit('name', 1);
+        this.server.to(room.player2.socket.id).emit('id', [id,1]);
+        return 1;
+      }
+      id++;
+    }
+    return 0;
+  }
+
   //----------------------------------------CONNECTION HANDLER-------------------------------------------
   players = 0;
   n_id = 0;
@@ -229,10 +285,12 @@ export class ChatGateway{
   //When a new player connects to the game (data -> gamemode | user id)
   @SubscribeMessage('newPlayer')
   async onNewPlayer(n_socket: Socket, data: number[]) {
+
     if (checkConnection(this.n_gamestate) == 2)
       this.n_gamestate.player1 = null;
     if (checkConnection(this.b_gamestate) == 2)
-      this.n_gamestate.player2 = null;
+      this.b_gamestate.player1 = null;
+
     //Update rooms to facilitate setup
     this.UpdateRooms();
     let n_paddle: CoordinatesI = {
@@ -247,7 +305,8 @@ export class ChatGateway{
 
     //Get UserI from received ID to synchronise with n_players info
     const payload = await this.userService.findOne(data[1]);
-
+    payload.status = UserStatus.GAME;
+    this.userService.updateOne(payload.id, payload);
     let n_player: PlayerI = {
       user: payload,
       socket: n_socket,
@@ -350,8 +409,7 @@ export class ChatGateway{
         type = "normal";
       else
         type = "blitz";
-      if (disc)
-        gamestate.type = disc * -1;
+      gamestate.type = -1;
       if (gamestate.player1.points >= 5)
       {
         gamestate.player1.user.nbWin++;
@@ -374,6 +432,10 @@ export class ChatGateway{
         gamestate.player1.user.nbLoss++;
         gamestate.player2.points = 5;
       }
+      if (gamestate.player2.user.status == UserStatus.GAME)
+        gamestate.player2.user.status = UserStatus.ON;
+      if (gamestate.player1.user.status == UserStatus.GAME)
+        gamestate.player1.user.status = UserStatus.ON;
       /*let p1 : UserI = await this.userService.findOne(gamestate.player1.user.id);
       let p2 : UserI = await this.userService.findOne(gamestate.player2.user.id);*/
       let history: HistoryI = {
@@ -385,11 +447,18 @@ export class ChatGateway{
         date: new Date(),
       };
       gamestate.historyServices.createMatchHistory(history);
+      
       userservice.updateOne(gamestate.player2.user.id, gamestate.player2.user);
       userservice.updateOne(gamestate.player1.user.id, gamestate.player1.user);
       //Stop Loop from running
-      server.to(gamestate.player1.socket.id).emit('done', 0);
-      server.to(gamestate.player2.socket.id).emit('done', 0);
+      if (gamestate.player1.paddle.speedmultiplier != -1)
+      {
+        server.to(gamestate.player1.socket.id).emit('done', 0);
+      }
+      if (gamestate.player2.paddle.speedmultiplier != -1)
+      {
+        server.to(gamestate.player2.socket.id).emit('done', 0);
+      }
       if (gamestate.spectators.length)
       {
         gamestate.spectators.forEach(element => {
@@ -414,9 +483,15 @@ export class ChatGateway{
         });
       }
       if (gamestate.player1 && !gamestate.player1.socket.connected)
+      {
+        gamestate.player1.user.status = UserStatus.OFF;
         return (2);
+      }
       else if (gamestate.player2 && !gamestate.player2.socket.connected)
+      {
+        gamestate.player2.user.status = UserStatus.OFF;
         return (1);
+      }
       return (0);
     }
 
@@ -621,14 +696,14 @@ export class ChatGateway{
         room_nb = Math.floor(Math.random() * (this.lobby_list.normalRooms.length - 1));
         this.lobby_list.normalRooms[room_nb].spectators.push(n_player);
         this.server.to(n_player.socket.id).emit('score', [this.lobby_list.normalRooms[room_nb].player1.points,this.lobby_list.normalRooms[room_nb].player2.points]);
-        this.server.to(n_player.socket.id).emit('name', [this.lobby_list.normalRooms[room_nb].player1.user.username,this.lobby_list.normalRooms[room_nb].player2.user.username]);
+        this.server.to(n_player.socket.id).emit('name', 0);
       }
       else
       {
         room_nb = Math.floor(Math.random() * (this.lobby_list.blitzRooms.length - 1));
         this.lobby_list.blitzRooms[room_nb].spectators.push(n_player);
         this.server.to(n_player.socket.id).emit('score', [this.lobby_list.blitzRooms[room_nb].player1.points,this.lobby_list.blitzRooms[room_nb].player2.points]);
-        this.server.to(n_player.socket.id).emit('name', [this.lobby_list.blitzRooms[room_nb].player1.user.username,this.lobby_list.blitzRooms[room_nb].player2.user.username]);
+        this.server.to(n_player.socket.id).emit('name', 0);
       }
     }
     //once oth players are present in a game launch it
@@ -725,6 +800,65 @@ export class ChatGateway{
   @SubscribeMessage('checkExistence')
   async checkExist(socket: Socket, data: number)
   {
+    if (data != -1)
+    {
+      const payload = await this.userService.findOne(data);
+      payload.status = UserStatus.GAME;
+      this.userService.updateOne(payload.id, payload);
+      this.checkIfAlready(this.lobby_list, payload, socket);
+    }
+    await sleep(10);
+    this.UpdateRooms();
+    let id: number = 0;
+    for (const room of this.lobby_list.normalRooms)
+    {
+      if (room.player1 && room.player1.socket.id == socket.id)
+      {
+        this.server.to(room.player1.socket.id).emit('id', [id,0]);
+        if (room.player1 && room.player2)
+          this.server.to(room.player1.socket.id).emit('score', [room.player1.points,room.player2.points]);
+        this.server.to(room.player1.socket.id).emit('exists', 0);
+        this.server.to(room.player1.socket.id).emit('name', 0);
+      }
+      if (room.player2 && room.player2.socket.id == socket.id)
+      {
+        this.server.to(room.player2.socket.id).emit('id', [id,0]);
+        if (room.player1 && room.player2)
+          this.server.to(room.player2.socket.id).emit('score', [room.player1.points,room.player2.points]);
+          this.server.to(room.player2.socket.id).emit('exists', 0);
+        this.server.to(room.player2.socket.id).emit('name', 1);
+      }
+      id++;
+    }
+    id = 0;
+    for (const room of this.lobby_list.blitzRooms)
+    {
+      if (room.player1 && room.player1.socket.id == socket.id)
+      {
+        this.server.to(room.player1.socket.id).emit('id', [id,0]);
+        if (room.player1 && room.player2)
+          this.server.to(room.player1.socket.id).emit('score', [room.player1.points,room.player2.points]);
+        this.server.to(room.player1.socket.id).emit('exists', 0);
+        this.server.to(room.player1.socket.id).emit('name', 0);
+      }
+      if (room.player2 && room.player2.socket.id == socket.id)
+      {
+        this.server.to(room.player2.socket.id).emit('id', [id,0]);
+        if (room.player1 && room.player2)
+          this.server.to(room.player2.socket.id).emit('score', [room.player1.points,room.player2.points]);
+        this.server.to(room.player2.socket.id).emit('exists', 0);
+        this.server.to(room.player2.socket.id).emit('name', 1);
+      }
+      id++;
+    }
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+  }
+
+  @SubscribeMessage('logoutPlayer')
+  async logout(socket: Socket, data: number)
+  {
     let found: boolean = false;
     this.lobby_list.normalRooms.forEach(room => {
       if (!found)
@@ -732,12 +866,14 @@ export class ChatGateway{
         if (room.player1 && room.player1.socket.id == socket.id)
         {
           found = true;
-          this.server.to(room.player1.socket.id).emit('exists', [room.player1.points,room.player2.points]);
+          room.player1.paddle.speedmultiplier = -1;
+          room.player2.points = 5;
         }
         if (room.player2 && room.player2.socket.id == socket.id)
         {
           found = true;
-          this.server.to(room.player2.socket.id).emit('exists', [room.player1.points,room.player2.points]);
+          room.player2.paddle.speedmultiplier = -1;
+          room.player1.points = 5;
         }
       }
     });
@@ -749,17 +885,20 @@ export class ChatGateway{
           if (room.player1 && room.player1.socket.id == socket.id)
           {
             found = true;
-            this.server.to(room.player1.socket.id).emit('exists', [room.player1.points,room.player2.points]);
+            room.player1.paddle.speedmultiplier = -1;
+            room.player2.points = 5;
           }
           if (room.player2 && room.player2.socket.id == socket.id)
           {
             found = true;
-            this.server.to(room.player2.socket.id).emit('exists', [room.player1.points,room.player2.points]);
+            room.player2.paddle.speedmultiplier = -1;
+            room.player1.points = 5;
           }
         }
       });
     }
   }
+
 
   //Paddle Movement handler Using room id and more
   @SubscribeMessage('paddle')

@@ -14,14 +14,20 @@ import { CustomSocket } from '../../sockets/custom-socket';
 })
 export class ChatService {
 
+  socket: CustomSocket = null;
   constructor(
-    private socket: CustomSocket,
-    private snackbar: MatSnackBar,
     private authService: AuthService,
-    ) {}
+    private snackbar: MatSnackBar,
+    ) {
+        if(authService.isAuthenticated())
+        {
+          console.log(this.socket);
+          this.socket = new CustomSocket;
+          console.log(this.socket);
+        }
+      }
 
   @HostListener('window:beforeunload') goToPage() {
-    console.log("BLEUUUUUUH");
     this.socket.emit('PlayerExit');
   }
 
@@ -73,18 +79,22 @@ export class ChatService {
     });
   }
 
-  checkExistence()
+  checkExistence(n: number)
   {
-    this.socket.emit('checkExistence', 0);
+    this.socket.emit('checkExistence', n);
+  }
+
+  gameLogout()
+  {
+    this.socket.emit('logoutPlayer', 0);
   }
 
   newPlayer(info: number, user: number) {
-    console.log("calling new player");
+    console.log(this.socket);
     this.socket.emit('newPlayer', [info, user]);
   }
 
   getGameState(): Observable<GameStateI> {
-    console.log("TEST");
     return this.socket.fromEvent<GameStateI>('gamestate');
   }
 

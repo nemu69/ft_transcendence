@@ -24,9 +24,8 @@ export class MatchComponent implements OnInit {
 
   initialized: boolean = false;
   _canvas: HTMLCanvasElement;
-  _socket: CustomSocket;
 
-  constructor(private chatService: ChatService, private router: Router, private socket: CustomSocket, private userService: UserService, private authService: AuthService) {
+  constructor(private router: Router, private authService: AuthService, private chatService: ChatService, private userService: UserService) {
 
     //site basic pixel size for sidebars and bot/top spaces
     let sidebarSize = 200;
@@ -40,35 +39,40 @@ export class MatchComponent implements OnInit {
     let type: number;
     let name1: string;
     let name2: string;
-
     //Get Room ID from Server Response
-    socket.on('id', function(n_id: number[]) {
+    chatService.socket.on('id', function(n_id: number[]) {
       console.log("GOT ID", n_id[0])
       id = n_id[0];
       type = n_id[1];
     });
 
-    socket.on('exists', function(data: number) {
+    chatService.socket.on('connect', function() {
+      console.log("Connected to WS server");
+    });
+
+    chatService.socket.on('exists', function(data: number) {
       var spectate = document.getElementById("spectate");
       var normal = document.getElementById("normal");
       var blitz = document.getElementById("blitz");
-      normal.remove();
-      blitz.remove();
-      spectate.remove();
-      var score = document.getElementById("score");
-      score.textContent = 0 + " : " + 0;
-      if (data)
-        score.textContent = data[0] + " : " + data[1];
+      if (normal)
+        normal.remove();
+      if (blitz)
+        blitz.remove();
+      if (spectate)
+        spectate.remove();
     });
 
-    socket.on('score', function(state: number[]) {
+    chatService.socket.on('score', function(state: number[]) {
       var score = document.getElementById("score");
-      score.textContent = 0 + " : " + 0;
-      if (state)
-        score.textContent = name1 + " " + state[0] + " : " + state[1] + " " + name2;
+      if(score)
+      {
+        score.textContent = 0 + " : " + 0;
+        if (state)
+          score.textContent = name1 + " " + state[0] + " : " + state[1] + " " + name2;
+      }
     });
 
-    socket.on('name', function(data: number) {
+    chatService.socket.on('name', function(data: number) {
       console.log("CALLED");
       if (data == 0)
       {
@@ -82,7 +86,7 @@ export class MatchComponent implements OnInit {
       }
     });
 
-    socket.on('done', function(data: number) {
+    chatService.socket.on('done', function(data: number) {
       router.navigate(['../../private/profile']);
     });
 
@@ -145,7 +149,7 @@ export class MatchComponent implements OnInit {
     }
 
     //Recieve server Gamestate information to update game on client side
-    socket.on('gamestate', function(gamestate: GameStateI) {
+    chatService.socket.on('gamestate', function(gamestate: GameStateI) {
       var canvas = document.getElementById("game");
       if (canvas && canvas instanceof HTMLCanvasElement)
       {
@@ -220,21 +224,25 @@ export class MatchComponent implements OnInit {
     var spectate = document.getElementById("spectate");
     var service = this.chatService;
     let _user: number;
+
     this.authService.getUserId().pipe(
 		  switchMap((idt: number) => this.userService.findOne(idt).pipe(
 			tap((user) => {
 			  _user = user.id;
+        service.checkExistence(_user);
 			})
 		  ))
 		).subscribe()
 
-    service.checkExistence();
-
+    service.checkExistence(-1);
     //Destroy buttons after one was chosen
     function killButtons(){
-      normal.remove();
-      blitz.remove();
-      spectate.remove();
+      if (normal)
+        normal.remove();
+      if (blitz)
+        blitz.remove();
+      if (spectate)
+        spectate.remove();
     }
 
     function connectNormal(e){
