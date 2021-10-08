@@ -22,6 +22,7 @@ import { PowerI } from 'src/match/model/powers/powers.interface';
 import { LobbyI } from 'src/match/model/lobby/lobby.interface';
 import { type } from 'os';
 import { Console } from 'console';
+import { FriendsService } from 'src/friends/service/friends.service';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway{
@@ -80,6 +81,7 @@ export class ChatGateway{
     private authService: AuthService,
     private userService: UserService,
     private historyService: HistoryService,
+    private friendsService: FriendsService,
     private roomService: RoomService,
     private connectedUserService: ConnectedUserService,
     private joinedRoomService: JoinedRoomService,
@@ -170,7 +172,7 @@ export class ChatGateway{
     const joinedUsers: JoinedRoomI[] = await this.joinedRoomService.findByRoom(room);
     // TODO: Send new Message to all joined Users of the room (currently online)
     for(const user of joinedUsers) {
-      await this.server.to(user.socketId).emit('messageAdded', createdMessage);
+		await this.server.to(user.socketId).emit('messageAdded', createdMessage);
     }
   }
 
