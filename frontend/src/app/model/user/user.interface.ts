@@ -1,4 +1,5 @@
 import { FriendEntity } from "src/app/friend/models/friend.entity";
+import { RoomI } from "../chat/room.interface";
 
 export interface UserI {
     id?: number;
@@ -15,6 +16,7 @@ export interface UserI {
 	nbLoss?: number;
 	twoFactorAuthEnabled?: boolean;
 	twoFactorAuthenticationSecret?: string;
+	chatOwner?: RoomI[];
 }
 
 export enum UserRole {
