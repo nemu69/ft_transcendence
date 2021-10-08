@@ -108,6 +108,7 @@ export class ProfileusersComponent implements OnInit {
 				(data) => {
 					console.log(data);
 					this.yourBlocked = !this.yourBlocked;
+					this.yourFriend = 0;
 				})		
 		}
 			
