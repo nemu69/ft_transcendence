@@ -221,6 +221,61 @@ export class ChatGateway{
     this.b_id = this.lobby_list.blitzRooms.length - 1;
   }
 
+  private checkIfAlready(lobbies: LobbyI, user: UserI, socket: Socket)
+  {
+    let id: number = 0;
+    for (const room of lobbies.normalRooms)
+    {
+      if (room.player1 && room.player1.user.id == user.id)
+      {
+        console.log("1 NOW");
+        room.player1.socket = socket;
+        if (room.player1 && room.player2)
+          this.server.to(room.player1.socket.id).emit('score', [room.player1.points, room.player2.points]);
+        this.server.to(room.player1.socket.id).emit('name', 0);
+        this.server.to(room.player1.socket.id).emit('id', [id,0]);
+        return 1;
+      }
+      if (room.player2 && room.player2.user.id == user.id)
+      {
+        console.log("2 NOW");
+        room.player2.socket = socket;
+        if (room.player1 && room.player2)
+          this.server.to(room.player2.socket.id).emit('score', [room.player1.points, room.player2.points]);
+        this.server.to(room.player2.socket.id).emit('name', 1);
+        this.server.to(room.player2.socket.id).emit('id', [id,0]);
+        return 1;
+      }
+      id++;
+    }
+    id = 0;
+    for (const room of lobbies.blitzRooms)
+    {
+      if (room.player1 && room.player1.user == user)
+      {
+        console.log("3 NOW");
+        room.player1.socket = socket;
+        if (room.player1 && room.player2)
+          this.server.to(room.player1.socket.id).emit('score', [room.player1.points, room.player2.points]);
+        this.server.to(room.player1.socket.id).emit('name', 0);
+        this.server.to(room.player1.socket.id).emit('id', [id,1]);
+        return 1;
+      }
+      if (room.player2 && room.player2.user == user)
+      {
+        console.log("4 NOW");
+        room.player2.socket = socket;
+        if (room.player1 && room.player2)
+          this.server.to(room.player2.socket.id).emit('score', [room.player1.points, room.player2.points]);
+        this.server.to(room.player2.socket.id).emit('name', 1);
+        this.server.to(room.player2.socket.id).emit('id', [id,1]);
+        return 1;
+      }
+      id++;
+    }
+    return 0;
+  }
+
   //----------------------------------------CONNECTION HANDLER-------------------------------------------
   players = 0;
   n_id = 0;
@@ -639,14 +694,14 @@ export class ChatGateway{
         room_nb = Math.floor(Math.random() * (this.lobby_list.normalRooms.length - 1));
         this.lobby_list.normalRooms[room_nb].spectators.push(n_player);
         this.server.to(n_player.socket.id).emit('score', [this.lobby_list.normalRooms[room_nb].player1.points,this.lobby_list.normalRooms[room_nb].player2.points]);
-        this.server.to(n_player.socket.id).emit('name', [this.lobby_list.normalRooms[room_nb].player1.user.username,this.lobby_list.normalRooms[room_nb].player2.user.username]);
+        this.server.to(n_player.socket.id).emit('name', 0);
       }
       else
       {
         room_nb = Math.floor(Math.random() * (this.lobby_list.blitzRooms.length - 1));
         this.lobby_list.blitzRooms[room_nb].spectators.push(n_player);
         this.server.to(n_player.socket.id).emit('score', [this.lobby_list.blitzRooms[room_nb].player1.points,this.lobby_list.blitzRooms[room_nb].player2.points]);
-        this.server.to(n_player.socket.id).emit('name', [this.lobby_list.blitzRooms[room_nb].player1.user.username,this.lobby_list.blitzRooms[room_nb].player2.user.username]);
+        this.server.to(n_player.socket.id).emit('name', 0);
       }
     }
     //once oth players are present in a game launch it
@@ -743,45 +798,56 @@ export class ChatGateway{
   @SubscribeMessage('checkExistence')
   async checkExist(socket: Socket, data: number)
   {
-    let found: boolean = false;
-    await sleep(100);
-    this.UpdateRooms();
-    this.lobby_list.normalRooms.forEach(room => {
-      if (!found)
-      {
-        if (room.player1 && room.player1.socket.id == socket.id)
-        {
-          found = true;
-          this.server.to(room.player1.socket.id).emit('exists', [room.player1.points,room.player2.points]);
-          this.server.to(room.player1.socket.id).emit('name', 0);
-        }
-        if (room.player2 && room.player2.socket.id == socket.id)
-        {
-          found = true;
-          this.server.to(room.player2.socket.id).emit('exists', [room.player1.points,room.player2.points]);
-          this.server.to(room.player2.socket.id).emit('name', 1);
-        }
-      }
-    });
-    if (!found)
+    if (data != -1)
     {
-      this.lobby_list.blitzRooms.forEach(room => {
-        if (!found)
-        {
-          if (room.player1 && room.player1.socket.id == socket.id)
-          {
-            found = true;
-            this.server.to(room.player1.socket.id).emit('exists', [room.player1.points,room.player2.points]);
-            this.server.to(room.player1.socket.id).emit('name', 0);
-          }
-          if (room.player2 && room.player2.socket.id == socket.id)
-          {
-            found = true;
-            this.server.to(room.player2.socket.id).emit('exists', [room.player1.points,room.player2.points]);
-            this.server.to(room.player2.socket.id).emit('name', 1);
-          }
-        }
-      });
+      const payload = await this.userService.findOne(data);
+      payload.status = UserStatus.GAME;
+      this.userService.updateOne(payload.id, payload);
+      this.checkIfAlready(this.lobby_list, payload, socket);
+    }
+    await sleep(10);
+    this.UpdateRooms();
+    let id: number = 0;
+    for (const room of this.lobby_list.normalRooms)
+    {
+      if (room.player1 && room.player1.socket.id == socket.id)
+      {
+        this.server.to(room.player1.socket.id).emit('id', [id,0]);
+        if (room.player1 && room.player2)
+          this.server.to(room.player1.socket.id).emit('score', [room.player1.points,room.player2.points]);
+        this.server.to(room.player1.socket.id).emit('exists', 0);
+        this.server.to(room.player1.socket.id).emit('name', 0);
+      }
+      if (room.player2 && room.player2.socket.id == socket.id)
+      {
+        this.server.to(room.player2.socket.id).emit('id', [id,0]);
+        if (room.player1 && room.player2)
+          this.server.to(room.player2.socket.id).emit('score', [room.player1.points,room.player2.points]);
+          this.server.to(room.player2.socket.id).emit('exists', 0);
+        this.server.to(room.player2.socket.id).emit('name', 1);
+      }
+      id++;
+    }
+    id = 0;
+    for (const room of this.lobby_list.blitzRooms)
+    {
+      if (room.player1 && room.player1.socket.id == socket.id)
+      {
+        this.server.to(room.player1.socket.id).emit('id', [id,0]);
+        if (room.player1 && room.player2)
+          this.server.to(room.player1.socket.id).emit('score', [room.player1.points,room.player2.points]);
+        this.server.to(room.player1.socket.id).emit('exists', 0);
+        this.server.to(room.player1.socket.id).emit('name', 0);
+      }
+      if (room.player2 && room.player2.socket.id == socket.id)
+      {
+        this.server.to(room.player2.socket.id).emit('id', [id,0]);
+        if (room.player1 && room.player2)
+          this.server.to(room.player2.socket.id).emit('score', [room.player1.points,room.player2.points]);
+        this.server.to(room.player2.socket.id).emit('exists', 0);
+        this.server.to(room.player2.socket.id).emit('name', 1);
+      }
+      id++;
     }
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));

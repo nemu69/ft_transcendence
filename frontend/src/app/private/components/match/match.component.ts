@@ -60,17 +60,16 @@ export class MatchComponent implements OnInit {
         blitz.remove();
       if (spectate)
         spectate.remove();
-      var score = document.getElementById("score");
-      score.textContent = 0 + " : " + 0;
-      if (data)
-        score.textContent = data[0] + " : " + data[1];
     });
 
     chatService.socket.on('score', function(state: number[]) {
       var score = document.getElementById("score");
-      score.textContent = 0 + " : " + 0;
-      if (state)
-        score.textContent = name1 + " " + state[0] + " : " + state[1] + " " + name2;
+      if(score)
+      {
+        score.textContent = 0 + " : " + 0;
+        if (state)
+          score.textContent = name1 + " " + state[0] + " : " + state[1] + " " + name2;
+      }
     });
 
     chatService.socket.on('name', function(data: number) {
@@ -230,12 +229,12 @@ export class MatchComponent implements OnInit {
 		  switchMap((idt: number) => this.userService.findOne(idt).pipe(
 			tap((user) => {
 			  _user = user.id;
+        service.checkExistence(_user);
 			})
 		  ))
 		).subscribe()
 
-    service.checkExistence();
-
+    service.checkExistence(-1);
     //Destroy buttons after one was chosen
     function killButtons(){
       if (normal)

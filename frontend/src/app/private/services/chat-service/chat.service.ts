@@ -79,9 +79,9 @@ export class ChatService {
     });
   }
 
-  checkExistence()
+  checkExistence(n: number)
   {
-    this.socket.emit('checkExistence', 0);
+    this.socket.emit('checkExistence', n);
   }
 
   gameLogout()
