@@ -18,6 +18,9 @@ import { UserService } from 'src/user/service/user-service/user.service';
 import { FriendRequestEntity } from 'src/friends/model/friends.entity';
 import { FriendsService } from 'src/friends/service/friends.service';
 import { FriendsModule } from 'src/friends/friends.module';
+import { MatchGateway } from 'src/match/match.gateway';
+import { GameService } from 'src/match/service/game/game.service';
+import { GameRoomService } from 'src/match/service/gameroom/gameroom.service';
 
 @Module({
   imports: [AuthModule, UserModule, FriendsModule,
@@ -31,6 +34,6 @@ import { FriendsModule } from 'src/friends/friends.module';
 	  FriendRequestEntity,
     ])
   ],
-  providers: [ChatGateway, RoomService, ConnectedUserService, JoinedRoomService, MessageService, HistoryService, UserService, FriendsService]
+  providers: [ChatGateway, MatchGateway, RoomService, ConnectedUserService, JoinedRoomService, MessageService, HistoryService, UserService, FriendsService, GameService, GameRoomService]
 })
 export class ChatModule { }
