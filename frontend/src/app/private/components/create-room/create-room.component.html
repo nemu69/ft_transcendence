@@ -18,16 +18,23 @@
 
             <mat-form-field appearance="standard">
               <input matInput type="text" matInput placeholder="Description" formControlName="description">
-            </mat-form-field>
-
+            </mat-form-field>	
             <app-select-users [users]="users.value" (addUser)="addUser(initUser($event))"
               (removeuser)="removeUser($event.id)"></app-select-users>
 
-            <mat-hint *ngIf="!form.valid"><small>Please fill out all needed information</small></mat-hint>
-
-            <div class="button">
-              <button mat-button type="submit" [disabled]="!form.valid">Create Chatroom</button>
-            </div>
+			  
+			  <mat-radio-group (change)="radioChange($event)" class="radio">
+				  <mat-radio-button value="yes" required>Yes</mat-radio-button>
+				  <mat-radio-button value="no" required checked>No</mat-radio-button>
+				</mat-radio-group>
+				
+				<mat-form-field appearance="standard">
+					<input matInput placeholder="Password" formControlName="password"/>
+				</mat-form-field>
+				<mat-hint *ngIf="!form.valid"><small>Please fill out all needed information</small></mat-hint>
+				<div class="button">
+					<button mat-button type="submit" [disabled]="!form.valid">Create Chatroom</button>
+				</div>
 
           </form>
         </mat-card-content>

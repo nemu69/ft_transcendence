@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatRadioChange } from '@angular/material/radio';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserI } from 'src/app/model/user/user.interface';
 import { ChatService } from '../../services/chat-service/chat.service';
@@ -11,13 +12,18 @@ import { ChatService } from '../../services/chat-service/chat.service';
 })
 export class CreateRoomComponent {
 
-  form: FormGroup = new FormGroup({
-    name: new FormControl(null, [Validators.required]),
-    description: new FormControl(null),
-    users: new FormArray([], [Validators.required])
-  });
+	radio: boolean = true;
+	form: FormGroup = new FormGroup({
+	  name: new FormControl(null, [Validators.required]),
+	  description: new FormControl(null),
+	  password: new FormControl({value: 'Password', disabled: true}),
+	  users: new FormArray([], [Validators.required]),
+	});
 
-  constructor(private chatService: ChatService, private router: Router, private activatedRoute: ActivatedRoute) { }
+  constructor(private chatService: ChatService,
+	private router: Router,
+	private activatedRoute: ActivatedRoute,
+	) { }
 
   create() {
     if (this.form.valid) {
@@ -57,5 +63,16 @@ export class CreateRoomComponent {
   get users(): FormArray {
     return this.form.get('users') as FormArray;
   }
+
+  radioChange($event: MatRadioChange) {
+    console.log($event.source.name, $event.value);
+
+    if ($event.value == 'no') {
+        this.form.get('password').disable();
+    }
+	else {
+		this.form.get('password').enable();
+	}
+}
 
 }
