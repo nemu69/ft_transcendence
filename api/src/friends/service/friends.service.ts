@@ -228,7 +228,7 @@ export class FriendsService {
 	removeFriendRequest(
 	receiverId: number,
 	creator: UserEntity,
-	): Observable<{ error: string }| { success: string }> {
+	): Observable<{ error: string } | { success: string }> {
 		if (receiverId === creator.id)
 			return of({ error: 'It is not possible!' });
 		return this.findUserById(receiverId).pipe(
