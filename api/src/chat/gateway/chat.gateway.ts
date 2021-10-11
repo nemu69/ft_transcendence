@@ -228,7 +228,7 @@ export class ChatGateway{
     {
       if (room.player1 && room.player1.user.id == user.id)
       {
-        console.log("1 NOW");
+        this.server.to(room.player1.socket.id).emit('done', 1);
         room.player1.socket = socket;
         if (room.player1 && room.player2)
           this.server.to(room.player1.socket.id).emit('score', [room.player1.points, room.player2.points]);
@@ -238,7 +238,7 @@ export class ChatGateway{
       }
       if (room.player2 && room.player2.user.id == user.id)
       {
-        console.log("2 NOW");
+        this.server.to(room.player2.socket.id).emit('done', 1);
         room.player2.socket = socket;
         if (room.player1 && room.player2)
           this.server.to(room.player2.socket.id).emit('score', [room.player1.points, room.player2.points]);
@@ -253,7 +253,7 @@ export class ChatGateway{
     {
       if (room.player1 && room.player1.user == user)
       {
-        console.log("3 NOW");
+        this.server.to(room.player1.socket.id).emit('done', 1);
         room.player1.socket = socket;
         if (room.player1 && room.player2)
           this.server.to(room.player1.socket.id).emit('score', [room.player1.points, room.player2.points]);
@@ -263,7 +263,7 @@ export class ChatGateway{
       }
       if (room.player2 && room.player2.user == user)
       {
-        console.log("4 NOW");
+        this.server.to(room.player2.socket.id).emit('done', 1);
         room.player2.socket = socket;
         if (room.player1 && room.player2)
           this.server.to(room.player2.socket.id).emit('score', [room.player1.points, room.player2.points]);
