@@ -43,10 +43,12 @@ export class ChatService {
     this.socket.emit('joinRoom', room);
   }
 
-  leaveRoom(room: RoomI) {
-    console.log("leave");
-    
-    this.socket.emit('leaveRoom', room);
+  leaveJoinRoom(room: RoomI) {    
+    this.socket.emit('leaveJoinRoom', room);
+  }
+
+  leaveRoom(room : RoomI) {
+	this.socket.emit('leaveRoom', room);
   }
 
   getMessages(): Observable<MessagePaginateI> {
@@ -56,7 +58,7 @@ export class ChatService {
   getMyRooms(): Observable<RoomPaginateI> {
     return this.socket.fromEvent<RoomPaginateI>('rooms');
   }
-
+  
   emitPaginateRooms(limit: number, page: number) {
     this.socket.emit('paginateRooms', { limit, page });
   }
