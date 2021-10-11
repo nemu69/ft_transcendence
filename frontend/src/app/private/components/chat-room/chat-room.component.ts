@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router, ActivatedRoute } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
 import { map, startWith, tap } from 'rxjs/operators';
 import { MessagePaginateI } from 'src/app/model/chat/message.interface';
@@ -35,8 +37,11 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   constructor(
 	  private chatService: ChatService,
-	  private authService: AuthService
-	) { }
+	  private authService: AuthService,
+	  private router: Router,
+	  private activatedRoute: ActivatedRoute,
+	  private _snackBar: MatSnackBar
+	  	) { }
 
   ngOnChanges(changes: SimpleChanges) {
     this.chatService.leaveJoinRoom(changes['chatRoom'].previousValue);
@@ -70,9 +75,11 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   }
 
   LeaveChatRoom() {
-	  console.log(this.chatRoom);
-	  
-	this.chatService.leaveRoom(this.chatRoom.id, this.user.id);
+	this.chatService.leaveRoom(this.chatRoom);
+	this._snackBar.open('You leave ' + this.chatRoom.name + ' !', 'Close', {
+		duration: 2000,
+	});
+	this.router.navigate(['../profile/'], { relativeTo: this.activatedRoute });
   }
 
 }

@@ -45,6 +45,8 @@ export class RoomService {
   async deleteAUserFromRoom(roomId: number, userId: number): Promise<RoomI> {
 	const room = await this.getRoom(roomId);
 	room.users = room.users.filter(user => user.id !== userId);
+	console.log("without : ",room);
+	
 	return this.roomRepository.save(room);
   }
 

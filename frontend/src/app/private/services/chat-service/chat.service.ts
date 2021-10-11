@@ -43,14 +43,12 @@ export class ChatService {
     this.socket.emit('joinRoom', room);
   }
 
-  leaveJoinRoom(room: RoomI) {
-    console.log("leave");
-    
+  leaveJoinRoom(room: RoomI) {    
     this.socket.emit('leaveJoinRoom', room);
   }
 
-  leaveRoom(roomId: number, userId: number) {
-	this.socket.emit('leaveRoom', { roomId, userId });
+  leaveRoom(room : RoomI) {
+	this.socket.emit('leaveRoom', room);
   }
 
   getMessages(): Observable<MessagePaginateI> {
