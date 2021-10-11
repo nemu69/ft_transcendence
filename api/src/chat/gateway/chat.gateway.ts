@@ -22,6 +22,7 @@ import { PowerI } from 'src/match/model/powers/powers.interface';
 import { LobbyI } from 'src/match/model/lobby/lobby.interface';
 import { type } from 'os';
 import { Console } from 'console';
+import { FriendsService } from 'src/friends/service/friends.service';
 import { UpdateDateColumn } from 'typeorm';
 
 @WebSocketGateway({ cors: true })
@@ -81,6 +82,7 @@ export class ChatGateway{
     private authService: AuthService,
     private userService: UserService,
     private historyService: HistoryService,
+    private friendsService: FriendsService,
     private roomService: RoomService,
     private connectedUserService: ConnectedUserService,
     private joinedRoomService: JoinedRoomService,
@@ -153,15 +155,23 @@ export class ChatGateway{
     const messages = await this.messageService.findMessagesForRoom(room, socket.data.user, { limit: 30, page: 1 });
     messages.meta.currentPage = messages.meta.currentPage - 1;
     // Save Connection to Room
-    await this.joinedRoomService.create({ socketId: socket.id, user: socket.data.user, room });
+    await this.joinedRoomService.create({ socketId: socket.id, user: socket.data.user, userId: socket.data.user.id, room });
     // Send last messages from Room to User
     await this.server.to(socket.id).emit('messages', messages);
   }
 
-  @SubscribeMessage('leaveRoom')
-  async onLeaveRoom(socket: Socket) {
+  @SubscribeMessage('leaveJoinRoom')
+  async onleaveJoinRoom(socket: Socket) {
     // remove connection from JoinedRooms
     await this.joinedRoomService.deleteBySocketId(socket.id);
+  }
+
+  @SubscribeMessage('leaveRoom')
+  async leaveRoom(socket: Socket, roomId: number, userId: number) {
+    // remove connection from JoinedRooms
+	//console.log(socket);
+	
+    await this.roomService.deleteAUserFromRoom(roomId, userId);
   }
 
   @SubscribeMessage('addMessage')
@@ -171,7 +181,8 @@ export class ChatGateway{
     const joinedUsers: JoinedRoomI[] = await this.joinedRoomService.findByRoom(room);
     // TODO: Send new Message to all joined Users of the room (currently online)
     for(const user of joinedUsers) {
-      await this.server.to(user.socketId).emit('messageAdded', createdMessage);
+		const nu = await this.friendsService.boolUserIsBlocked(user.userId, createdMessage.user.id);
+		if (!nu) await this.server.to(user.socketId).emit('messageAdded', createdMessage);
     }
   }
 

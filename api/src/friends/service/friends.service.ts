@@ -252,4 +252,21 @@ export class FriendsService {
 		}));
 	}
 
+	boolUserIsBlocked(
+		creator: number,
+		id: number,
+	  ): Promise<number> {
+		  const query = this.friendRequestRepository
+			.createQueryBuilder("f")
+			.leftJoin('f.creator', 'c')
+			.leftJoinAndSelect('f.receiver', 'r')
+			.where("c.id = :cid")
+			.andWhere("r.id = :rid", { rid: id })
+			.andWhere("f.status = 'blocked'")
+			.setParameters({ cid : creator })
+			.getCount();
+		
+		return  (query);
+	  }
+
 }

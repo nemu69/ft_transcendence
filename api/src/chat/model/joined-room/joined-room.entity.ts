@@ -15,6 +15,9 @@ export class JoinedRoomEntity {
   @JoinColumn()
   user: UserEntity;
 
+  @Column()
+  userId: number;
+
   @ManyToOne(() => RoomEntity, room => room.joinedUsers)
   @JoinColumn()
   room: RoomEntity;

@@ -27,34 +27,38 @@ export class MessageService {
   }
 
   async findMessagesForRoom(room: RoomI, user: UserI, options: IPaginationOptions): Promise<Pagination<MessageI>> {
-	const blocked = await this.userRepository
-		.createQueryBuilder("u")
-		.leftJoin('u.sentFriendRequests', 'c')
-		.leftJoin('u.receivedFriendRequests', 'r')
-		.where("r.creator = :id")
-		.andWhere("r.status = 'blocked'")
-		.setParameters({ id : user.id })
-		.getMany();
+	
+	const blocked = this.userRepository
+        .createQueryBuilder("u")
+        .leftJoin('u.sentFriendRequests', 'c')
+        .leftJoin('u.receivedFriendRequests', 'r')
+        .where("r.creator = :id")
+        .andWhere("r.status = 'blocked'")
+        .setParameters({ id : user.id })
+        .getMany();
 
+    const blockedIds = (await blocked).map(b => b.id);
+	if (blockedIds.length != 0) {
+		// query for messages excluding blocked users
+		const query = this.messageRepository
+        .createQueryBuilder('message')
+        .leftJoin('message.room', 'room')
+        .leftJoinAndSelect('message.user', 'u')
+        .where('room.id = :roomId', { roomId: room.id })
+        .andWhere('u.id NOT IN (:...blockedIds)')
+        .setParameters({ blockedIds: blockedIds })
+        .orderBy('message.created_at', 'DESC');
+
+		return paginate(query, options);
+	}
 	const query = this.messageRepository
-		.createQueryBuilder('message')
-		.leftJoin('message.room', 'room')
-		.where('room.id = :roomId', { roomId: room.id })
-		.leftJoinAndSelect('message.user', 'user')
-		.orderBy('message.created_at', 'DESC');
-
-		// const query = this.messageRepository
-		// .createQueryBuilder('message')
-		// .leftJoin('message.room', 'room')
-		// .leftJoinAndSelect('message.user', 'user')
-		// .leftJoin('user.receivedFriendRequests', 'r')
-		// .where('room.id = :roomId', { roomId: room.id })
-		// .andWhere("r.creator = :id")
-		// .andWhere("r.status = 'blocked'")
-		// .setParameters({ id : user.id })
-		// .orderBy('message.created_at', 'DESC');
-
-    return paginate(query, options);
+	.createQueryBuilder('message')
+	.leftJoin('message.room', 'room')
+	.leftJoinAndSelect('message.user', 'u')
+	.where('room.id = :roomId', { roomId: room.id })
+	.orderBy('message.created_at', 'DESC');
+	
+	return paginate(query, options);
 
   }
 

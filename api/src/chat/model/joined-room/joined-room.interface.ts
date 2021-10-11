@@ -6,5 +6,6 @@ export interface JoinedRoomI {
   id?: number;
   socketId: string;
   user: UserI;
+  userId: number;
   room: RoomI;
 }

@@ -16,6 +16,13 @@
       <h3 style="color: grey">{{chatRoom.description}}</h3>
       <span *ngFor="let user of chatRoom.users">{{user.username}}  </span>
     </span>
+    <span>
+
+	  <button mat-button (click)="LeaveChatRoom()">
+		<i class="fas fa-sign-out-alt"></i>
+		Leave Room
+	  </button>
+    </span>
   </div>
 
   <!-- Messages -->
