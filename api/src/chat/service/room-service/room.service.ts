@@ -126,12 +126,4 @@ export class RoomService {
 	return this.roomRepository.save(room);
   }
 
-  async deleteAMutedUserFromRoom(roomId: number, userId: number): Promise<RoomI> {
-	const room = await this.getRoom(roomId);
-	room.muted = room.muted.filter(user => user.id !== userId);
-	console.log("without : ",room);
-	
-	return this.roomRepository.save(room);
-  }
-
 }

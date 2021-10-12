@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import {MatRadioModule} from '@angular/material/radio';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
 import { TwoFactorComponent } from './components/two-factor/two-factor.component';
@@ -28,6 +29,7 @@ import { TwoFactorComponent } from './components/two-factor/two-factor.component
     MatCardModule,
     ReactiveFormsModule,
     MatFormFieldModule,
+	MatRadioModule,
     MatInputModule,
     MatIconModule,
     MatButtonModule,
