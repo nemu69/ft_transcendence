@@ -4,7 +4,7 @@ import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginat
 import { Observable, of } from 'rxjs';
 import { AuthService } from 'src/auth/login/service/auth.service';
 import { RoomEntity } from 'src/chat/model/room/room.entity';
-import { RoomI } from 'src/chat/model/room/room.interface';
+import { RoomI, RoomType } from 'src/chat/model/room/room.interface';
 import { UserI } from 'src/user/model/user.interface';
 import { Repository } from 'typeorm';
 
@@ -25,7 +25,8 @@ export class RoomService {
 	}
 	room.owner = creator;
     const newRoom = await this.addCreatorToRoom(room, creator);
-    return this.roomRepository.save(newRoom);
+    const newRoomAdmin = await this.addAdminToRoom(newRoom, creator);
+    return this.roomRepository.save(newRoomAdmin);
   }
 
   async changePasswordRoom(room: RoomI, newPassword: string): Promise<RoomI> {
@@ -36,9 +37,14 @@ export class RoomService {
     return this.roomRepository.save(room);
   }
 
+  async changeTypeRoom(room: RoomI, newType: RoomType): Promise<RoomI> {
+	room.type = newType;
+    return this.roomRepository.save(room);
+  }
+
   async getRoom(roomId: number): Promise<RoomI> {
     return this.roomRepository.findOne(roomId, {
-      relations: ['users']
+      relations: ['users', 'owner']
     });
   }
 
@@ -47,6 +53,7 @@ export class RoomService {
       .createQueryBuilder('room')
       .leftJoin('room.users', 'users')
       .where('users.id = :userId', { userId })
+      .andWhere('room.type != "closed"')
       .leftJoinAndSelect('room.users', 'all_users')
       .orderBy('room.updated_at', 'DESC');
 
@@ -58,14 +65,15 @@ export class RoomService {
       .createQueryBuilder('room')
       .leftJoin('room.users', 'users')
       .leftJoinAndSelect('room.users', 'all_users')
-	  .where('room.type != "private"')
+	  .where('room.type != "private" AND room.type != "close')
       .orderBy('room.updated_at', 'DESC');
 
     return paginate(query, options);
   }
 
   async addUserToRoom(room: RoomI, user: UserI, password: string): Promise<Observable<{ error: string } | { success: string }>> {
-	  if (room.type == 'private') return of({ error: 'Can\'t join private room;' }); 
+	if (room.type == 'private') return of({ error: 'Can\'t join private room;' }); 
+	if (room.type == 'close') return of({ error: 'Can\'t join room closed;' }); 
 	  if (room.type == 'public') {
 			const newRoom = await this.addCreatorToRoom(room, user);
 			this.roomRepository.save(newRoom);
@@ -92,6 +100,11 @@ export class RoomService {
     return room;
   }
 
+  async addMutedToRoom(room: RoomI, user: UserI): Promise<RoomI> {
+    room.muted.push(user);
+    return room;
+  }
+
   private async hashPassword(password: string): Promise<string> {
 		return this.authService.hashPassword(password);
 	}
@@ -102,7 +115,20 @@ export class RoomService {
 
   async deleteAUserFromRoom(roomId: number, userId: number): Promise<RoomI> {
 	const room = await this.getRoom(roomId);
+	if (room.owner.id === userId) {
+		room.type = RoomType.CLOSE;
+		return this.roomRepository.save(room);
+	}
 	room.users = room.users.filter(user => user.id !== userId);
+	room.admin = room.admin.filter(user => user.id !== userId);
+	console.log("without : ",room);
+	
+	return this.roomRepository.save(room);
+  }
+
+  async deleteAMutedUserFromRoom(roomId: number, userId: number): Promise<RoomI> {
+	const room = await this.getRoom(roomId);
+	room.muted = room.muted.filter(user => user.id !== userId);
 	console.log("without : ",room);
 	
 	return this.roomRepository.save(room);

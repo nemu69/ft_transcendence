@@ -172,6 +172,27 @@ export class ChatGateway{
     await this.roomService.deleteAUserFromRoom(room.id, socket.data.user.id);
   }
 
+  // get all room (public and protected)
+  @SubscribeMessage('allRoom')
+  async allRoom(socket: Socket, page: PageI) {
+	const rooms = await this.roomService.getAllRoom(this.handleIncomingPageRequest(page));
+    // substract page -1 to match the angular material paginator
+    rooms.meta.currentPage = rooms.meta.currentPage - 1;
+    return this.server.to(socket.id).emit('rooms', rooms);
+  }
+
+  // add user
+
+  // Add admin
+
+  // add muted
+
+  // try join channel
+
+  // change password
+
+  // change type room
+
   @SubscribeMessage('addMessage')
   async onAddMessage(socket: Socket, message: MessageI) {
     const createdMessage: MessageI = await this.messageService.create({...message, user: socket.data.user});

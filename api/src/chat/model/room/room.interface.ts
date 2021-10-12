@@ -4,6 +4,7 @@ export enum RoomType {
     PUBLIC = 'public',
     PRIVATE = 'private',
     PROTECTED = 'protected',
+    CLOSE = 'close',
 }
 
 export interface RoomI {
@@ -14,6 +15,7 @@ export interface RoomI {
   type?: RoomType;
   users?: UserI[];
   admin?: UserI[];
+  muted?: UserI[];
   owner?: UserI;
   created_at?: Date;
   updated_at?: Date;

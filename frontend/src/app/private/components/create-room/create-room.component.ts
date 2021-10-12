@@ -14,7 +14,9 @@ export class CreateRoomComponent {
   form: FormGroup = new FormGroup({
     name: new FormControl(null, [Validators.required]),
     description: new FormControl(null),
-    users: new FormArray([], [Validators.required])
+    users: new FormArray([], [Validators.required]),
+    admin: new FormArray([]),
+	muted: new FormArray([])
   });
 
   constructor(private chatService: ChatService, private router: Router, private activatedRoute: ActivatedRoute) { }
