@@ -4,6 +4,7 @@ import { RoomI } from "../room/room.interface";
 
 export interface MessageI {
   id?: number;
+  type: number;
   text: string;
   user: UserI;
   room: RoomI;

@@ -69,12 +69,12 @@
 				</ng-template>
 				<br>
 				<br>
-				<button *ngIf="true; else False" class="btn profile-edit-btn" (click)=blockUser()>
+				<button *ngIf="true; else False" class="btn profile-edit-btn" (click)=sendInvite()>
 					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-gamepad"></i>
 					Invite to game
 				</button>
 				<ng-template #False>
-					<button class="btn profile-edit-btn" (click)=blockUser()>
+					<button class="btn profile-edit-btn" (click)=sendInvite()>
 						<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-gamepad"></i>
 						Accept invite
 					</button>

@@ -85,6 +85,10 @@ body :-ms-input-placeholder {
   margin-top: 40px;
 }
 
+.gameButton{
+  right:0%;
+}
+
  mat-form-field {
   display: block;
   -webkit-appearance: none;

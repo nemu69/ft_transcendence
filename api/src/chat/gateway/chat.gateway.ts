@@ -158,6 +158,18 @@ export class ChatGateway{
     }
   }
 
+  @SubscribeMessage('gameMessage')
+  async onGameMessage(socket: Socket, message: MessageI) {
+    const createdMessage: MessageI = await this.messageService.create({...message, user: socket.data.user});
+    const room: RoomI = await this.roomService.getRoom(createdMessage.room.id);
+    const joinedUsers: JoinedRoomI[] = await this.joinedRoomService.findByRoom(room);
+    // TODO: Send new Message to all joined Users of the room (currently online)
+    for(const user of joinedUsers) {
+		const nu = await this.friendsService.boolUserIsBlocked(user.userId, createdMessage.user.id);
+		if (!nu) await this.server.to(user.socketId).emit('messageAdded', createdMessage);
+    }
+  }
+
   private handleIncomingPageRequest(page: PageI) {
     page.limit = page.limit > 100 ? 100 : page.limit;
     // add page +1 to match angular material paginator

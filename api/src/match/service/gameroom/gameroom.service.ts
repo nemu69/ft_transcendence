@@ -6,11 +6,23 @@ import { UserI, UserStatus} from 'src/user/model/user.interface';
 import { GameStateI } from 'src/match/model/game-state/game-state.interface';
 import { UserService } from 'src/user/service/user-service/user.service';
 import { HistoryI } from 'src/history/model/history.interface';
+import { RoomI } from 'src/chat/model/room/room.interface';
 
 @Injectable()
 export class GameRoomService {
 
   constructor(){};
+
+  public findGameRoom(lobbies: LobbyI, chatRoom: RoomI)
+  {
+    for (const room of lobbies.privateRooms)
+    {
+      if (room.room && room.room.id == chatRoom.id)
+      {
+        return(room);
+      }
+    }
+  }
 
   //Remove unused Rooms and change id's to coincide with new order
   public async UpdateRooms(lobbies: LobbyI, server: Server)
@@ -47,9 +59,26 @@ export class GameRoomService {
       y++;
       i++;
     });
+    i = 0;
+    y = 0;
+    lobbies.privateRooms.forEach(room => {
+      if (room.type < 0)
+      {
+        lobbies.privateRooms.splice(i, 1);
+        y--;
+      }
+      else if (y != i && lobbies.privateRooms[y].ball != null)
+      {
+        server.to(lobbies.privateRooms[y].player1.socket.id).emit('id', [y, 2]);
+        server.to(lobbies.privateRooms[y].player2.socket.id).emit('id', [y, 2]);
+      }
+      y++;
+      i++;
+    });
     let n_id = lobbies.normalRooms.length - 1;
     let b_id = lobbies.blitzRooms.length - 1;
-    return ([n_id, b_id]);
+    let p_id = lobbies.privateRooms.length - 1;
+    return ([n_id, b_id, p_id]);
   }
 
   public checkExists(socket: Socket, data: number, lobby_list: LobbyI, server : Server)
@@ -80,7 +109,7 @@ export class GameRoomService {
     {
       if (room.player1 && room.player1.socket.id == socket.id)
       {
-        server.to(room.player1.socket.id).emit('id', [id,0]);
+        server.to(room.player1.socket.id).emit('id', [id,1]);
         if (room.player1 && room.player2)
           server.to(room.player1.socket.id).emit('score', [room.player1.points,room.player2.points]);
         server.to(room.player1.socket.id).emit('exists', 0);
@@ -88,12 +117,38 @@ export class GameRoomService {
       }
       if (room.player2 && room.player2.socket.id == socket.id)
       {
-        server.to(room.player2.socket.id).emit('id', [id,0]);
+        server.to(room.player2.socket.id).emit('id', [id,1]);
         if (room.player1 && room.player2)
           server.to(room.player2.socket.id).emit('score', [room.player1.points,room.player2.points]);
         server.to(room.player2.socket.id).emit('exists', 0);
         server.to(room.player2.socket.id).emit('name', 1);
       }
+      id++;
+    }
+    id = 0;
+    for (const room of lobby_list.privateRooms)
+    {
+      if (room.player1 && room.player1.socket.id == socket.id)
+      {
+        server.to(room.player1.socket.id).emit('id', [id,2]);
+        if (room.player1 && room.player2)
+          server.to(room.player1.socket.id).emit('score', [room.player1.points,room.player2.points]);
+        server.to(room.player1.socket.id).emit('exists', 0);
+        server.to(room.player1.socket.id).emit('name', 0);
+      }
+      if (room.player2 && room.player2.socket.id == socket.id)
+      {
+        server.to(room.player2.socket.id).emit('id', [id,2]);
+        if (room.player1 && room.player2)
+          server.to(room.player2.socket.id).emit('score', [room.player1.points,room.player2.points]);
+        server.to(room.player2.socket.id).emit('exists', 0);
+        server.to(room.player2.socket.id).emit('name', 1);
+      }
+      room.spectators.forEach(spec => {
+        if (room.player1 && room.player2)
+          server.to(spec.socket.id).emit('score', [room.player1.points,room.player2.points]);
+        server.to(spec.socket.id).emit('exists', 2);
+      });
       id++;
     }
   }
@@ -105,7 +160,8 @@ export class GameRoomService {
     {
       if (room.player1 && room.player1.user.id == user.id)
       {
-        server.to(room.player1.socket.id).emit('done', 1);
+        if (room.player1.socket != socket)
+          server.to(room.player1.socket.id).emit('done', 1);
         room.player1.socket = socket;
         if (room.player1 && room.player2)
           server.to(room.player1.socket.id).emit('score', [room.player1.points, room.player2.points]);
@@ -115,7 +171,8 @@ export class GameRoomService {
       }
       if (room.player2 && room.player2.user.id == user.id)
       {
-        server.to(room.player2.socket.id).emit('done', 1);
+        if (room.player2.socket != socket)
+          server.to(room.player2.socket.id).emit('done', 1);
         room.player2.socket = socket;
         if (room.player1 && room.player2)
           server.to(room.player2.socket.id).emit('score', [room.player1.points, room.player2.points]);
@@ -130,7 +187,8 @@ export class GameRoomService {
     {
       if (room.player1 && room.player1.user == user)
       {
-        server.to(room.player1.socket.id).emit('done', 1);
+        if (room.player1.socket != socket)
+          server.to(room.player1.socket.id).emit('done', 1);
         room.player1.socket = socket;
         if (room.player1 && room.player2)
           server.to(room.player1.socket.id).emit('score', [room.player1.points, room.player2.points]);
@@ -140,12 +198,40 @@ export class GameRoomService {
       }
       if (room.player2 && room.player2.user == user)
       {
-        server.to(room.player2.socket.id).emit('done', 1);
+        if (room.player2.socket != socket)
+          server.to(room.player2.socket.id).emit('done', 1);
         room.player2.socket = socket;
         if (room.player1 && room.player2)
           server.to(room.player2.socket.id).emit('score', [room.player1.points, room.player2.points]);
         server.to(room.player2.socket.id).emit('name', 1);
         server.to(room.player2.socket.id).emit('id', [id,1]);
+        return 1;
+      }
+      id++;
+    }
+    id = 0;
+    for (const room of lobbies.privateRooms)
+    {
+      if (room.player1 && room.player1.user == user)
+      {
+        if (room.player1.socket != socket)
+          server.to(room.player1.socket.id).emit('done', 1);
+        room.player1.socket = socket;
+        if (room.player1 && room.player2)
+          server.to(room.player1.socket.id).emit('score', [room.player1.points, room.player2.points]);
+        server.to(room.player1.socket.id).emit('name', 0);
+        server.to(room.player1.socket.id).emit('id', [id,2]);
+        return 1;
+      }
+      if (room.player2 && room.player2.user == user)
+      {
+        if (room.player2.socket != socket)
+          server.to(room.player2.socket.id).emit('done', 1);
+        room.player2.socket = socket;
+        if (room.player1 && room.player2)
+          server.to(room.player2.socket.id).emit('score', [room.player1.points, room.player2.points]);
+        server.to(room.player2.socket.id).emit('name', 1);
+        server.to(room.player2.socket.id).emit('id', [id,2]);
         return 1;
       }
       id++;
@@ -185,8 +271,10 @@ export class GameRoomService {
     let type: string;
     if (gamestate.type == 0)
       type = "normal";
-    else
+    else if (gamestate.type == 1)
       type = "blitz";
+    else
+      type = "private";
     gamestate.type = -1;
     if (gamestate.player1.points >= 5)
     {

@@ -3,6 +3,7 @@ import { CoordinatesI } from "../coordinates/coordinates.interface";
 import { UserService } from "src/user/service/user-service/user.service";
 import { PowerI } from "../powers/powers.interface";
 import { HistoryService } from 'src/history/service/history.service';
+import { RoomI } from "src/chat/model/room/room.interface";
 
 export interface GameStateI {
     userServices?: UserService;
@@ -14,4 +15,5 @@ export interface GameStateI {
     ball: CoordinatesI;
     type: number;
     powers?: PowerI[];
+    room?: RoomI;
 }

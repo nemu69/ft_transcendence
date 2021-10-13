@@ -41,7 +41,6 @@ export class MatchComponent implements OnInit {
     let name2: string;
     //Get Room ID from Server Response
     chatService.socket.on('id', function(n_id: number[]) {
-      console.log("GOT ID", n_id[0])
       id = n_id[0];
       type = n_id[1];
     });
@@ -73,16 +72,20 @@ export class MatchComponent implements OnInit {
     });
 
     chatService.socket.on('name', function(data: number) {
-      console.log("CALLED");
       if (data == 0)
       {
         name1 = "You";
         name2 = "Opp";
       }
-      else
+      else if (data == 1)
       {
         name1 = "Opp";
         name2 = "You";
+      }
+      else
+      {
+        name1 = "<P1";
+        name2 = "P2>";
       }
     });
 
@@ -234,7 +237,6 @@ export class MatchComponent implements OnInit {
 		  ))
 		).subscribe()
 
-    service.checkExistence(-1);
     //Destroy buttons after one was chosen
     function killButtons(){
       if (normal)
