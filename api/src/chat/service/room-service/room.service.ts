@@ -71,7 +71,8 @@ export class RoomService {
       .createQueryBuilder('room')
       .leftJoin('room.users', 'users')
       .leftJoinAndSelect('room.users', 'all_users')
-	  .where('room.type != "private" AND room.type != "close')
+	  .where('room.type != :p', { p: RoomType.PRIVATE })
+	  .andWhere('room.type != :c', { c: RoomType.CLOSE })
       .orderBy('room.updated_at', 'DESC');
 
     return paginate(query, options);
