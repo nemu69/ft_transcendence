@@ -20,6 +20,9 @@ export class UserEntity {
 	
 	@Column({unique: true})
 	email: string;
+
+	@Column({default: false})
+	ban: boolean;
 	
 	@Column({select: false})
 	password: string;

@@ -126,4 +126,16 @@ export class RoomService {
 	return this.roomRepository.save(room);
   }
 
+  boolUserMutedOnRoom(userId: number, room: RoomI): Promise<number> {
+	const query = this.roomRepository
+	.createQueryBuilder("r")
+	.leftJoinAndSelect('r.muted', 'm')
+	.where("m.id = :cid")
+	.andWhere("r.id = :rid", { rid: room.id })
+	.setParameters({ mid : userId })
+	.getCount();
+
+	return  (query);
+  }
+
 }
