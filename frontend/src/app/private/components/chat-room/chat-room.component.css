@@ -85,6 +85,11 @@ body :-ms-input-placeholder {
   margin-top: 40px;
 }
 
+.addMessage{
+  padding-top: 20px;
+  padding-bottom: 30px;
+}
+
  mat-form-field {
   display: block;
   -webkit-appearance: none;

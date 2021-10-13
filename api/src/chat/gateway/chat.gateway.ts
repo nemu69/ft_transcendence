@@ -130,21 +130,21 @@ export class ChatGateway{
   // Add admin
   @SubscribeMessage('addAdmin')
   async addAdmin(socket: Socket, room: RoomI, user: UserI) {
-	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user, room);
+	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
 	if (bool) await this.roomService.addAdminToRoom(room, user);
   }
 
   // add muted
   @SubscribeMessage('addMuted')
   async addMuted(socket: Socket, room: RoomI, user: UserI) {
-	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user, room);
+	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
 	if (bool && user != room.owner) await this.roomService.addMutedToRoom(room, user);
   }
 
    // remove muted
    @SubscribeMessage('removeMuted')
    async removeMuted(socket: Socket, room: RoomI, user: UserI) {
-	 const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user, room);
+	 const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
 	 if (bool) await this.roomService.deleteAUserMutedFromRoom(room.id, user.id);
    }
 
@@ -157,13 +157,25 @@ export class ChatGateway{
   // change password
   @SubscribeMessage('changePassword')
    async changePassword(socket: Socket, room: RoomI, password: string) {
-	if (room.owner == socket.data.user) await this.roomService.changePasswordRoom(room, password);
+	if (room.owner.id == socket.data.user.id) await this.roomService.changePasswordRoom(room, password);
    }
 
   // change type room
   @SubscribeMessage('changeType')
-   async changeType(socket: Socket, room: RoomI, type: RoomType) {
-	if (room.owner == socket.data.user) await this.roomService.changeTypeRoom(room, type);
+   async changeType(socket: Socket, room: RoomI, type: RoomType, password: string) {
+	if (room.owner.id == socket.data.user.id) {
+		if (type == RoomType.PROTECTED) {
+			if (room.password != null && password == null){
+				await this.roomService.changeTypeRoom(room, type);
+			}
+			else if (password != null) {
+				await this.roomService.changePasswordRoom(room, password);
+				await this.roomService.changeTypeRoom(room, type);
+			}
+		}
+		else
+			await this.roomService.changeTypeRoom(room, type);
+	}
    }
 
   @SubscribeMessage('addMessage')

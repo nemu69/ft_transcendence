@@ -31,24 +31,46 @@ export class ChatService {
     this.socket.emit('PlayerExit');
   }
 
-  getAddedMessage(): Observable<MessageI> {
-    return this.socket.fromEvent<MessageI>('messageAdded');
+  createRoom(room: RoomI) {
+	let iduser : number;
+	this.authService.getUserId().subscribe(val => {
+	  iduser = val;
+	})
+	if (room.users.filter(function(e) { return e.id === iduser; }).length > 0) {
+	  this.snackbar.open(`You're adding YOU :)`, 'Close', {
+		duration: 5000, horizontalPosition: 'right', verticalPosition: 'top',
+		panelClass: ['red-snackbar','login-snackbar'],
+	  });
+	  throw iduser;
+	}
+	this.socket.emit('createRoom', room);
+	this.snackbar.open(`Room ${room.name} created successfully`, 'Close', {
+	  duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
+	});
   }
-
-  sendMessage(message: MessageI) {
-    this.socket.emit('addMessage', message);
+  
+  emitPaginateRooms(limit: number, page: number) {
+	this.socket.emit('paginateRooms', { limit, page });
   }
-
+  
   joinRoom(room: RoomI) {
-    this.socket.emit('joinRoom', room);
+	this.socket.emit('joinRoom', room);
   }
-
+  
   leaveJoinRoom(room: RoomI) {    
-    this.socket.emit('leaveJoinRoom', room);
+	this.socket.emit('leaveJoinRoom', room);
   }
 
   leaveRoom(room : RoomI) {
 	this.socket.emit('leaveRoom', room);
+  }
+  
+  emitPaginateAllRooms(limit: number, page: number) {
+    this.socket.emit('allRoom', { limit, page });
+  }
+
+  sendMessage(message: MessageI) {
+    this.socket.emit('addMessage', message);
   }
 
   getMessages(): Observable<MessagePaginateI> {
@@ -58,31 +80,9 @@ export class ChatService {
   getMyRooms(): Observable<RoomPaginateI> {
     return this.socket.fromEvent<RoomPaginateI>('rooms');
   }
-  
-  emitPaginateRooms(limit: number, page: number) {
-    this.socket.emit('paginateRooms', { limit, page });
-  }
-  
-  emitPaginateAllRooms(limit: number, page: number) {
-    this.socket.emit('allRoom', { limit, page });
-  }
 
-  createRoom(room: RoomI) {
-    let iduser : number;
-    this.authService.getUserId().subscribe(val => {
-      iduser = val;
-    })
-    if (room.users.filter(function(e) { return e.id === iduser; }).length > 0) {
-      this.snackbar.open(`You're adding YOU :)`, 'Close', {
-        duration: 5000, horizontalPosition: 'right', verticalPosition: 'top',
-        panelClass: ['red-snackbar','login-snackbar'],
-      });
-      throw iduser;
-    }
-    this.socket.emit('createRoom', room);
-    this.snackbar.open(`Room ${room.name} created successfully`, 'Close', {
-      duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
-    });
+  getAddedMessage(): Observable<MessageI> {
+    return this.socket.fromEvent<MessageI>('messageAdded');
   }
 
   checkExistence(n: number)
