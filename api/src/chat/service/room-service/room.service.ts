@@ -113,7 +113,7 @@ export class RoomService {
     return room;
   }
 
-  private async hashPassword(password: string): Promise<string> {
+  	private async hashPassword(password: string): Promise<string> {
 		return this.authService.hashPassword(password);
 	}
 
@@ -138,6 +138,15 @@ export class RoomService {
 	return this.roomRepository.save(room);
   }
 
+  async deleteAUserMutedFromRoom(roomId: number, userId: number): Promise<RoomI> {
+	const room = await this.getRoom(roomId);
+	console.log(room);
+	room.admin = room.admin.filter(user => user.id !== userId);
+	console.log("without : ",room);
+	
+	return this.roomRepository.save(room);
+  }
+
   boolUserMutedOnRoom(userId: number, room: RoomI): Promise<number> {
 	const query = this.roomRepository
 	.createQueryBuilder("r")
@@ -154,6 +163,18 @@ export class RoomService {
 	const query = this.roomRepository
 	.createQueryBuilder("r")
 	.leftJoinAndSelect('r.user', 'u')
+	.where("u.id = :uid")
+	.andWhere("r.id = :rid", { rid: room.id })
+	.setParameters({ uid : userId })
+	.getCount();
+
+	return  (query);
+  }
+
+  boolUserIsAdminOnRoom(userId: number, room: RoomI): Promise<number> {
+	const query = this.roomRepository
+	.createQueryBuilder("r")
+	.leftJoinAndSelect('r.admin', 'u')
 	.where("u.id = :uid")
 	.andWhere("r.id = :rid", { rid: room.id })
 	.setParameters({ uid : userId })

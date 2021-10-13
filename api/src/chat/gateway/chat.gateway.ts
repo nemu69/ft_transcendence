@@ -7,7 +7,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import { RoomService } from '../service/room-service/room.service';
 import { PageI } from '../model/page.interface';
 import { ConnectedUserService } from '../service/connected-user/connected-user.service';
-import { RoomI } from '../model/room/room.interface';
+import { RoomI, RoomType } from '../model/room/room.interface';
 import { ConnectedUserI } from '../model/connected-user/connected-user.interface';
 import { JoinedRoomService } from '../service/joined-room/joined-room.service';
 import { MessageService } from '../service/message/message.service';
@@ -122,16 +122,49 @@ export class ChatGateway{
   }
 
   // add user
+  @SubscribeMessage('addUser')
+  async addUser(socket: Socket, room: RoomI, password: string) {
+    await this.roomService.addUserToRoom(room, socket.data.user, password);
+  }
 
   // Add admin
+  @SubscribeMessage('addAdmin')
+  async addAdmin(socket: Socket, room: RoomI, user: UserI) {
+	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user, room);
+	if (bool) await this.roomService.addAdminToRoom(room, user);
+  }
 
   // add muted
+  @SubscribeMessage('addMuted')
+  async addMuted(socket: Socket, room: RoomI, user: UserI) {
+	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user, room);
+	if (bool && user != room.owner) await this.roomService.addMutedToRoom(room, user);
+  }
+
+   // remove muted
+   @SubscribeMessage('removeMuted')
+   async removeMuted(socket: Socket, room: RoomI, user: UserI) {
+	 const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user, room);
+	 if (bool) await this.roomService.deleteAUserMutedFromRoom(room.id, user.id);
+   }
 
   // try join channel
+  @SubscribeMessage('tryJoinChannel')
+   async tryJoinChannel(socket: Socket, room: RoomI, password: string) {
+	await this.roomService.addUserToRoom(room, socket.data.user, password);
+   }
 
   // change password
+  @SubscribeMessage('changePassword')
+   async changePassword(socket: Socket, room: RoomI, password: string) {
+	if (room.owner == socket.data.user) await this.roomService.changePasswordRoom(room, password);
+   }
 
   // change type room
+  @SubscribeMessage('changeType')
+   async changeType(socket: Socket, room: RoomI, type: RoomType) {
+	if (room.owner == socket.data.user) await this.roomService.changeTypeRoom(room, type);
+   }
 
   @SubscribeMessage('addMessage')
   async onAddMessage(socket: Socket, message: MessageI) {
