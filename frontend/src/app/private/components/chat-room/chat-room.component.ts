@@ -20,7 +20,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   @Input() chatRoom: RoomI;
   @ViewChild('messages') private messagesScroller: ElementRef;
   user: UserI = this.authService.getLoggedInUser();
-
+  IsOwner: boolean = false;
   messagesPaginate$: Observable<MessagePaginateI> = combineLatest([this.chatService.getMessages(), this.chatService.getAddedMessage().pipe(startWith(null))]).pipe(
     map(([messagePaginate, message]) => {
       if (message && message.room.id === this.chatRoom.id && !messagePaginate.items.some(m => m.id === message.id)) {
@@ -28,6 +28,9 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       }
       const items = messagePaginate.items.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
       messagePaginate.items = items;
+	  console.log(this.chatRoom);
+	  if (this.chatRoom.owner.id === this.user.id)
+		  this.IsOwner = true;
       return messagePaginate;
     }),
     tap(() => this.scrollToBottom())
@@ -47,6 +50,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     this.chatService.leaveJoinRoom(changes['chatRoom'].previousValue);
     if (this.chatRoom) {
       this.chatService.joinRoom(this.chatRoom);
+
     }
   }
 

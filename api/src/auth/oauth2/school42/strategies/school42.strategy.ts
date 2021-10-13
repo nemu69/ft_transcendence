@@ -29,6 +29,9 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 			headers: { Authorization: `Bearer ${accessToken}` },
 		});
 		try {
+			//check if user is ban
+			
+			// check if user already exists
 			let user = await this.usersService.getUserBy42Id(data.id);
 			done(null, user);
 		}

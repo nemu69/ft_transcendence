@@ -20,12 +20,13 @@ export class RoomService {
 
   async createRoom(room: RoomI, creator: UserI): Promise<RoomI> {
 	if (room.password) {
+		room.type = RoomType.PROTECTED;
 		const passwordHash: string = await this.hashPassword(room.password);
 		room.password = passwordHash;
 	}
 	room.owner = creator;
     const newRoom = await this.addCreatorToRoom(room, creator);
-    const newRoomAdmin = await this.addAdminToRoom(newRoom, creator);
+    const newRoomAdmin = await this.addAdminToRoom(newRoom, creator);	
     return this.roomRepository.save(newRoomAdmin);
   }
 
@@ -53,7 +54,8 @@ export class RoomService {
       .createQueryBuilder('room')
       .leftJoin('room.users', 'users')
       .where('users.id = :userId', { userId })
-      .andWhere('room.type != "closed"')
+	  //patchjacens
+    //  .andWhere('room.type != "closed"')
       .leftJoinAndSelect('room.users', 'all_users')
       .orderBy('room.updated_at', 'DESC');
 
@@ -92,11 +94,14 @@ export class RoomService {
 
   async addCreatorToRoom(room: RoomI, creator: UserI): Promise<RoomI> {
     room.users.push(creator);
+	console.log("pook");
     return room;
   }
 
   async addAdminToRoom(room: RoomI, user: UserI): Promise<RoomI> {
     room.admin.push(user);
+	console.log("ok");
+	
     return room;
   }
 
