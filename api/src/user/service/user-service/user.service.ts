@@ -51,6 +51,8 @@ export class UserService {
 				const matches: boolean = await this.validatePassword(user.password, foundUser.password);
 				if (matches) {
 					const payload: UserI = await this.findOne(foundUser.id);
+					if (payload.ban)
+						throw new HttpException('User banned', HttpStatus.UNAUTHORIZED);
 					const jwt: string = await this.authService.generateJwt(payload);
 					this.updateStatusOfUser(payload.id, {"status": UserStatus.ON});
 					return {
@@ -112,8 +114,20 @@ export class UserService {
 			  id: id,
 			},
 		});
-		if (temp.role == UserRole.OWNER) throw new HttpException('I\'m the Owner...', HttpStatus.CONFLICT);
+		if (temp.role == UserRole.OWNER) throw new HttpException('Can\'t change the Owner role...', HttpStatus.CONFLICT);
 		if (user.role == UserRole.OWNER) throw new HttpException('Can\'t have 2 owner', HttpStatus.CONFLICT);
+		return from(this.userRepository.update(id, user)).pipe(
+			switchMap(() => this.findOne(id))
+		);
+    }
+
+    async updateBanOfUser(id: number, user: UserI): Promise<any> {
+		const temp = await this.userRepository.findOne({
+			where: {
+			  id: id,
+			},
+		});
+		if (temp.role == UserRole.OWNER) throw new HttpException('You can\'t ban Owner...', HttpStatus.CONFLICT);
 		return from(this.userRepository.update(id, user)).pipe(
 			switchMap(() => this.findOne(id))
 		);
