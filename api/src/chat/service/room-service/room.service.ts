@@ -81,21 +81,23 @@ export class RoomService {
   async addUserToRoom(room: RoomI, user: UserI, password: string): Promise<Observable<{ error: string } | { success: string }>> {
 	if (room.type == RoomType.PRIVATE) return of({ error: 'Can\'t join private room;' }); 
 	if (room.type == RoomType.CLOSE) return of({ error: 'Can\'t join room closed;' }); 
-	  if (room.type == RoomType.PUBLIC) {
+	const bool: number = await this.boolUserIsOnRoom(user.id, room);
+	if (bool) return of({ error: 'Already on the room;' }); 
+	if (room.type == RoomType.PUBLIC) {
+		const newRoom = await this.addCreatorToRoom(room, user);
+		this.roomRepository.save(newRoom);
+		return of({ success: 'Room joined;' }); 
+	}
+	if (room.type == RoomType.PROTECTED) {
+		const matches: boolean = await this.validatePassword(password, room.password);
+		if (matches) {
 			const newRoom = await this.addCreatorToRoom(room, user);
 			this.roomRepository.save(newRoom);
 			return of({ success: 'Room joined;' }); 
-	  }
-		if (room.type == RoomType.PROTECTED) {
-			const matches: boolean = await this.validatePassword(password, room.password);
-			if (matches) {
-				const newRoom = await this.addCreatorToRoom(room, user);
-		  		this.roomRepository.save(newRoom);
-				return of({ success: 'Room joined;' }); 
-			}
-			return of({ error: 'Bad password;' }); 
-  		}
-	}
+		}
+		return of({ error: 'Bad password;' }); 
+	}	
+  }
 
   async addCreatorToRoom(room: RoomI, creator: UserI): Promise<RoomI> {
     room.users.push(creator);
@@ -144,6 +146,18 @@ export class RoomService {
 	.where("m.id = :mid")
 	.andWhere("r.id = :rid", { rid: room.id })
 	.setParameters({ mid : userId })
+	.getCount();
+
+	return  (query);
+  }
+
+  boolUserIsOnRoom(userId: number, room: RoomI): Promise<number> {
+	const query = this.roomRepository
+	.createQueryBuilder("r")
+	.leftJoinAndSelect('r.user', 'u')
+	.where("u.id = :uid")
+	.andWhere("r.id = :rid", { rid: room.id })
+	.setParameters({ uid : userId })
 	.getCount();
 
 	return  (query);
