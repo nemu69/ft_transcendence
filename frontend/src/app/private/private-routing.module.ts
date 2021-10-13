@@ -11,10 +11,12 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { TwoFactorComponent } from './components/two-factor/two-factor.component';
 import { TwoFactorDisabledComponent } from './components/two-factor-disabled/two-factor-disabled.component';
 import { ProfileusersComponent } from './components/profile-users/profile-users.component';
+import { AllRoomsComponent } from './components/all-rooms/all-rooms.component';
 
 const routes: Routes = [
   {path: 'dashboard', component: DashboardComponent},
   {path: 'create-room', component: CreateRoomComponent},
+  {path: 'all-rooms', component: AllRoomsComponent},
   {path: 'setting', component: SettingComponent},
   {path: 'logout', component: LogoutComponent},
   {path: 'match', component: MatchComponent},

@@ -130,4 +130,11 @@ export class UserController {
 	    return of(res.sendFile(join(process.cwd(), 'src/uploads/avatar/' + user.avatar)));
 	}
 
+	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Put('ban/:id')
+	async updateBanOfUser(@Param('id') id: string, @Body() user: UserI): Promise<UserI> {
+	  return this.userService.updateBanOfUser(Number(id), user);
+	}
+
 }

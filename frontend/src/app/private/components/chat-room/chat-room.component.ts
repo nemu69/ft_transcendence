@@ -89,9 +89,9 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   }
 
-  LeaveChatRoom() {
+  LeaveChatRoom(action : string) {
 	this.chatService.leaveRoom(this.chatRoom);
-	this._snackBar.open('You leave ' + this.chatRoom.name + ' !', 'Close', {
+	this._snackBar.open('You ' +  action + ' ' + this.chatRoom.name + ' !', 'Close', {
 		duration: 2000,
 	});
 	this.router.navigate(['../profile/'], { relativeTo: this.activatedRoute });

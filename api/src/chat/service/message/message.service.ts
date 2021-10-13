@@ -62,4 +62,8 @@ export class MessageService {
 
   }
 
+  async deleteAllMessagesForRoom(room: RoomI): Promise<void> {
+	await this.messageRepository.delete({ room: room });
+  }
+
 }

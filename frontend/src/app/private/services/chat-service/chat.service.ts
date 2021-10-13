@@ -62,6 +62,10 @@ export class ChatService {
   emitPaginateRooms(limit: number, page: number) {
     this.socket.emit('paginateRooms', { limit, page });
   }
+  
+  emitPaginateAllRooms(limit: number, page: number) {
+    this.socket.emit('allRoom', { limit, page });
+  }
 
   createRoom(room: RoomI) {
     let iduser : number;

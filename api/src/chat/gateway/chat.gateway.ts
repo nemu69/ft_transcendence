@@ -1,29 +1,19 @@
-import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { AuthService } from 'src/auth/login/service/auth.service';
 import { Socket, Server } from 'socket.io';
-import { UserI, UserStatus } from 'src/user/model/user.interface';
+import { UserI } from 'src/user/model/user.interface';
 import { UserService } from 'src/user/service/user-service/user.service';
-import { HistoryService } from 'src/history/service/history.service';
-import { HistoryI } from 'src/history/model/history.interface';
-import { OnModuleInit, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { RoomService } from '../service/room-service/room.service';
 import { PageI } from '../model/page.interface';
 import { ConnectedUserService } from '../service/connected-user/connected-user.service';
-import { RoomI } from '../model/room/room.interface';
+import { RoomI, RoomType } from '../model/room/room.interface';
 import { ConnectedUserI } from '../model/connected-user/connected-user.interface';
 import { JoinedRoomService } from '../service/joined-room/joined-room.service';
 import { MessageService } from '../service/message/message.service';
 import { MessageI } from '../model/message/message.interface';
 import { JoinedRoomI } from '../model/joined-room/joined-room.interface';
-import { GameStateI } from 'src/match/model/game-state/game-state.interface';
-import { PlayerI } from 'src/match/model/player/player.interface';
-import { CoordinatesI } from 'src/match/model/coordinates/coordinates.interface';
-import { PowerI } from 'src/match/model/powers/powers.interface';
-import { LobbyI } from 'src/match/model/lobby/lobby.interface';
-import { type } from 'os';
-import { Console } from 'console';
 import { FriendsService } from 'src/friends/service/friends.service';
-import { UpdateDateColumn } from 'typeorm';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway{
@@ -34,14 +24,11 @@ export class ChatGateway{
   constructor(
     private authService: AuthService,
     private userService: UserService,
-    private historyService: HistoryService,
     private friendsService: FriendsService,
     private roomService: RoomService,
     private connectedUserService: ConnectedUserService,
     private joinedRoomService: JoinedRoomService,
     private messageService: MessageService) { }
-  
-  // Don't remove this :)
 
   async onModuleInit() {
     await this.connectedUserService.deleteAll();
@@ -128,34 +115,69 @@ export class ChatGateway{
   // get all room (public and protected)
   @SubscribeMessage('allRoom')
   async allRoom(socket: Socket, page: PageI) {
-	const rooms = await this.roomService.getAllRoom(this.handleIncomingPageRequest(page));
+	const rooms = await this.roomService.getAllRoom(socket.data.user.id, this.handleIncomingPageRequest(page));
     // substract page -1 to match the angular material paginator
     rooms.meta.currentPage = rooms.meta.currentPage - 1;
     return this.server.to(socket.id).emit('rooms', rooms);
   }
 
   // add user
+  @SubscribeMessage('addUser')
+  async addUser(socket: Socket, room: RoomI, password: string) {
+    await this.roomService.addUserToRoom(room, socket.data.user, password);
+  }
 
   // Add admin
+  @SubscribeMessage('addAdmin')
+  async addAdmin(socket: Socket, room: RoomI, user: UserI) {
+	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user, room);
+	if (bool) await this.roomService.addAdminToRoom(room, user);
+  }
 
   // add muted
+  @SubscribeMessage('addMuted')
+  async addMuted(socket: Socket, room: RoomI, user: UserI) {
+	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user, room);
+	if (bool && user != room.owner) await this.roomService.addMutedToRoom(room, user);
+  }
+
+   // remove muted
+   @SubscribeMessage('removeMuted')
+   async removeMuted(socket: Socket, room: RoomI, user: UserI) {
+	 const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user, room);
+	 if (bool) await this.roomService.deleteAUserMutedFromRoom(room.id, user.id);
+   }
 
   // try join channel
+  @SubscribeMessage('tryJoinChannel')
+   async tryJoinChannel(socket: Socket, room: RoomI, password: string) {
+	await this.roomService.addUserToRoom(room, socket.data.user, password);
+   }
 
   // change password
+  @SubscribeMessage('changePassword')
+   async changePassword(socket: Socket, room: RoomI, password: string) {
+	if (room.owner == socket.data.user) await this.roomService.changePasswordRoom(room, password);
+   }
 
   // change type room
+  @SubscribeMessage('changeType')
+   async changeType(socket: Socket, room: RoomI, type: RoomType) {
+	if (room.owner == socket.data.user) await this.roomService.changeTypeRoom(room, type);
+   }
 
   @SubscribeMessage('addMessage')
   async onAddMessage(socket: Socket, message: MessageI) {
-    const createdMessage: MessageI = await this.messageService.create({...message, user: socket.data.user});
-    const room: RoomI = await this.roomService.getRoom(createdMessage.room.id);
-    const joinedUsers: JoinedRoomI[] = await this.joinedRoomService.findByRoom(room);
-    // TODO: Send new Message to all joined Users of the room (currently online)
-    for(const user of joinedUsers) {
-		const nu = await this.friendsService.boolUserIsBlocked(user.userId, createdMessage.user.id);
-		if (!nu) await this.server.to(user.socketId).emit('messageAdded', createdMessage);
-    }
+	const bool: number = await this.roomService.boolUserMutedOnRoom(socket.data.user.id, message.room);
+    if (!bool) {
+		const createdMessage: MessageI = await this.messageService.create({...message, user: socket.data.user});
+		const room: RoomI = await this.roomService.getRoom(createdMessage.room.id);
+		const joinedUsers: JoinedRoomI[] = await this.joinedRoomService.findByRoom(room);
+		for(const user of joinedUsers) {
+			const nu = await this.friendsService.boolUserIsBlocked(user.userId, createdMessage.user.id);
+			if (!nu) await this.server.to(user.socketId).emit('messageAdded', createdMessage);
+		}
+	}
   }
 
   @SubscribeMessage('gameMessage')
