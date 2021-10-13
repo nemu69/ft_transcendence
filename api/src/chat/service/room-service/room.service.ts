@@ -54,10 +54,9 @@ export class RoomService {
   async getRoomsForUser(userId: number, options: IPaginationOptions): Promise<Pagination<RoomI>> {
     const query = this.roomRepository
       .createQueryBuilder('room')
-      .leftJoin('room.users', 'users')
+      .leftJoinAndSelect('room.users', 'users')
       .where('users.id = :userId', { userId })
       .andWhere('room.type != :type', { type: RoomType.CLOSE })
-      .leftJoinAndSelect('room.users', 'all_users')
       .leftJoinAndSelect('room.admin', 'all_admin')
       .leftJoinAndSelect('room.muted', 'all_muted')
       .leftJoinAndSelect('room.owner', 'onwner')
@@ -66,12 +65,12 @@ export class RoomService {
     return paginate(query, options);
   }
 
-  async getAllRoom(options: IPaginationOptions): Promise<Pagination<RoomI>> {
+  async getAllRoom(userId: number, options: IPaginationOptions): Promise<Pagination<RoomI>> {
     const query = this.roomRepository
       .createQueryBuilder('room')
-      .leftJoin('room.users', 'users')
       .leftJoinAndSelect('room.users', 'all_users')
 	  .where('room.type != :p', { p: RoomType.PRIVATE })
+	  .andWhere('room.type != :c', { c: RoomType.CLOSE })
 	  .andWhere('room.type != :c', { c: RoomType.CLOSE })
       .orderBy('room.updated_at', 'DESC');
 
