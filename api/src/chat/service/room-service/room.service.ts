@@ -6,7 +6,8 @@ import { AuthService } from 'src/auth/login/service/auth.service';
 import { RoomEntity } from 'src/chat/model/room/room.entity';
 import { RoomI, RoomType } from 'src/chat/model/room/room.interface';
 import { UserI } from 'src/user/model/user.interface';
-import { Repository } from 'typeorm';
+import { Repository, getConnection } from 'typeorm';
+import { MessageService } from '../message/message.service';
 
 @Injectable()
 export class RoomService {
@@ -15,7 +16,8 @@ export class RoomService {
   constructor(
     @InjectRepository(RoomEntity)
     private readonly roomRepository: Repository<RoomEntity>,
-	private authService: AuthService
+	private authService: AuthService,
+	private messageService: MessageService,
   ) { }
 
   async createRoom(room: RoomI, creator: UserI): Promise<RoomI> {
@@ -54,9 +56,11 @@ export class RoomService {
       .createQueryBuilder('room')
       .leftJoin('room.users', 'users')
       .where('users.id = :userId', { userId })
-	  //patchjacens
-    //  .andWhere('room.type != "closed"')
+      .andWhere('room.type != :type', { type: RoomType.CLOSE })
       .leftJoinAndSelect('room.users', 'all_users')
+      .leftJoinAndSelect('room.admin', 'all_admin')
+      .leftJoinAndSelect('room.muted', 'all_muted')
+      .leftJoinAndSelect('room.owner', 'onwner')
       .orderBy('room.updated_at', 'DESC');
 
     return paginate(query, options);
@@ -120,12 +124,16 @@ export class RoomService {
 
   async deleteAUserFromRoom(roomId: number, userId: number): Promise<RoomI> {
 	const room = await this.getRoom(roomId);
+	console.log(room);
+	
 	if (room.owner.id === userId) {
+		this.messageService.deleteAllMessagesForRoom(room);
 		room.type = RoomType.CLOSE;
 		return this.roomRepository.save(room);
 	}
+
 	room.users = room.users.filter(user => user.id !== userId);
-	room.admin = room.admin.filter(user => user.id !== userId);
+	//room.admin = room.admin.filter(user => user.id !== userId);
 	console.log("without : ",room);
 	
 	return this.roomRepository.save(room);

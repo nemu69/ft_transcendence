@@ -29,7 +29,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       const items = messagePaginate.items.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
       messagePaginate.items = items;
 	  console.log(this.chatRoom);
-	  if (this.chatRoom.owner.id === this.user.id)
+	  if (this.chatRoom.owner && this.chatRoom.owner.id === this.user.id)
 		  this.IsOwner = true;
       return messagePaginate;
     }),
@@ -78,9 +78,9 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   }
 
-  LeaveChatRoom() {
+  LeaveChatRoom(action : string) {
 	this.chatService.leaveRoom(this.chatRoom);
-	this._snackBar.open('You leave ' + this.chatRoom.name + ' !', 'Close', {
+	this._snackBar.open('You ' +  action + ' ' + this.chatRoom.name + ' !', 'Close', {
 		duration: 2000,
 	});
 	this.router.navigate(['../profile/'], { relativeTo: this.activatedRoute });

@@ -29,6 +29,10 @@ export class RoomEntity {
   @ManyToMany(() => UserEntity)
   @JoinTable()
   admin: UserEntity[];
+  
+  @ManyToMany(() => UserEntity)
+  @JoinTable()
+  muted: UserEntity[];
 
   @OneToMany(() => JoinedRoomEntity, joinedRoom => joinedRoom.room)
   joinedUsers: JoinedRoomEntity[];
