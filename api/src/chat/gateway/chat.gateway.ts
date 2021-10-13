@@ -141,6 +141,20 @@ export class ChatGateway{
 	if (bool && user != room.owner) await this.roomService.addMutedToRoom(room, user);
   }
 
+  // remove user
+  @SubscribeMessage('removeUser')
+  async removeUser(socket: Socket, room: RoomI, user: UserI) {
+	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
+	if (bool && user != room.owner) await this.roomService.deleteAUserFromRoom(room.id, user.id);
+  }
+
+  // remove admin
+  @SubscribeMessage('removeAdmin')
+  async removeAdmin(socket: Socket, room: RoomI, user: UserI) {
+	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
+	if (bool && user != room.owner) await this.roomService.deleteAUserAdminFromRoom(room.id, user.id);
+  }
+
    // remove muted
    @SubscribeMessage('removeMuted')
    async removeMuted(socket: Socket, room: RoomI, user: UserI) {

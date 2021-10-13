@@ -141,6 +141,15 @@ export class RoomService {
   async deleteAUserMutedFromRoom(roomId: number, userId: number): Promise<RoomI> {
 	const room = await this.getRoom(roomId);
 	console.log(room);
+	room.muted = room.muted.filter(user => user.id !== userId);
+	console.log("without : ",room);
+	
+	return this.roomRepository.save(room);
+  }
+
+  async deleteAUserAdminFromRoom(roomId: number, userId: number): Promise<RoomI> {
+	const room = await this.getRoom(roomId);
+	console.log(room);
 	room.admin = room.admin.filter(user => user.id !== userId);
 	console.log("without : ",room);
 	
