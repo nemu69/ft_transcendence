@@ -49,7 +49,10 @@ export class CreateRoomComponent {
   addUser(userFormControl: FormControl) {
     this.users.push(userFormControl);
   }
-  
+
+  addAdmin(userFormControl: FormControl) {
+	this.admin.push(userFormControl);
+  }
 
   removeUser(userId: number) {
     this.users.removeAt(this.users.value.findIndex((user: UserI) => user.id === userId));
@@ -65,6 +68,10 @@ export class CreateRoomComponent {
 
   get users(): FormArray {
     return this.form.get('users') as FormArray;
+  }
+  
+  get admin(): FormArray {
+    return this.form.get('admin') as FormArray;
   }
 
   radioChange($event: MatRadioChange) {
