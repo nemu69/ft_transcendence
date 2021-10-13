@@ -16,10 +16,10 @@ export class CreateRoomComponent {
 	form: FormGroup = new FormGroup({
 	  name: new FormControl(null, [Validators.required]),
 	  description: new FormControl(null),
-	  password: new FormControl({value: 'Password', disabled: true}),
+	  password: new FormControl({value: '', disabled: true}),
 	  users: new FormArray([], [Validators.required]),
 	  admin: new FormArray([]),
-	  muted: new FormArray([])
+	  muted: new FormArray([]),
 	});
 
   constructor(private chatService: ChatService,
@@ -29,7 +29,7 @@ export class CreateRoomComponent {
 
   create() {
     if (this.form.valid) {
-      try {
+      try {		  
         this.chatService.createRoom(this.form.getRawValue());
         this.router.navigate(['../dashboard'], { relativeTo: this.activatedRoute });
       } catch (error) {
@@ -50,6 +50,10 @@ export class CreateRoomComponent {
     this.users.push(userFormControl);
   }
 
+  addAdmin(userFormControl: FormControl) {
+	this.admin.push(userFormControl);
+  }
+
   removeUser(userId: number) {
     this.users.removeAt(this.users.value.findIndex((user: UserI) => user.id === userId));
   }
@@ -64,6 +68,10 @@ export class CreateRoomComponent {
 
   get users(): FormArray {
     return this.form.get('users') as FormArray;
+  }
+  
+  get admin(): FormArray {
+    return this.form.get('admin') as FormArray;
   }
 
   radioChange($event: MatRadioChange) {

@@ -1,21 +1,21 @@
 import { Meta } from "./meta.interface";
 import { UserI } from "../user/user.interface";
 
-//export enum RoomType {
-//    PUBLIC = 'public',
-//    PRIVATE = 'private',
-//    PROTECTED = 'protected',
-//}
+export enum RoomType {
+    PUBLIC = 'public',
+    PRIVATE = 'private',
+    PROTECTED = 'protected',
+}
 
 export interface RoomI {
   id?: number;
   name?: string;
   description?: string;
   password?: string;
-//  type?: RoomType;
+  type?: RoomType;
   users?: UserI[];
-//  admin?: UserI[];
-//  owner?: UserI;
+  admin?: UserI[];
+  owner?: UserI;
   created_at?: Date;
   updated_at?: Date;
 }

@@ -18,10 +18,16 @@
     </span>
     <span>
 		<!-- Leave Room -->
-	  <button mat-button (click)="LeaveChatRoom()">
+	  <button mat-button *ngIf="IsOwner; else adminUser" (click)="LeaveChatRoom()">
 		<i class="fas fa-sign-out-alt"></i>
-		Leave Room
+			Close Room
 	  </button>
+	  <ng-template #adminUser>
+		<button mat-button (click)="LeaveChatRoom()">
+			<i class="fas fa-sign-out-alt"></i>
+			Leave Room
+		  </button>
+	</ng-template>
     </span>
   </div>
 
