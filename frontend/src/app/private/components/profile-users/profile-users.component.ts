@@ -14,7 +14,6 @@ import { FriendRequest } from 'src/app/model/friends/friends.interface';
 import { HistoryI } from 'src/app/model/history/history.interface';
 import { HistoryService } from '../../../public/services/history-service/history.service';
 
-
 @Component({
   selector: 'app-profile',
   templateUrl: './profile-users.component.html',
@@ -114,6 +113,10 @@ export class ProfileusersComponent implements OnInit {
 					this.yourBlocked = !this.yourBlocked;
 					this.yourFriend = 0;
 				})		
+		}
+
+		sendInvite(){
+			//creates or uses existing chat to invite
 		}
 			
 		isblockedUser(){

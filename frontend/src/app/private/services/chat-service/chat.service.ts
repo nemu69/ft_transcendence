@@ -20,11 +20,7 @@ export class ChatService {
     private snackbar: MatSnackBar,
     ) {
         if(authService.isAuthenticated())
-        {
-          console.log(this.socket);
           this.socket = new CustomSocket;
-          console.log(this.socket);
-        }
       }
 
   @HostListener('window:beforeunload') goToPage() {
@@ -52,7 +48,11 @@ export class ChatService {
   emitPaginateRooms(limit: number, page: number) {
 	this.socket.emit('paginateRooms', { limit, page });
   }
-  
+
+  inviteMessage(message: MessageI) {
+    this.socket.emit('gameMessage', message);
+  }
+
   joinRoom(room: RoomI) {
 	this.socket.emit('joinRoom', room);
   }
@@ -96,8 +96,15 @@ export class ChatService {
   }
 
   newPlayer(info: number, user: number) {
-    console.log(this.socket);
     this.socket.emit('newPlayer', [info, user]);
+  }
+
+  newPrivatePlayer(room: RoomI, user: number) {
+    this.socket.emit('newPrivatePlayer', {room, user});
+  }
+
+  newPrivateGame(room: RoomI, user: number) {
+    this.socket.emit('CreatePrivateGame', {room, user});
   }
 
   getGameState(): Observable<GameStateI> {

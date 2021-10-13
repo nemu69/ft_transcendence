@@ -3,7 +3,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
-import { map, startWith, tap } from 'rxjs/operators';
+import { switchMap, map, startWith, tap } from 'rxjs/operators';
 import { MessagePaginateI } from 'src/app/model/chat/message.interface';
 import { RoomI } from 'src/app/model/chat/room.interface';
 import { UserI } from 'src/app/model/user/user.interface';
@@ -24,11 +24,10 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   messagesPaginate$: Observable<MessagePaginateI> = combineLatest([this.chatService.getMessages(), this.chatService.getAddedMessage().pipe(startWith(null))]).pipe(
     map(([messagePaginate, message]) => {
       if (message && message.room.id === this.chatRoom.id && !messagePaginate.items.some(m => m.id === message.id)) {
-        messagePaginate.items.push(message);
+          messagePaginate.items.push(message);
       }
       const items = messagePaginate.items.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
       messagePaginate.items = items;
-	  console.log(this.chatRoom);
 	  if (this.chatRoom.owner && this.chatRoom.owner.id === this.user.id)
 		  this.IsOwner = true;
       return messagePaginate;
@@ -66,9 +65,21 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   sendMessage() {
     if (this.chatMessage.valid) {
-    this.chatService.sendMessage({ text: this.chatMessage.value, room: this.chatRoom });
+    this.chatService.sendMessage({ text: this.chatMessage.value, type: 0, room: this.chatRoom });
     this.chatMessage.reset();
     }
+  }
+
+  gameInvite() {
+    this.chatService.inviteMessage({ text: 'GAME INVITE', type: 1, room: this.chatRoom });
+    this.chatMessage.reset();
+    this.chatService.newPrivateGame(this.chatRoom, this.user.id);
+    this.router.navigate(['../match/'], { relativeTo: this.activatedRoute });
+  }
+
+  joinGameRoom() {
+    this.chatService.newPrivatePlayer(this.chatRoom, this.user.id);
+    this.router.navigate(['../match/'], { relativeTo: this.activatedRoute });
   }
 
   scrollToBottom(): void {
@@ -85,5 +96,6 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 	});
 	this.router.navigate(['../profile/'], { relativeTo: this.activatedRoute });
   }
+
 
 }
