@@ -7,14 +7,10 @@
               <h1>Chatrooms</h1>
           <button mat-button [routerLink]="['../create-room']">Create new Room</button>
 		</div>
-		<div class="align">
-			<h2>My rooms</h2>
-			<button mat-button [routerLink]="['../all-rooms']">All Rooms</button>
-		</div>
           <div *ngIf="(rooms$|async)?.items?.length > 0; else no_rooms" class="rooms">
-            <mat-selection-list [multiple]="false" (selectionChange)="onSelectRoom($event)">
+            <mat-selection-list [multiple]="false" (selectionChange)="addUserToRoom($event)">
               <mat-list-option *ngFor="let room of (rooms$ | async)?.items" [value]="room">
-                Name: {{room.name}} Id: {{room.id}}
+                Name: {{room.name}} Id: {{room.id}} 
                 <mat-divider></mat-divider>
               </mat-list-option>
             </mat-selection-list>

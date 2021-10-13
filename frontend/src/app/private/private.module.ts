@@ -30,6 +30,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { TwoFactorDisabledComponent } from './components/two-factor-disabled/two-factor-disabled.component';
 import { ProfileusersComponent } from './components/profile-users/profile-users.component';
 import { MatRadioModule } from '@angular/material/radio';
+import { AllRoomsComponent } from './components/all-rooms/all-rooms.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { MatRadioModule } from '@angular/material/radio';
     CreateRoomComponent,
     SelectUsersComponent,
     ChatRoomComponent,
+	AllRoomsComponent,
     ChatMessageComponent,
 	PageNotFoundComponent,
 	SettingComponent,
