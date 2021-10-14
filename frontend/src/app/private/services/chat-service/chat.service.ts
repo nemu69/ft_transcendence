@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { MessageI, MessagePaginateI } from 'src/app/model/chat/message.interface';
-import { RoomI, RoomPaginateI } from 'src/app/model/chat/room.interface';
+import { RoomType ,RoomI, RoomPaginateI } from 'src/app/model/chat/room.interface';
 import { GameStateI } from 'src/app/model/game-state.interface';
 import { UserI } from 'src/app/model/user/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
@@ -68,6 +68,34 @@ export class ChatService {
   
   emitPaginateAllRooms(limit: number, page: number) {
     this.socket.emit('allRoom', { limit, page });
+  }
+
+  addUserToRoom(room: RoomI, password: string) {
+	this.socket.emit('addUser', { room, password });
+  }
+
+  addAdmin(room: RoomI, user: UserI) {
+	this.socket.emit('addAdmin', { room, user });
+  }
+
+  addMuted(room: RoomI, user: UserI) {
+	this.socket.emit('addMuted', { room, user });
+  }
+
+  removeAdmin(room: RoomI, user: UserI) {
+	this.socket.emit('removeAdmin', { room, user });
+  }
+
+  removeMuted(room: RoomI, user: UserI) {
+	this.socket.emit('removeMuted', { room, user });
+  }
+
+  changePassword(room: RoomI, password: string) {
+	this.socket.emit('changePassword', { room, password });
+  }
+
+  changeType(room: RoomI, type: RoomType, password: string) {
+	this.socket.emit('changeType', { room, type, password });
   }
 
   sendMessage(message: MessageI) {
