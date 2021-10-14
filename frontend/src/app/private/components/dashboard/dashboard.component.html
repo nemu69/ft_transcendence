@@ -9,6 +9,7 @@
 		</div>
 		<div class="align">
 			<h2>My rooms</h2>
+			<br>
 			<button mat-button [routerLink]="['../all-rooms']">All Rooms</button>
 		</div>
           <div *ngIf="(rooms$|async)?.items?.length > 0; else no_rooms" class="rooms">
