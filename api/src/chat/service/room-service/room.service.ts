@@ -50,6 +50,18 @@ export class RoomService {
       relations: ['users', 'owner']
     });
   }
+  
+  async getAllRoomAdmin(options: IPaginationOptions): Promise<Pagination<RoomI>> {
+    const query = this.roomRepository
+      .createQueryBuilder('room')
+      .leftJoinAndSelect('room.users', 'users')
+      .leftJoinAndSelect('room.admin', 'all_admin')
+      .leftJoinAndSelect('room.muted', 'all_muted')
+      .leftJoinAndSelect('room.owner', 'onwner')
+      .orderBy('room.updated_at', 'DESC');
+
+    return paginate(query, options);
+  }
 
   async getRoomsForUser(userId: number, options: IPaginationOptions): Promise<Pagination<RoomI>> {
     const query = this.roomRepository
@@ -65,7 +77,7 @@ export class RoomService {
     return paginate(query, options);
   }
 
-  async getAllRoom(userId: number, options: IPaginationOptions): Promise<Pagination<RoomI>> {
+  async getAllRoom(options: IPaginationOptions): Promise<Pagination<RoomI>> {
     const query = this.roomRepository
       .createQueryBuilder('room')
       .leftJoinAndSelect('room.users', 'all_users')

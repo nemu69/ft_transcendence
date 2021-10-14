@@ -22,6 +22,7 @@ import { MatchGateway } from 'src/match/match.gateway';
 import { GameService } from 'src/match/service/game/game.service';
 import { GameRoomService } from 'src/match/service/gameroom/gameroom.service';
 import { UserHelperService } from 'src/user/service/user-helper/user-helper.service';
+import { RoomController } from './controller/room.controller';
 
 @Module({
   imports: [UserModule, FriendsModule,
@@ -36,6 +37,7 @@ import { UserHelperService } from 'src/user/service/user-helper/user-helper.serv
     ]),
 	AuthModule
   ],
-  providers: [ChatGateway, MatchGateway, RoomService, ConnectedUserService, JoinedRoomService, MessageService, HistoryService, UserService, UserHelperService, FriendsService, GameService, GameRoomService]
+  controllers: [RoomController],
+  providers: [ChatGateway, MatchGateway, RoomService, ConnectedUserService, JoinedRoomService, MessageService, HistoryService, UserService, UserHelperService, FriendsService, GameService, GameRoomService],
 })
 export class ChatModule { }
