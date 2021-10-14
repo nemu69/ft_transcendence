@@ -22,12 +22,16 @@
             <app-select-users [users]="users.value" (addUser)="addUser(initUser($event))"
               (removeuser)="removeUser($event.id)"></app-select-users>
 
-			  
-			  <mat-radio-group (change)="radioChange($event)" class="radio">
-				  <mat-radio-button value="yes" required>Private</mat-radio-button>
-				  <mat-radio-button value="no" required checked>Public</mat-radio-button>
+				<mat-radio-group (change)="radioType($event)" class="radio">
+					<mat-radio-button value="private" required>Private</mat-radio-button>
+					<mat-radio-button value="public" required [checked]="radiocheck">Public</mat-radio-button>
 				</mat-radio-group>
-				
+				<mat-divider></mat-divider>
+				<p style="padding-top: 50px;">Password ?</p>
+				<mat-radio-group (change)="radioPassword($event)" class="radio">
+					<mat-radio-button value="yes" required>Yes</mat-radio-button>
+				<mat-radio-button value="no" required [checked]="radiocheck" >No</mat-radio-button>
+				</mat-radio-group>
 				<mat-form-field appearance="standard">
 					<input matInput placeholder="Password" formControlName="password" placeholder="Password"/>
 				</mat-form-field>

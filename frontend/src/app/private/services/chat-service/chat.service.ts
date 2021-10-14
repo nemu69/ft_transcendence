@@ -29,6 +29,7 @@ export class ChatService {
 
   createRoom(room: RoomI) {
 	let iduser : number;
+	
 	this.authService.getUserId().subscribe(val => {
 	  iduser = val;
 	})
