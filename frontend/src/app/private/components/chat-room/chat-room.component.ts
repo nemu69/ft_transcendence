@@ -23,19 +23,27 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   IsOwner: boolean = false;
   messagesPaginate$: Observable<MessagePaginateI> = combineLatest([this.chatService.getMessages(), this.chatService.getAddedMessage().pipe(startWith(null))]).pipe(
     map(([messagePaginate, message]) => {
-      if (message && message.room.id === this.chatRoom.id && !messagePaginate.items.some(m => m.id === message.id)) {
-          messagePaginate.items.push(message);
-      }
-      const items = messagePaginate.items.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-      messagePaginate.items = items;
-	  if (this.chatRoom.owner && this.chatRoom.owner.id === this.user.id)
-		  this.IsOwner = true;
-      return messagePaginate;
+		if (message && message.room.id === this.chatRoom.id && !messagePaginate.items.some(m => m.id === message.id)) {
+		    messagePaginate.items.push(message);
+		}
+		const items = messagePaginate.items.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+		messagePaginate.items = items;
+		if (this.chatRoom.owner && this.chatRoom.owner.id === this.user.id)
+			  this.IsOwner = true;
+		if (this.chatRoom.muted && this.chatRoom.muted.some(m => m.id === this.user.id)){
+			  this.chatMessage.disable();
+			  this.chatMessage.setValue('You are muted');
+			}
+		else {
+			this.chatMessage.enable();
+			this.chatMessage.setValue('');
+		}
+		return messagePaginate;
     }),
     tap(() => this.scrollToBottom())
   )
 
-  chatMessage: FormControl = new FormControl(null, [Validators.required]);
+  chatMessage: FormControl = new FormControl({value: '', disabled: false}, [Validators.required]);
 
   constructor(
 	  private chatService: ChatService,

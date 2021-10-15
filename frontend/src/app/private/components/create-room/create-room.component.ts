@@ -32,6 +32,8 @@ export class CreateRoomComponent {
   create() {
     if (this.form.valid) {
       try {
+		if (this.form.get('type').value != 'protected' && this.form.get('type').value != 'private')
+			this.form.get('type').setValue('public');
         this.chatService.createRoom(this.form.getRawValue());
         this.router.navigate(['../dashboard'], { relativeTo: this.activatedRoute });
       } catch (error) {
@@ -80,11 +82,13 @@ export class CreateRoomComponent {
     console.log($event.source.name, $event.value);
 
     if ($event.value == 'no') {
+		this.form.get('password').clearValidators();
         this.form.get('password').disable();
 		this.form.get('password').setValue('');
 		this.form.get('type').setValue(this.beforeType);
     }
 	else {
+		this.form.get('password').setValidators([Validators.required]);
 		this.form.get('password').enable();
 		this.form.get('type').setValue('protected');
 	}
