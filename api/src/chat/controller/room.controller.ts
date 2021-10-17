@@ -25,7 +25,7 @@ export class RoomController {
 
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Put('admin/:id/destroy')
+	@Put(':id/admin/destroy')
 	async updateRoomAdmin(@Param('id') id: string): Promise<RoomI> {
 	  var room: RoomI = await this.roomService.getRoom(Number(id));
 	  return this.roomService.changeTypeRoom(room, RoomType.CLOSE);
@@ -44,6 +44,13 @@ export class RoomController {
 	@Put(':id/admin/remove')
 	async updateRoomAdminForAdmin(@Param('id') id: string, @Body() user: UserI): Promise<RoomI> {
 	  return this.roomService.deleteAUserAdminFromRoom(Number(id), user.id);
+	}
+	
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Get(':idRoom/:idUser')
+	async UserIsRoom(@Param('idRoom') idRoom: number, @Param('idUser') idUser: number): Promise<Number> {
+		var room: RoomI = await this.roomService.getRoom(idRoom);
+		return this.roomService.boolUserIsOnRoom(idUser, room);
 	}
 
 }

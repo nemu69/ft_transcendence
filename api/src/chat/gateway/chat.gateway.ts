@@ -123,60 +123,79 @@ export class ChatGateway{
 
   // add user
   @SubscribeMessage('addUser')
-  async addUser(socket: Socket, room: RoomI, password: string) {
-    await this.roomService.addUserToRoom(room, socket.data.user, password);
+  async addUser(socket: Socket, data: any) {
+	  let room : RoomI = data.room;
+	  const password = data.password;
+    await this.roomService.addUserToRoom(room.id, socket.data.user, password);
   }
 
   // Add admin
   @SubscribeMessage('addAdmin')
-  async addAdmin(socket: Socket, room: RoomI, user: UserI) {
+  async addAdmin(socket: Socket, data: any) {
+	let room : RoomI = data.room;
+	let user : UserI = data.user;
 	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
 	if (bool) await this.roomService.addAdminToRoom(room, user);
   }
 
   // add muted
   @SubscribeMessage('addMuted')
-  async addMuted(socket: Socket, room: RoomI, user: UserI) {
+  async addMuted(socket: Socket, data: any) {
+	let room : RoomI = data.room;
+	let user : UserI = data.user;
 	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
 	if (bool && user != room.owner) await this.roomService.addMutedToRoom(room, user);
   }
 
   // remove user
   @SubscribeMessage('removeUser')
-  async removeUser(socket: Socket, room: RoomI, user: UserI) {
+  async removeUser(socket: Socket, data: any) {
+	let room : RoomI = data.room;
+	let user : UserI = data.user;
 	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
 	if (bool && user != room.owner) await this.roomService.deleteAUserFromRoom(room.id, user.id);
   }
 
   // remove admin
   @SubscribeMessage('removeAdmin')
-  async removeAdmin(socket: Socket, room: RoomI, user: UserI) {
+  async removeAdmin(socket: Socket, data: any) {
+	let room : RoomI = data.room;
+	let user : UserI = data.user;
 	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
 	if (bool && user != room.owner) await this.roomService.deleteAUserAdminFromRoom(room.id, user.id);
   }
 
    // remove muted
    @SubscribeMessage('removeMuted')
-   async removeMuted(socket: Socket, room: RoomI, user: UserI) {
+   async removeMuted(socket: Socket, data: any) {
+	let room : RoomI = data.room;
+	let user : UserI = data.user;
 	 const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
 	 if (bool) await this.roomService.deleteAUserMutedFromRoom(room.id, user.id);
    }
 
   // try join channel
   @SubscribeMessage('tryJoinChannel')
-   async tryJoinChannel(socket: Socket, room: RoomI, password: string) {
-	await this.roomService.addUserToRoom(room, socket.data.user, password);
+   async tryJoinChannel(socket: Socket, data: any) {
+	  let room : RoomI = data.room;
+	  const password = data.password;
+	await this.roomService.addUserToRoom(room.id, socket.data.user, password);
    }
 
   // change password
   @SubscribeMessage('changePassword')
-   async changePassword(socket: Socket, room: RoomI, password: string) {
+   async changePassword(socket: Socket, data: any) {
+	  let room : RoomI = data.room;
+	  const password = data.password;
 	if (room.owner.id == socket.data.user.id) await this.roomService.changePasswordRoom(room, password);
    }
 
   // change type room
   @SubscribeMessage('changeType')
-   async changeType(socket: Socket, room: RoomI, type: RoomType, password: string) {
+   async changeType(socket: Socket, data: any) {
+	let room : RoomI = data.room;
+	let type : RoomType = data.type;
+	const password = data.password;
 	if (room.owner.id == socket.data.user.id) {
 		if (type == RoomType.PROTECTED) {
 			if (room.password != null && password == null){

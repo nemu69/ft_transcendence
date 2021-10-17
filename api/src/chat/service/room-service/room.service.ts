@@ -47,7 +47,8 @@ export class RoomService {
 
   async getRoom(roomId: number): Promise<RoomI> {
     return this.roomRepository.findOne(roomId, {
-      relations: ['users', 'owner']
+      relations: ['users', 'owner'],
+	  select: ['id', 'name', 'type', 'password']
     });
   }
   
@@ -88,15 +89,16 @@ export class RoomService {
     return paginate(query, options);
   }
 
-  async addUserToRoom(room: RoomI, user: UserI, password: string): Promise<Observable<{ error: string } | { success: string }>> {
-	if (room.type == RoomType.PRIVATE) return of({ error: 'Can\'t join private room;' }); 
-	if (room.type == RoomType.CLOSE) return of({ error: 'Can\'t join room closed;' }); 
+  async addUserToRoom(roomId: number, user: UserI, password: string): Promise<Observable<{ error: string } | { success: string }>> {
+	  const room = await this.getRoom(roomId);
 	const bool: number = await this.boolUserIsOnRoom(user.id, room);
 	if (bool) return of({ error: 'Already on the room;' }); 
+	if (room.type == RoomType.PRIVATE) return of({ error: 'Can\'t join private room;' }); 
+	if (room.type == RoomType.CLOSE) return of({ error: 'Can\'t join room closed;' }); 
 	if (room.type == RoomType.PUBLIC) {
-		const newRoom = await this.addCreatorToRoom(room, user);
+		const newRoom = await this.addCreatorToRoom(room, user);		
 		this.roomRepository.save(newRoom);
-		return of({ success: 'Room joined;' }); 
+		return of({ success: 'Room joined;' });
 	}
 	if (room.type == RoomType.PROTECTED) {
 		const matches: boolean = await this.validatePassword(password, room.password);
@@ -134,18 +136,15 @@ export class RoomService {
 
   async deleteAUserFromRoom(roomId: number, userId: number): Promise<RoomI> {
 	const room = await this.getRoom(roomId);
-	console.log(room);
 	
 	if (room.owner.id === userId) {
 		this.messageService.deleteAllMessagesForRoom(room);
 		room.type = RoomType.CLOSE;
 		return this.roomRepository.save(room);
 	}
-
 	room.users = room.users.filter(user => user.id !== userId);
-	room.admin = room.admin.filter(user => user.id !== userId);
-	console.log("without : ",room);
-	
+	room.admin = room.admin.filter(user => user.id !== userId);	
+
 	return this.roomRepository.save(room);
   }
 
@@ -169,11 +168,10 @@ export class RoomService {
 
   boolUserMutedOnRoom(userId: number, room: RoomI): Promise<number> {
 	const query = this.roomRepository
-	.createQueryBuilder("r")
-	.leftJoinAndSelect('r.muted', 'm')
-	.where("m.id = :mid")
-	.andWhere("r.id = :rid", { rid: room.id })
-	.setParameters({ mid : userId })
+	.createQueryBuilder('room')
+    .leftJoinAndSelect('room.muted', 'muted')
+    .where('muted.id = :userId', { userId })
+	.andWhere("room.id = :rid", { rid: room.id })
 	.getCount();
 
 	return  (query);
@@ -181,11 +179,10 @@ export class RoomService {
 
   boolUserIsOnRoom(userId: number, room: RoomI): Promise<number> {
 	const query = this.roomRepository
-	.createQueryBuilder("r")
-	.leftJoinAndSelect('r.user', 'u')
-	.where("u.id = :uid")
-	.andWhere("r.id = :rid", { rid: room.id })
-	.setParameters({ uid : userId })
+    .createQueryBuilder('room')
+    .leftJoinAndSelect('room.users', 'users')
+    .where('users.id = :userId', { userId })
+	.andWhere("room.id = :rid", { rid: room.id })
 	.getCount();
 
 	return  (query);
@@ -193,11 +190,10 @@ export class RoomService {
 
   boolUserIsAdminOnRoom(userId: number, room: RoomI): Promise<number> {
 	const query = this.roomRepository
-	.createQueryBuilder("r")
-	.leftJoinAndSelect('r.admin', 'u')
-	.where("u.id = :uid")
-	.andWhere("r.id = :rid", { rid: room.id })
-	.setParameters({ uid : userId })
+	.createQueryBuilder('room')
+    .leftJoinAndSelect('room.admin', 'admin')
+    .where('admin.id = :userId', { userId })
+	.andWhere("room.id = :rid", { rid: room.id })
 	.getCount();
 
 	return  (query);

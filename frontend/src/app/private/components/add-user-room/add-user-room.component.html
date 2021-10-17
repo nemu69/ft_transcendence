@@ -16,14 +16,14 @@
   <!-- Messages -->
   <div *ngIf="joinRoom.type == protected;else oki" class="addUser">
 		<mat-form-field appearance="standard">
-			<input matInput placeholder="Password" [formControl]="password" type="hidden">
+			<input matInput placeholder="Password" [formControl]="password" type="password">
 		</mat-form-field>
-		<button mat-raised-button color="primary" [disabled]="!password.valid" (click)="addUser()">Add User</button>
+		<button mat-raised-button color="primary" [disabled]="!password.valid" (click)="addUser()">Join Room</button>
   </div>
 
   <ng-template #oki>
 	  <div class="addUser">
-		  <button mat-raised-button color="primary" (click)="addUser()">Add</button>
+		  <button mat-raised-button color="primary" (click)="addUser()">Join Room</button>
 		</div>
 	</ng-template>
 

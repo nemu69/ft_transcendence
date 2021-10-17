@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { HostListener, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
@@ -18,6 +19,7 @@ export class ChatService {
   constructor(
     private authService: AuthService,
     private snackbar: MatSnackBar,
+	private http: HttpClient
     ) {
         if(authService.isAuthenticated())
           this.socket = new CustomSocket;
@@ -71,7 +73,7 @@ export class ChatService {
   }
 
   addUserToRoom(room: RoomI, password: string) {
-	this.socket.emit('addUser', { room, password });
+	this.socket.emit('addUser',  {room, password});
   }
 
   addAdmin(room: RoomI, user: UserI) {
@@ -114,6 +116,11 @@ export class ChatService {
     return this.socket.fromEvent<MessageI>('messageAdded');
   }
 
+  IsInRoom(roomId: number, userId : number): Observable<number> {
+	  return this.http.get<number>('/api/room/' + roomId + '/' +  userId);
+  }
+
+  // Game
   checkExistence(n: number)
   {
     this.socket.emit('checkExistence', n);

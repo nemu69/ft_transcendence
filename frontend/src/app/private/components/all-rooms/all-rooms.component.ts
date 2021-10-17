@@ -33,7 +33,6 @@ export class AllRoomsComponent implements OnInit, AfterViewInit{
   }
 
   addUserToRoom(event: MatSelectionListChange) {
-	  
 	this.selectedRoom = event.source.selectedOptions.selected[0].value;
   }
 
