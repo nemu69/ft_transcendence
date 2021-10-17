@@ -17,12 +17,12 @@
               </mat-list-option>
             </mat-selection-list>
             <mat-paginator [length]="(rooms$ | async)?.meta?.totalItems" [pageIndex]="(rooms$ | async)?.meta?.currentPage"
-              [pageSize]="(rooms$ | async)?.meta?.itemsPerPage" (page)="onPaginateRooms($event)"
-              [pageSizeOptions]="[10,25,50]"></mat-paginator>
+              [pageSize]="10" (page)="onPaginateRooms($event)"
+              ></mat-paginator>
           </div>
         </div>
         <div class="chatroom">
-          <app-chat-room [chatRoom]="selectedRoom"></app-chat-room>
+          <app-add-user-room [joinRoom]="selectedRoom"></app-add-user-room>
         </div>
       </div>
     </mat-card>

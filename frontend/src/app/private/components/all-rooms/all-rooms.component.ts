@@ -25,22 +25,20 @@ export class AllRoomsComponent implements OnInit, AfterViewInit{
 	) { }
 
   ngOnInit() {
-    this.chatService.emitPaginateAllRooms(10, 0);
+    this.chatService.emitPaginateAllRooms(20, 0);
   }
 
   ngAfterViewInit() {
-    this.chatService.emitPaginateAllRooms(10, 0);
+    this.chatService.emitPaginateAllRooms(20, 0);
   }
 
   addUserToRoom(event: MatSelectionListChange) {
-	  console.log(event.source.selectedOptions.selected[0].value);
-	  let room : RoomI = event.source.selectedOptions.selected[0].value;
-    //this.selectedRoom = event.source.selectedOptions.selected[0].value;
-	// addUserToRoom
+	  
+	this.selectedRoom = event.source.selectedOptions.selected[0].value;
   }
 
   onPaginateRooms(pageEvent: PageEvent) {
-    this.chatService.emitPaginateAllRooms(pageEvent.pageSize, pageEvent.pageIndex);
+    this.chatService.emitPaginateAllRooms(20, pageEvent.pageIndex);
   }
 
 }

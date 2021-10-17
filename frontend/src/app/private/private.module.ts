@@ -32,14 +32,16 @@ import { TwoFactorDisabledComponent } from './components/two-factor-disabled/two
 import { ProfileusersComponent } from './components/profile-users/profile-users.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { AllRoomsComponent } from './components/all-rooms/all-rooms.component';
+import { AddUserRoomComponent } from './components/add-user-room/add-user-room.component';
 
 @NgModule({
   declarations: [
-    DashboardComponent,
+	DashboardComponent,
+	AllRoomsComponent,
     CreateRoomComponent,
     SelectUsersComponent,
     ChatRoomComponent,
-	AllRoomsComponent,
+	AddUserRoomComponent,
     ChatMessageComponent,
 	PageNotFoundComponent,
 	SettingComponent,

@@ -83,7 +83,6 @@ export class RoomService {
       .leftJoinAndSelect('room.users', 'all_users')
 	  .where('room.type != :p', { p: RoomType.PRIVATE })
 	  .andWhere('room.type != :c', { c: RoomType.CLOSE })
-	  .andWhere('room.type != :c', { c: RoomType.CLOSE })
       .orderBy('room.updated_at', 'DESC');
 
     return paginate(query, options);
