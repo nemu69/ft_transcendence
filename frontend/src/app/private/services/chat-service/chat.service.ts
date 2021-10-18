@@ -3,7 +3,7 @@ import { HostListener, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { MessageI, MessagePaginateI } from 'src/app/model/chat/message.interface';
 import { RoomType ,RoomI, RoomPaginateI } from 'src/app/model/chat/room.interface';
 import { GameStateI } from 'src/app/model/game-state.interface';
@@ -21,8 +21,7 @@ export class ChatService {
     private authService: AuthService,
     private snackbar: MatSnackBar,
 	private http: HttpClient,
-	private router: Router,
-	private activatedRoute: ActivatedRoute
+	private router: Router
     ) {
         if(authService.isAuthenticated())
           this.socket = new CustomSocket;
@@ -128,7 +127,9 @@ export class ChatService {
 		tap(val => {
 		  if (val < 1) {
 			this.snackbar.open(`Password failed, Try again !`, 'Close', {
-			  duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
+			  duration: 3000, 
+			  panelClass: ['red-snackbar','login-snackbar'],
+			  horizontalPosition: 'right', verticalPosition: 'top',
 			});
 		  }
 		  else {
@@ -169,5 +170,11 @@ export class ChatService {
 
   emitInput(data: number[]){
     this.socket.emit("paddle", data);
+  }
+
+  findOne(id: number): Observable<RoomI> {
+	return this.http.get('/api/room/' + id).pipe(
+	  map((room:RoomI) => room)
+	)
   }
 }

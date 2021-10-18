@@ -6,6 +6,7 @@ import { hasRoles } from 'src/auth/login/decorator/roles.decorator';
 import { RoomI, RoomType } from 'src/chat/model/room/room.interface';
 import { RoomService } from 'src/chat/service/room-service/room.service';
 import { UserI, UserRole } from 'src/user/model/user.interface';
+import { Observable } from 'rxjs';
 
 
 @Controller('room')
@@ -51,6 +52,12 @@ export class RoomController {
 	async UserIsRoom(@Param('idRoom') idRoom: number, @Param('idUser') idUser: number): Promise<Number> {
 		var room: RoomI = await this.roomService.getRoom(idRoom);
 		return this.roomService.boolUserIsOnRoom(idUser, room);
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get(':idRoom')
+	async getRoom(@Param('idRoom') idRoom: number): Promise<RoomI> {
+		return this.roomService.getRoom(idRoom);
 	}
 
 }

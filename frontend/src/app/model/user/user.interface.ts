@@ -1,5 +1,6 @@
 import { FriendEntity } from "src/app/friend/models/friend.entity";
 import { RoomI } from "../chat/room.interface";
+import { Meta } from "./../chat/meta.interface";
 
 export interface UserI {
     id?: number;
@@ -20,8 +21,9 @@ export interface UserI {
 }
 
 export enum UserRole {
+    OWNER = 'owner',
     ADMIN = 'admin',
-    USER = 'user'
+    USER = 'user',
 }
 
 export enum UserStatus {
@@ -29,3 +31,8 @@ export enum UserStatus {
     OFF = 'offline',
     GAME = 'in-game'
 }
+
+export interface UserPaginateI {
+	items: UserI[];
+	meta: Meta;
+  }

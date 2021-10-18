@@ -33,6 +33,8 @@ import { ProfileusersComponent } from './components/profile-users/profile-users.
 import { MatRadioModule } from '@angular/material/radio';
 import { AllRoomsComponent } from './components/all-rooms/all-rooms.component';
 import { AddUserRoomComponent } from './components/add-user-room/add-user-room.component';
+import { AdministrationComponent } from './administration/administration.component';
+import { OptionRoomComponent } from './components/option-room/option-room.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,9 @@ import { AddUserRoomComponent } from './components/add-user-room/add-user-room.c
 	ProfileusersComponent,
 	FriendComponent,
 	TwoFactorComponent,
-	TwoFactorDisabledComponent
+	TwoFactorDisabledComponent,
+	AdministrationComponent,
+	OptionRoomComponent
   ],
   imports: [
     CommonModule,

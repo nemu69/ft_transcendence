@@ -1,0 +1,55 @@
+<div class="wrapper">
+	<div class="container">
+	  <div class="dashboard">
+		  <a [routerLink]="['../dashboard']">Go to Dashboard</a>
+		</div>
+	  <mat-card>
+		<div>
+		  <div>
+			<div class="title">
+				<h1>All chatrooms</h1>
+		  </div>
+			<div *ngIf="(allRooms$|async)?.items?.length > 0; else no_rooms" class="rooms">
+			  <mat-selection-list [multiple]="false">
+				<mat-list-option *ngFor="let room of (allRooms$ | async)?.items" [value]="room">
+				  Name: {{room.name}} Id: {{room.id}} 
+				  <mat-divider></mat-divider>
+				</mat-list-option>
+			  </mat-selection-list>
+			  <mat-paginator [length]="(allRooms$ | async)?.meta?.totalItems" [pageIndex]="(allRooms$ | async)?.meta?.currentPage"
+				[pageSize]="10" (page)="onPaginateRooms($event)"
+				></mat-paginator>
+			</div>
+		  </div>
+		</div>
+	  </mat-card>
+	  <mat-card>
+		<div>
+		  <div>
+			<div class="title">
+				<h1>All Users</h1>
+		  </div>
+		  <div *ngIf="(allUsers$|async)?.items?.length > 0; else no_friends" class="friends-list">
+			<mat-selection-list [multiple]="false">
+				<mat-list-option *ngFor="let allUsers of (allUsers$ | async)?.items" [value]="allUsers">
+					{{allUsers.username}}
+				  <mat-divider></mat-divider>
+				</mat-list-option>
+			  </mat-selection-list>
+			  <mat-paginator [length]="(allUsers$ | async)?.meta?.totalItems" [pageIndex]="(allUsers$ | async)?.meta?.currentPage"
+				[pageSize]="10" (page)="onPaginateUsers($event)"
+				></mat-paginator>
+		</div>
+		<ng-template #no_friends>
+			<br>
+			<mat-error>`I have no friends and no enemies - only competitors`</mat-error>
+		</ng-template>
+		  </div>
+		</div>
+	  </mat-card>
+	</div>
+  
+	<ng-template #no_rooms>
+		<mat-error>No Chatrooms for you so far, please create one or get invited</mat-error>
+	</ng-template>
+  </div>
