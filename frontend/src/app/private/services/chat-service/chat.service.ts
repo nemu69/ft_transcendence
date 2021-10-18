@@ -1,9 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { HostListener, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { MessageI, MessagePaginateI } from 'src/app/model/chat/message.interface';
-import { RoomI, RoomPaginateI } from 'src/app/model/chat/room.interface';
+import { RoomType ,RoomI, RoomPaginateI } from 'src/app/model/chat/room.interface';
 import { GameStateI } from 'src/app/model/game-state.interface';
 import { UserI } from 'src/app/model/user/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
@@ -18,6 +19,7 @@ export class ChatService {
   constructor(
     private authService: AuthService,
     private snackbar: MatSnackBar,
+	private http: HttpClient
     ) {
         if(authService.isAuthenticated())
           this.socket = new CustomSocket;
@@ -27,12 +29,27 @@ export class ChatService {
     this.socket.emit('PlayerExit');
   }
 
-  getAddedMessage(): Observable<MessageI> {
-    return this.socket.fromEvent<MessageI>('messageAdded');
+  createRoom(room: RoomI) {
+	let iduser : number;
+	
+	this.authService.getUserId().subscribe(val => {
+	  iduser = val;
+	})
+	if (room.users.filter(function(e) { return e.id === iduser; }).length > 0) {
+	  this.snackbar.open(`You're adding YOU :)`, 'Close', {
+		duration: 5000, horizontalPosition: 'right', verticalPosition: 'top',
+		panelClass: ['red-snackbar','login-snackbar'],
+	  });
+	  throw iduser;
+	}
+	this.socket.emit('createRoom', room);
+	this.snackbar.open(`Room ${room.name} created successfully`, 'Close', {
+	  duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
+	});
   }
-
-  sendMessage(message: MessageI) {
-    this.socket.emit('addMessage', message);
+  
+  emitPaginateRooms(limit: number, page: number) {
+	this.socket.emit('paginateRooms', { limit, page });
   }
 
   inviteMessage(message: MessageI) {
@@ -40,19 +57,59 @@ export class ChatService {
   }
 
   joinRoom(room: RoomI) {
-    this.socket.emit('joinRoom', room);
+	this.socket.emit('joinRoom', room);
   }
+<<<<<<< HEAD
 
   spectate(id: number, self_id: number){
     this.socket.emit('specRoom', [id, self_id]);
   }
 
+=======
+  
+>>>>>>> b25c6d0812f31f22f8f9a3bf6922ca1f7eb2c2aa
   leaveJoinRoom(room: RoomI) {    
-    this.socket.emit('leaveJoinRoom', room);
+	this.socket.emit('leaveJoinRoom', room);
   }
 
   leaveRoom(room : RoomI) {
 	this.socket.emit('leaveRoom', room);
+  }
+  
+  emitPaginateAllRooms(limit: number, page: number) {
+    this.socket.emit('allRoom', { limit, page });
+  }
+
+  addUserToRoom(room: RoomI, password: string) {
+	this.socket.emit('addUser',  {room, password});
+  }
+
+  addAdmin(room: RoomI, user: UserI) {
+	this.socket.emit('addAdmin', { room, user });
+  }
+
+  addMuted(room: RoomI, user: UserI) {
+	this.socket.emit('addMuted', { room, user });
+  }
+
+  removeAdmin(room: RoomI, user: UserI) {
+	this.socket.emit('removeAdmin', { room, user });
+  }
+
+  removeMuted(room: RoomI, user: UserI) {
+	this.socket.emit('removeMuted', { room, user });
+  }
+
+  changePassword(room: RoomI, password: string) {
+	this.socket.emit('changePassword', { room, password });
+  }
+
+  changeType(room: RoomI, type: RoomType, password: string) {
+	this.socket.emit('changeType', { room, type, password });
+  }
+
+  sendMessage(message: MessageI) {
+    this.socket.emit('addMessage', message);
   }
 
   getMessages(): Observable<MessagePaginateI> {
@@ -62,33 +119,28 @@ export class ChatService {
   getMyRooms(): Observable<RoomPaginateI> {
     return this.socket.fromEvent<RoomPaginateI>('rooms');
   }
-  
-  emitPaginateRooms(limit: number, page: number) {
-    this.socket.emit('paginateRooms', { limit, page });
-  }
-  
-  emitPaginateAllRooms(limit: number, page: number) {
-    this.socket.emit('allRoom', { limit, page });
+
+  getAddedMessage(): Observable<MessageI> {
+    return this.socket.fromEvent<MessageI>('messageAdded');
   }
 
-  createRoom(room: RoomI) {
-    let iduser : number;
-    this.authService.getUserId().subscribe(val => {
-      iduser = val;
-    })
-    if (room.users.filter(function(e) { return e.id === iduser; }).length > 0) {
-      this.snackbar.open(`You're adding YOU :)`, 'Close', {
-        duration: 5000, horizontalPosition: 'right', verticalPosition: 'top',
-        panelClass: ['red-snackbar','login-snackbar'],
-      });
-      throw iduser;
-    }
-    this.socket.emit('createRoom', room);
-    this.snackbar.open(`Room ${room.name} created successfully`, 'Close', {
-      duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
-    });
+  IsInRoom(roomId: number, userId : number): Observable<number> {
+	  return this.http.get<number>('/api/room/' + roomId + '/' +  userId).pipe(
+		tap(val => {
+		  if (val < 1) {
+			this.snackbar.open(`Passowrd failed, Try again !`, 'Close', {
+			  duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
+			});
+		  }
+		  else {
+			this.snackbar.open(`Passowrd success, You're in the room !`, 'Close', {
+			  duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
+			});
+		}
+		}));
   }
 
+  // Game
   checkExistence(n: number)
   {
     this.socket.emit('checkExistence', n);

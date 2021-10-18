@@ -48,7 +48,7 @@
   </div>
 
   <!-- Add Message -->
-  <div style="position: absolute;  display: flex; flex-direction: row; align-items: center;">
+  <div style="position: absolute;  display: flex; flex-direction: row; align-items: center;" class="addMessage">
     <mat-form-field appearance="standard">
       <input matInput (keydown.enter)="sendMessage()" [formControl]="chatMessage" placeholder="Send a message in {{chatRoom.name}}" type="text">
     </mat-form-field>

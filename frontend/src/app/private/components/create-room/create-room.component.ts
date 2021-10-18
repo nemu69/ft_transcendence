@@ -12,7 +12,8 @@ import { ChatService } from '../../services/chat-service/chat.service';
 })
 export class CreateRoomComponent {
 
-	radio: boolean = true;
+	radiocheck: boolean = true;
+	beforeType: string = 'public';
 	form: FormGroup = new FormGroup({
 	  name: new FormControl(null, [Validators.required]),
 	  description: new FormControl(null),
@@ -20,6 +21,7 @@ export class CreateRoomComponent {
 	  users: new FormArray([], [Validators.required]),
 	  admin: new FormArray([]),
 	  muted: new FormArray([]),
+	  type: new FormControl({value: 'public'} , [Validators.required]),
 	});
 
   constructor(private chatService: ChatService,
@@ -29,7 +31,9 @@ export class CreateRoomComponent {
 
   create() {
     if (this.form.valid) {
-      try {		  
+      try {
+		if (this.form.get('type').value != 'protected' && this.form.get('type').value != 'private')
+			this.form.get('type').setValue('public');
         this.chatService.createRoom(this.form.getRawValue());
         this.router.navigate(['../dashboard'], { relativeTo: this.activatedRoute });
       } catch (error) {
@@ -74,15 +78,32 @@ export class CreateRoomComponent {
     return this.form.get('admin') as FormArray;
   }
 
-  radioChange($event: MatRadioChange) {
+  radioPassword($event: MatRadioChange) {
     console.log($event.source.name, $event.value);
 
     if ($event.value == 'no') {
+		this.form.get('password').clearValidators();
         this.form.get('password').disable();
+		this.form.get('password').setValue('');
+		this.form.get('type').setValue(this.beforeType);
     }
 	else {
+		this.form.get('password').setValidators([Validators.required]);
 		this.form.get('password').enable();
+		this.form.get('type').setValue('protected');
 	}
-}
+  }
+
+  radioType($event: MatRadioChange) {
+    console.log($event.source.name, $event.value);
+	if ($event.value == 'public') {
+		this.form.get('type').setValue('public');
+		this.beforeType = 'public';
+	}
+	else {
+		this.form.get('type').setValue('private');
+		this.beforeType = 'private';
+	}
+  }
 
 }

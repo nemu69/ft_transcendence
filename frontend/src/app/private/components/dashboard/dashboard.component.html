@@ -9,6 +9,7 @@
 		</div>
 		<div class="align">
 			<h2>My rooms</h2>
+			<br>
 			<button mat-button [routerLink]="['../all-rooms']">All Rooms</button>
 		</div>
           <div *ngIf="(rooms$|async)?.items?.length > 0; else no_rooms" class="rooms">
@@ -18,9 +19,9 @@
                 <mat-divider></mat-divider>
               </mat-list-option>
             </mat-selection-list>
-            <!-- <mat-paginator [length]="(rooms$ | async)?.meta?.totalItems" [pageIndex]="(rooms$ | async)?.meta?.currentPage"
+            <mat-paginator [length]="(rooms$ | async)?.meta?.totalItems" [pageIndex]="(rooms$ | async)?.meta?.currentPage"
               [pageSize]="(rooms$ | async)?.meta?.itemsPerPage" (page)="onPaginateRooms($event)"
-              [pageSizeOptions]="[10,25,50]"></mat-paginator> -->
+              [pageSizeOptions]="[10,25,50]"></mat-paginator>
           </div>
         </div>
         <div class="chatroom">
