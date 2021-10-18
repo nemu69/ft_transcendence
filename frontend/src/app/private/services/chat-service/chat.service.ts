@@ -117,7 +117,19 @@ export class ChatService {
   }
 
   IsInRoom(roomId: number, userId : number): Observable<number> {
-	  return this.http.get<number>('/api/room/' + roomId + '/' +  userId);
+	  return this.http.get<number>('/api/room/' + roomId + '/' +  userId).pipe(
+		tap(val => {
+		  if (val < 1) {
+			this.snackbar.open(`Passowrd failed, Try again !`, 'Close', {
+			  duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
+			});
+		  }
+		  else {
+			this.snackbar.open(`Passowrd success, You're in the room !`, 'Close', {
+			  duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
+			});
+		}
+		}));
   }
 
   // Game

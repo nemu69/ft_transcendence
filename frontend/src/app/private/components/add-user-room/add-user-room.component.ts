@@ -15,11 +15,13 @@ import { ChatService } from '../../services/chat-service/chat.service';
   templateUrl: './add-user-room.component.html',
   styleUrls: ['./add-user-room.component.css']
 })
-export class AddUserRoomComponent {
+export class AddUserRoomComponent implements OnChanges {
 
   @Input() joinRoom: RoomI;
+  @Input() InRoom: boolean;
   user: UserI = this.authService.getLoggedInUser();
   protected = RoomType.PROTECTED;
+
   password: FormControl = new FormControl({value: '', disabled: false}, [Validators.required]);
 
 
@@ -31,23 +33,20 @@ export class AddUserRoomComponent {
 	  private activatedRoute: ActivatedRoute,
 	  	) { }
 
-  addUser() {
-	if (this.password.value === undefined) {
-		this.password.setValue('');
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes.InRoom) {
+			this.InRoom = changes.InRoom.currentValue;
+		}
 	}
-	this.chatService.addUserToRoom(this.joinRoom, this.password.value);
-	console.log(this.IsInRoom());
-  }
 
-  //check if user is in room with room observable
-  IsInRoom() : boolean {
-	let bool : boolean = false;
-	//PATCH 
-	//this.chatService.IsInRoom(this.joinRoom.id, this.user.id).subscribe(
-	//	(res: number) => {
-	//		bool = res > 0;
-	//	}
-	//);
-	return bool;
+	addUser() {
+		if (this.InRoom) {
+			return;
+		}
+		if (this.password.value === undefined) {
+			this.password.setValue('');
+		}
+		this.chatService.addUserToRoom(this.joinRoom, this.password.value);
+		this.chatService.IsInRoom(this.joinRoom.id, this.user.id).subscribe();
   }
 }

@@ -46,7 +46,7 @@ export class RoomController {
 	  return this.roomService.deleteAUserAdminFromRoom(Number(id), user.id);
 	}
 	
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(JwtAuthGuard)
 	@Get(':idRoom/:idUser')
 	async UserIsRoom(@Param('idRoom') idRoom: number, @Param('idUser') idUser: number): Promise<Number> {
 		var room: RoomI = await this.roomService.getRoom(idRoom);

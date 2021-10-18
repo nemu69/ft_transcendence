@@ -16,7 +16,8 @@ import { ChatService } from '../../services/chat-service/chat.service';
 export class AllRoomsComponent implements OnInit, AfterViewInit{
 
   rooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms();
-  selectedRoom = null;
+  selectedRoom : RoomI = null;
+  InRoom = null;
   user: UserI = this.authService.getLoggedInUser();
 
   constructor(private chatService: ChatService,
@@ -34,6 +35,20 @@ export class AllRoomsComponent implements OnInit, AfterViewInit{
 
   addUserToRoom(event: MatSelectionListChange) {
 	this.selectedRoom = event.source.selectedOptions.selected[0].value;
+	console.log(this.selectedRoom.users);
+	
+	if (this.selectedRoom.users.find(user => user.id === this.user.id)) {
+		this.InRoom = true;
+	} 
+	//else if  (this.selectedRoom.admin.find(user => user.id === this.user.id)) {
+	//	this.InRoom = true;
+	//} 
+	//else if  (this.selectedRoom.muted.find(user => user.id === this.user.id)) {
+	//	this.InRoom = true;
+	//} 
+	else {
+		this.InRoom = false;
+	}
   }
 
   onPaginateRooms(pageEvent: PageEvent) {

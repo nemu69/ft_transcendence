@@ -14,19 +14,26 @@
   </div>
 
   <!-- Messages -->
-  <div *ngIf="joinRoom.type == protected;else oki" class="addUser">
-		<mat-form-field appearance="standard">
+	<div *ngIf="!InRoom; else alreadyRoom">
+		<div *ngIf="joinRoom.type == protected;else oki" class="addUser">
+			<mat-form-field appearance="standard">
 			<input matInput placeholder="Password" [formControl]="password" type="password">
 		</mat-form-field>
-		<button mat-raised-button color="primary" [disabled]="!password.valid" (click)="addUser()">Join Room</button>
-  </div>
-
-  <ng-template #oki>
-	  <div class="addUser">
-		  <button mat-raised-button color="primary" (click)="addUser()">Join Room</button>
+		<button mat-raised-button color="primary" [disabled]="!password.valid || InRoom" (click)="addUser()">Join Room</button>
+	</div>
+	
+	<ng-template #oki>
+		<div class="addUser">
+			<button mat-raised-button color="primary" (click)="addUser()">Join Room</button>
 		</div>
 	</ng-template>
-
+	</div>
+	<ng-template #alreadyRoom>
+		<div class="addUser">
+			<h1>You are already in this room</h1>
+		</div>
+	</ng-template>
+	
 </div>
 
 
