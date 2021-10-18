@@ -59,15 +59,11 @@ export class ChatService {
   joinRoom(room: RoomI) {
 	this.socket.emit('joinRoom', room);
   }
-<<<<<<< HEAD
 
   spectate(id: number, self_id: number){
     this.socket.emit('specRoom', [id, self_id]);
   }
 
-=======
-  
->>>>>>> b25c6d0812f31f22f8f9a3bf6922ca1f7eb2c2aa
   leaveJoinRoom(room: RoomI) {    
 	this.socket.emit('leaveJoinRoom', room);
   }
