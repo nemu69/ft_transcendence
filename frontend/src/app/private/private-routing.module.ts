@@ -12,6 +12,7 @@ import { TwoFactorComponent } from './components/two-factor/two-factor.component
 import { TwoFactorDisabledComponent } from './components/two-factor-disabled/two-factor-disabled.component';
 import { ProfileusersComponent } from './components/profile-users/profile-users.component';
 import { AllRoomsComponent } from './components/all-rooms/all-rooms.component';
+import { AdministrationComponent } from './administration/administration.component';
 
 const routes: Routes = [
   {path: 'dashboard', component: DashboardComponent},
@@ -27,6 +28,7 @@ const routes: Routes = [
     ]
   },
   {path: 'friend', component: FriendComponent},
+  {path: 'admin', component: AdministrationComponent},
   {path: 'two-factor', component: TwoFactorComponent},
   {path: 'two-factor-disabled', component: TwoFactorDisabledComponent},
   {path: '**', component: PageNotFoundComponent},

@@ -20,8 +20,9 @@ export interface UserI {
 }
 
 export enum UserRole {
+    OWNER = 'owner',
     ADMIN = 'admin',
-    USER = 'user'
+    USER = 'user',
 }
 
 export enum UserStatus {

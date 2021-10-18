@@ -128,7 +128,9 @@ export class ChatService {
 		tap(val => {
 		  if (val < 1) {
 			this.snackbar.open(`Password failed, Try again !`, 'Close', {
-			  duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
+			  duration: 3000, 
+			  panelClass: ['red-snackbar','login-snackbar'],
+			  horizontalPosition: 'right', verticalPosition: 'top',
 			});
 		  }
 		  else {
