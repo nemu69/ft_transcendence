@@ -12,7 +12,7 @@ export class ChatMessageComponent {
 
   @Input() message: MessageI;
   user: UserI = this.authService.getLoggedInUser();
-
+  
   constructor(private authService: AuthService) { }
 
 }

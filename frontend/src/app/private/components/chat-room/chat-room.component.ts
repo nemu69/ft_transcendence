@@ -51,13 +51,17 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 	  private router: Router,
 	  private activatedRoute: ActivatedRoute,
 	  private _snackBar: MatSnackBar
-	  	) { }
+	  	) {
+        chatService.socket.on('startGame', function(data: {room: RoomI, u_id: number, type: number, m_id: number}) {
+          chatService.newPrivateGame(data.room, data.u_id, data.type, data.m_id);
+          router.navigate(['../../private/match/']);
+        });
+      }
 
   ngOnChanges(changes: SimpleChanges) {
     this.chatService.leaveJoinRoom(changes['chatRoom'].previousValue);
     if (this.chatRoom) {
       this.chatService.joinRoom(this.chatRoom);
-
     }
   }
 
@@ -78,15 +82,16 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     }
   }
 
-  gameInvite() {
-    this.chatService.inviteMessage({ text: 'GAME INVITE', type: 1, room: this.chatRoom });
+  gameInvite(type: number) {
+    if (type == 0)
+      this.chatService.inviteMessage({ text: 'NORMAL GAME INVITE', type: 1, room: this.chatRoom }, this.user.id, type);
+    else
+      this.chatService.inviteMessage({ text: 'BLITZ GAME INVITE', type: 1, room: this.chatRoom }, this.user.id, type);
     this.chatMessage.reset();
-    this.chatService.newPrivateGame(this.chatRoom, this.user.id);
-    this.router.navigate(['../match/'], { relativeTo: this.activatedRoute });
   }
 
-  joinGameRoom() {
-    this.chatService.newPrivatePlayer(this.chatRoom, this.user.id);
+  joinGameRoom(id: number) {
+    this.chatService.newPrivatePlayer(this.chatRoom, this.user.id, id);
     this.router.navigate(['../match/'], { relativeTo: this.activatedRoute });
   }
 
@@ -104,6 +109,4 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 	});
 	this.router.navigate(['../profile/'], { relativeTo: this.activatedRoute });
   }
-
-
 }

@@ -13,11 +13,11 @@ export class GameRoomService {
 
   constructor(){};
 
-  public findGameByRoom(lobbies: LobbyI, chatRoom: RoomI)
+  public findGameByMessageId(lobbies: LobbyI, id: number)
   {
     for (const room of lobbies.privateRooms)
     {
-      if (room.room && room.room.id == chatRoom.id)
+      if (room.p_id && room.p_id == id)
       {
         return(room);
       }
@@ -387,7 +387,6 @@ export class GameRoomService {
     {
       if (spec.user.status == UserStatus.GAME)
       {
-        console.log("WORKS");
         spec.user.status = UserStatus.ON;
         userservice.updateOne(spec.user.id, spec.user);
       }

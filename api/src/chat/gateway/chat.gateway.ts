@@ -226,11 +226,12 @@ export class ChatGateway{
   }
 
   @SubscribeMessage('gameMessage')
-  async onGameMessage(socket: Socket, message: MessageI) {
-    const createdMessage: MessageI = await this.messageService.create({...message, user: socket.data.user});
+  async onGameMessage(socket: Socket, data: {message: MessageI, id: number, type: number}) {
+    const createdMessage: MessageI = await this.messageService.create({...data.message, user: socket.data.user});
     const room: RoomI = await this.roomService.getRoom(createdMessage.room.id);
     const joinedUsers: JoinedRoomI[] = await this.joinedRoomService.findByRoom(room);
     // TODO: Send new Message to all joined Users of the room (currently online)
+    this.server.to(socket.id).emit('startGame', {room: room, u_id: data.id, type: data.type, m_id: createdMessage.id});
     for(const user of joinedUsers) {
 		const nu = await this.friendsService.boolUserIsBlocked(user.userId, createdMessage.user.id);
 		if (!nu) await this.server.to(user.socketId).emit('messageAdded', createdMessage);

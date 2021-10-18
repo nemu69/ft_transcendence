@@ -19,6 +19,7 @@ import { GameService } from './service/game/game.service';
 import { GameRoomService } from './service/gameroom/gameroom.service';
 import { RoomI } from 'src/chat/model/room/room.interface';
 import { RoomService } from 'src/chat/service/room-service/room.service';
+import { MIN_DATE } from 'class-validator';
 
 @WebSocketGateway({ cors: true })
 export class MatchGateway{
@@ -84,7 +85,7 @@ export class MatchGateway{
     private gameRoomService: GameRoomService) { }
 
   @SubscribeMessage('CreatePrivateGame')
-  async onPrivateGame(n_socket: Socket, data: {room: RoomI, user: number}) {
+  async onPrivateGame(n_socket: Socket, data: {room: RoomI, user: number, type: number, m_id: number}) {
     let id_num: number[] = await this.gameRoomService.UpdateRooms(this.lobby_list, this.server);
     this.p_id = id_num[2];
     this.b_id = id_num[1];
@@ -96,9 +97,10 @@ export class MatchGateway{
       player2: null,
       spectators: [],
       ball: null,
-      type: 0,
+      type: data.type,
       powers: [],
       room: data.room,
+      p_id: data.m_id,
     };
     let n_paddle: CoordinatesI = {
       x: 0,
@@ -124,12 +126,12 @@ export class MatchGateway{
   }
 
   @SubscribeMessage('newPrivatePlayer')
-  async onNewPrivatePlayer(n_socket: Socket, data: {room: RoomI, user: number}) {
+  async onNewPrivatePlayer(n_socket: Socket, data: {room: RoomI, user: number, m_id: number}) {
     let id_num: number[] = await this.gameRoomService.UpdateRooms(this.lobby_list, this.server);
     this.p_id = id_num[2];
     this.b_id = id_num[1];
     this.n_id = id_num[0];
-    let game: GameStateI = this.gameRoomService.findGameByRoom(this.lobby_list, data.room);
+    let game: GameStateI = this.gameRoomService.findGameByMessageId(this.lobby_list, data.m_id);
     if (!game)
     {
       console.log("not found")
@@ -153,7 +155,9 @@ export class MatchGateway{
       paddle: p_paddle,
       points: 0,
     };
-    if (game.player2)
+    if (game.player1.user.id == data.user)
+      game.player1.socket = n_socket;
+    else if (game.player2)
     {
       game.spectators.push(p_player);
       this.server.to(p_player.socket.id).emit('name', 2);
