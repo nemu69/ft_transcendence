@@ -129,7 +129,7 @@ export class MatchGateway{
     this.p_id = id_num[2];
     this.b_id = id_num[1];
     this.n_id = id_num[0];
-    let game: GameStateI = this.gameRoomService.findGameRoom(this.lobby_list, data.room);
+    let game: GameStateI = this.gameRoomService.findGameByRoom(this.lobby_list, data.room);
     if (!game)
     {
       console.log("not found")
@@ -223,6 +223,8 @@ export class MatchGateway{
 
     //Get UserI from received ID to synchronise with n_players info
     const payload = await this.userService.findOne(data[1]);
+    if (payload === undefined)
+      return;
     payload.status = UserStatus.GAME;
     this.userService.updateOne(payload.id, payload);
     let n_player: PlayerI = {
@@ -377,13 +379,11 @@ export class MatchGateway{
   @SubscribeMessage('checkExistence')
   async checkExist(socket: Socket, data: number)
   {
-    if (data != -1)
-    {
-      const payload = await this.userService.findOne(data);
-      payload.status = UserStatus.GAME;
-      this.userService.updateOne(payload.id, payload);
-      this.gameRoomService.checkIfAlready(this.lobby_list, payload, socket, this.server);
-    }
+    await this.gameRoomService.UpdateRooms(this.lobby_list, this.server);
+    const payload = await this.userService.findOne(data);
+    payload.status = UserStatus.GAME;
+    this.userService.updateOne(payload.id, payload);
+    this.gameRoomService.checkIfAlready(this.lobby_list, payload, socket, this.server);
     await sleep(10);
     let id_num: number[] = await this.gameRoomService.UpdateRooms(this.lobby_list, this.server);
     this.p_id = id_num[2];
@@ -508,4 +508,28 @@ export class MatchGateway{
       }
     }
   }
+
+  @SubscribeMessage('specRoom')
+  async onspectate(socket: Socket, data: number[]) {
+    const payload = await this.userService.findOne(data[1]);
+    if (payload === undefined)
+      return ;
+    this.userService.updateOne(payload.id, payload);
+    let game: GameStateI = this.gameRoomService.findGameById(this.lobby_list, data[0]);
+    if (game != null)
+    {
+      let n_player: PlayerI = {
+        user: payload,
+        socket: socket,
+        paddle: null,
+        points: 0,
+      };
+
+      game.spectators.push(n_player);
+      this.server.to(n_player.socket.id).emit('name', 2);
+      if (game.player1 && game.player2)
+        this.server.to(n_player.socket.id).emit('score', [game.player1.points, game.player2.points]);
+    }
+  }
+
 }

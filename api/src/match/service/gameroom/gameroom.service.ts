@@ -13,7 +13,7 @@ export class GameRoomService {
 
   constructor(){};
 
-  public findGameRoom(lobbies: LobbyI, chatRoom: RoomI)
+  public findGameByRoom(lobbies: LobbyI, chatRoom: RoomI)
   {
     for (const room of lobbies.privateRooms)
     {
@@ -22,6 +22,32 @@ export class GameRoomService {
         return(room);
       }
     }
+  }
+
+  public findGameById(lobbies: LobbyI, id: number)
+  {
+    for (const room of lobbies.privateRooms)
+    {
+      if (room.player1 && room.player1.user.id == id)
+        return room;
+      if (room.player2 && room.player2.user.id == id)
+        return room;
+    }
+    for (const room of lobbies.normalRooms)
+    {
+      if (room.player1 && room.player1.user.id == id)
+        return room;
+      if (room.player2 && room.player2.user.id == id)
+        return room;
+    }
+    for (const room of lobbies.blitzRooms)
+    {
+      if (room.player1 && room.player1.user.id == id)
+        return room;
+      if (room.player2 && room.player2.user.id == id)
+        return room;
+    }
+    return null;
   }
 
   //Remove unused Rooms and change id's to coincide with new order
@@ -99,8 +125,18 @@ export class GameRoomService {
         server.to(room.player2.socket.id).emit('id', [id,0]);
         if (room.player1 && room.player2)
           server.to(room.player2.socket.id).emit('score', [room.player1.points,room.player2.points]);
-          server.to(room.player2.socket.id).emit('exists', 0);
+        server.to(room.player2.socket.id).emit('exists', 0);
         server.to(room.player2.socket.id).emit('name', 1);
+      }
+      for (const spec of room.spectators)
+      {
+        if (spec.socket.id == socket.id)
+        {
+          if (room.player1 && room.player2)
+            server.to(spec.socket.id).emit('score', [room.player1.points,room.player2.points]);
+          server.to(spec.socket.id).emit('name', 2);
+          server.to(spec.socket.id).emit('exists', 2);
+        }
       }
       id++;
     }
@@ -123,6 +159,16 @@ export class GameRoomService {
         server.to(room.player2.socket.id).emit('exists', 0);
         server.to(room.player2.socket.id).emit('name', 1);
       }
+      for (const spec of room.spectators)
+      {
+        if (spec.socket.id == socket.id)
+        {
+          if (room.player1 && room.player2)
+            server.to(spec.socket.id).emit('score', [room.player1.points,room.player2.points]);
+          server.to(spec.socket.id).emit('name', 2);
+          server.to(spec.socket.id).emit('exists', 2);
+        }
+      }
       id++;
     }
     id = 0;
@@ -144,11 +190,16 @@ export class GameRoomService {
         server.to(room.player2.socket.id).emit('exists', 0);
         server.to(room.player2.socket.id).emit('name', 1);
       }
-      room.spectators.forEach(spec => {
-        if (room.player1 && room.player2)
-          server.to(spec.socket.id).emit('score', [room.player1.points,room.player2.points]);
-        server.to(spec.socket.id).emit('exists', 2);
-      });
+      for (const spec of room.spectators)
+      {
+        if (spec.socket.id == socket.id)
+        {
+          if (room.player1 && room.player2)
+            server.to(spec.socket.id).emit('score', [room.player1.points,room.player2.points]);
+          server.to(spec.socket.id).emit('name', 2);
+          server.to(spec.socket.id).emit('exists', 2);
+        }
+      }
       id++;
     }
   }
@@ -160,6 +211,11 @@ export class GameRoomService {
     {
       if (room.player1 && room.player1.user.id == user.id)
       {
+        if (!room.player2)
+        {
+          room.player1 = null;
+          return 0;
+        }
         if (room.player1.socket != socket)
           server.to(room.player1.socket.id).emit('done', 1);
         room.player1.socket = socket;
@@ -171,6 +227,11 @@ export class GameRoomService {
       }
       if (room.player2 && room.player2.user.id == user.id)
       {
+        if (!room.player1)
+        {
+          room.player2 = null;
+          return 0;
+        }
         if (room.player2.socket != socket)
           server.to(room.player2.socket.id).emit('done', 1);
         room.player2.socket = socket;
@@ -187,6 +248,11 @@ export class GameRoomService {
     {
       if (room.player1 && room.player1.user == user)
       {
+        if (!room.player2)
+        {
+          room.player1 = null;
+          return 0;
+        }
         if (room.player1.socket != socket)
           server.to(room.player1.socket.id).emit('done', 1);
         room.player1.socket = socket;
@@ -198,6 +264,11 @@ export class GameRoomService {
       }
       if (room.player2 && room.player2.user == user)
       {
+        if (!room.player1)
+        {
+          room.player2 = null;
+          return 0;
+        }
         if (room.player2.socket != socket)
           server.to(room.player2.socket.id).emit('done', 1);
         room.player2.socket = socket;
@@ -214,6 +285,11 @@ export class GameRoomService {
     {
       if (room.player1 && room.player1.user == user)
       {
+        if (!room.player2)
+        {
+          room.player1 = null;
+          return 0;
+        }
         if (room.player1.socket != socket)
           server.to(room.player1.socket.id).emit('done', 1);
         room.player1.socket = socket;
@@ -225,6 +301,11 @@ export class GameRoomService {
       }
       if (room.player2 && room.player2.user == user)
       {
+        if (!room.player1)
+        {
+          room.player2 = null;
+          return 0;
+        }
         if (room.player2.socket != socket)
           server.to(room.player2.socket.id).emit('done', 1);
         room.player2.socket = socket;
@@ -302,8 +383,15 @@ export class GameRoomService {
       gamestate.player2.user.status = UserStatus.ON;
     if (gamestate.player1.user.status == UserStatus.GAME)
       gamestate.player1.user.status = UserStatus.ON;
-    /*let p1 : UserI = await this.userService.findOne(gamestate.player1.user.id);
-    let p2 : UserI = await this.userService.findOne(gamestate.player2.user.id);*/
+    for (const spec of gamestate.spectators)
+    {
+      if (spec.user.status == UserStatus.GAME)
+      {
+        console.log("WORKS");
+        spec.user.status = UserStatus.ON;
+        userservice.updateOne(spec.user.id, spec.user);
+      }
+    }
     let history: HistoryI = {
       playerOne: gamestate.player1.user,
       playerTwo: gamestate.player2.user,

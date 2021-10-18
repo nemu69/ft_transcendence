@@ -69,18 +69,10 @@
 				</ng-template>
 				<br>
 				<br>
-				<button *ngIf="true; else False" class="btn profile-edit-btn" (click)=sendInvite()>
+				<button *ngIf="user.status=='in-game';" class="btn profile-edit-btn" (click)=spectateGame()>
 					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-gamepad"></i>
-					Invite to game
+					Spectate
 				</button>
-				<ng-template #False>
-					<button class="btn profile-edit-btn" (click)=sendInvite()>
-						<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-gamepad"></i>
-						Accept invite
-					</button>
-				</ng-template>
-			
-
 			</div>
 
 			<div class="profile-stats">

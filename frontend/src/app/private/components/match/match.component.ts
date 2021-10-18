@@ -50,6 +50,7 @@ export class MatchComponent implements OnInit {
     });
 
     chatService.socket.on('exists', function(data: number) {
+      console.log("YES");
       var spectate = document.getElementById("spectate");
       var normal = document.getElementById("normal");
       var blitz = document.getElementById("blitz");
@@ -84,8 +85,8 @@ export class MatchComponent implements OnInit {
       }
       else
       {
-        name1 = "<P1";
-        name2 = "P2>";
+        name1 = "P1>";
+        name2 = "<P2";
       }
     });
 

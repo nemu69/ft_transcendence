@@ -13,6 +13,7 @@ import { FriendsService } from '../../services/friends-service/friends.service';
 import { FriendRequest } from 'src/app/model/friends/friends.interface';
 import { HistoryI } from 'src/app/model/history/history.interface';
 import { HistoryService } from '../../../public/services/history-service/history.service';
+import { ChatService } from '../../services/chat-service/chat.service';
 
 @Component({
   selector: 'app-profile',
@@ -42,6 +43,7 @@ export class ProfileusersComponent implements OnInit {
 		private authService: AuthService,
 		private historyService: HistoryService,
 		private friendsService: FriendsService,
+		private chatService: ChatService,
 		) { }
 
 		imageToShow: any;
@@ -115,8 +117,18 @@ export class ProfileusersComponent implements OnInit {
 				})		
 		}
 
-		sendInvite(){
-			//creates or uses existing chat to invite
+		spectateGame(){
+			let _user: number;
+
+			this.authService.getUserId().pipe(
+				switchMap((idt: number) => this.userService.findOne(idt).pipe(
+					tap((user) => {
+					_user = user.id;
+					this.chatService.spectate(this.idProfile, _user);
+					this.router.navigate(['../../match'],{ relativeTo: this.activatedRoute })
+					})
+				))
+				).subscribe()
 		}
 			
 		isblockedUser(){

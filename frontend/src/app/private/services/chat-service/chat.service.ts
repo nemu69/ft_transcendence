@@ -43,6 +43,10 @@ export class ChatService {
     this.socket.emit('joinRoom', room);
   }
 
+  spectate(id: number, self_id: number){
+    this.socket.emit('specRoom', [id, self_id]);
+  }
+
   leaveJoinRoom(room: RoomI) {    
     this.socket.emit('leaveJoinRoom', room);
   }

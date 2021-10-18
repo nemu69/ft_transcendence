@@ -170,7 +170,7 @@ export class GameService {
   {
     ball.speedmultiplier *= 1.05;
     ball.dx  = -Math.sign(ball.dx) * 10;
-    ball.dy = ((ball.y + ball.height) - (paddle.y + paddle.height/2))/2;
+    ball.dy = ((ball.y + ball.height/2) - (paddle.y + paddle.height/2))/2;
     if (Math.abs(ball.dx) < Math.abs(ball.dy) / 3)
       ball.dx = Math.abs(ball.dy) / 3 * Math.sign(ball.dx);
     if (Math.abs(ball.dy) < 0.5)
