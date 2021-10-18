@@ -24,7 +24,7 @@ export class OptionRoomComponent {
 	map((params: Params) => parseInt(params['id']))
   )
 
-  room$: Observable<UserI> = this.roomId$.pipe(
+  room$: Observable<RoomI> = this.roomId$.pipe(
 	switchMap((roomId: number) => this.chatService.findOne(roomId))
 	)
 
