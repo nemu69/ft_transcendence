@@ -21,7 +21,7 @@
 	<div id="username">
 		<h2>Update profile picture</h2>
 		<input
-			type="file" (change)="onFileChanged($event)"
+			type="file" accept="image/x-png,image/gif,image/jpeg" (change)="onFileChanged($event)"
 			#fileInput>
 		<button mat-flat-button color="primary" (click)="onUpload()">Upload!</button>
 	</div>

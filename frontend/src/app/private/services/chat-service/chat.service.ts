@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { HostListener, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { MessageI, MessagePaginateI } from 'src/app/model/chat/message.interface';
@@ -19,7 +20,9 @@ export class ChatService {
   constructor(
     private authService: AuthService,
     private snackbar: MatSnackBar,
-	private http: HttpClient
+	private http: HttpClient,
+	private router: Router,
+	private activatedRoute: ActivatedRoute
     ) {
         if(authService.isAuthenticated())
           this.socket = new CustomSocket;
@@ -124,14 +127,15 @@ export class ChatService {
 	  return this.http.get<number>('/api/room/' + roomId + '/' +  userId).pipe(
 		tap(val => {
 		  if (val < 1) {
-			this.snackbar.open(`Passowrd failed, Try again !`, 'Close', {
+			this.snackbar.open(`Password failed, Try again !`, 'Close', {
 			  duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
 			});
 		  }
 		  else {
-			this.snackbar.open(`Passowrd success, You're in the room !`, 'Close', {
+			this.snackbar.open(`Password success, You're in the room!`, 'Close', {
 			  duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
 			});
+			this.router.navigate(['../../private/dashboard']);
 		}
 		}));
   }

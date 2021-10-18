@@ -31,10 +31,12 @@ export class AddUserRoomComponent implements OnChanges {
 	  private authService: AuthService,
 	  private router: Router,
 	  private activatedRoute: ActivatedRoute,
+	  private snackBar: MatSnackBar
 	  	) { }
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes.InRoom) {
+			console.log(changes.InRoom.currentValue);
 			this.InRoom = changes.InRoom.currentValue;
 		}
 	}
@@ -46,7 +48,21 @@ export class AddUserRoomComponent implements OnChanges {
 		if (this.password.value === undefined) {
 			this.password.setValue('');
 		}
+		console.log(this.password.value);
+		
 		this.chatService.addUserToRoom(this.joinRoom, this.password.value);
-		this.chatService.IsInRoom(this.joinRoom.id, this.user.id).subscribe();
+		setTimeout(() => {
+			if (this.joinRoom.type === this.protected) {
+				this.chatService.IsInRoom(this.joinRoom.id, this.user.id).subscribe();
+			}
+			else {
+				console.log(this.router.url);
+				this.router.navigate(['../dashboard'], {relativeTo: this.activatedRoute});
+				this.snackBar.open(`You're in the room !`, 'Close', {
+					duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',
+				});
+				
+			}
+		}, 500);
   }
 }
