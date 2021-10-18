@@ -44,7 +44,14 @@ export class ProfileusersComponent implements OnInit {
 		private historyService: HistoryService,
 		private friendsService: FriendsService,
 		private chatService: ChatService,
-		) { }
+		
+		) { 
+			this.activatedRoute.params.subscribe(params => {
+				if (params["id"]) {
+				  this.doSearch(params["id"]);
+				}
+			  });
+			}
 
 		imageToShow: any;
 		isImageLoading : boolean;
@@ -58,20 +65,31 @@ export class ProfileusersComponent implements OnInit {
 				switchMap((idt: number) => this.userService.findOne(idt).pipe(
 				tap((user) => {
 					this.user$.subscribe(val => {
-						if (val.id == user.id) {
+						if (!val) this.router.navigate(['../../page-not-found'],{ relativeTo: this.activatedRoute })
+						else if (val.id == user.id) {
 							this.router.navigate(['../../profile'],{ relativeTo: this.activatedRoute })
 						}
-						this.history = this.historyService.findAllByUserId(val.id);
-						this.getImageFromService(val.id);
-						this.idProfile = val.id;
-						this.isFriend();
-						this.isblockedUser();
+						else {
+							this.history = this.historyService.findAllByUserId(val.id);
+							this.getImageFromService(val.id);
+							this.idProfile = val.id;
+							this.isFriend();
+							this.isblockedUser();
+						}
 						});
 				  })
 				))
 			).subscribe()
 		  }
-		  
+		
+		doSearch(term: string) {
+			let test = parseInt(term);
+			if (isNaN(test)) {
+			  this.router.navigate(['../../page-not-found'],{ relativeTo: this.activatedRoute })
+			}
+			
+		  }
+
 		addFriend(){
 			  this.friendsService.sendFriendRequest(this.idProfile.toString()).subscribe(
 				  (data) => {
