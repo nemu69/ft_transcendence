@@ -198,5 +198,9 @@ export class RoomService {
 
 	return  (query);
   }
+  
+  async findOne(id: number): Promise<RoomI> {
+	return this.roomRepository.findOne({ id });
+}
 
 }

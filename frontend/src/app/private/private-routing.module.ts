@@ -13,6 +13,7 @@ import { TwoFactorDisabledComponent } from './components/two-factor-disabled/two
 import { ProfileusersComponent } from './components/profile-users/profile-users.component';
 import { AllRoomsComponent } from './components/all-rooms/all-rooms.component';
 import { AdministrationComponent } from './administration/administration.component';
+import { OptionRoomComponent } from './components/option-room/option-room.component';
 
 const routes: Routes = [
   {path: 'dashboard', component: DashboardComponent},
@@ -27,6 +28,11 @@ const routes: Routes = [
       {path: ':id', component: ProfileusersComponent},
     ]
   },
+  {path: 'option-room',
+  children: [
+	{path: ':id', component: OptionRoomComponent},
+  ]
+},
   {path: 'friend', component: FriendComponent},
   {path: 'admin', component: AdministrationComponent},
   {path: 'two-factor', component: TwoFactorComponent},

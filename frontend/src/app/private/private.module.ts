@@ -34,6 +34,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { AllRoomsComponent } from './components/all-rooms/all-rooms.component';
 import { AddUserRoomComponent } from './components/add-user-room/add-user-room.component';
 import { AdministrationComponent } from './administration/administration.component';
+import { OptionRoomComponent } from './components/option-room/option-room.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { AdministrationComponent } from './administration/administration.compone
 	FriendComponent,
 	TwoFactorComponent,
 	TwoFactorDisabledComponent,
-	AdministrationComponent
+	AdministrationComponent,
+	OptionRoomComponent
   ],
   imports: [
     CommonModule,
