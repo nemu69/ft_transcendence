@@ -400,13 +400,13 @@ export class MatchGateway{
   {
     let found: boolean = false;
     this.lobby_list.normalRooms.forEach(room => {
-      if (room.player1 && room.player1.socket.id == socket.id)
+      if (room.player1 && room.player2 && room.player1.socket.id == socket.id)
       {
         room.player1.paddle.speedmultiplier = -1;
         room.player2.points = 5;
         return ;
       }
-      if (room.player2 && room.player2.socket.id == socket.id)
+      if (room.player1 && room.player2 && room.player2.socket.id == socket.id)
       {
         room.player2.paddle.speedmultiplier = -1;
         room.player1.points = 5;
@@ -414,13 +414,13 @@ export class MatchGateway{
       }
     });
     this.lobby_list.blitzRooms.forEach(room => {
-        if (room.player1 && room.player1.socket.id == socket.id)
+        if (room.player1 && room.player2 && room.player1.socket.id == socket.id)
         {
           room.player1.paddle.speedmultiplier = -1;
           room.player2.points = 5;
           return ;
         }
-        if (room.player2 && room.player2.socket.id == socket.id)
+        if (room.player1 && room.player2 && room.player2.socket.id == socket.id)
         {
           room.player2.paddle.speedmultiplier = -1;
           room.player1.points = 5;
@@ -428,13 +428,13 @@ export class MatchGateway{
         }
       });
     this.lobby_list.privateRooms.forEach(room => {
-      if (room.player1 && room.player1.socket.id == socket.id)
+      if (room.player1 && room.player2 && room.player1.socket.id == socket.id)
       {
         room.player1.paddle.speedmultiplier = -1;
         room.player2.points = 5;
         return ;
       }
-      if (room.player2 && room.player2.socket.id == socket.id)
+      if (room.player1 && room.player2 && room.player2.socket.id == socket.id)
       {
         room.player2.paddle.speedmultiplier = -1;
         room.player1.points = 5;
