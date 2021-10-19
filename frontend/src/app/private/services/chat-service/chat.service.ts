@@ -90,6 +90,10 @@ export class ChatService {
 	this.socket.emit('addMuted', { room, user });
   }
 
+  removeUser(room: RoomI, user: UserI) {
+	this.socket.emit('removeUser', { room, user });
+  }
+
   removeAdmin(room: RoomI, user: UserI) {
 	this.socket.emit('removeAdmin', { room, user });
   }
@@ -131,7 +135,12 @@ export class ChatService {
 
   // give admin to user
   giveAdmin(id: number, user: UserI) {
-	  return this.http.put(`/api/room/${id}/admin/add`, {user});
+	  return this.http.put(`/api/room/${id}/admin/give`, {user});
+  }
+
+  // remove admin from user
+  removeAdminFromUser(id: number, user: UserI) {
+	  return this.http.put(`/api/room/${id}/admin/remove`, {user});
   }
 
   IsInRoom(roomId: number, userId : number): Observable<number> {

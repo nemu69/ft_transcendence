@@ -100,7 +100,7 @@ export class UserEntity {
  	@BeforeUpdate()
  	emailToLowerCase() {
     	this.email = this.email.toLowerCase();
-    	this.username = this.username.toLowerCase();
+    	//this.username = this.username.toLowerCase();
   }
 
 }

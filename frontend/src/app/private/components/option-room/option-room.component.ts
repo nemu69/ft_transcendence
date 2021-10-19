@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { RoomI } from 'src/app/model/chat/room.interface';
+import { RoomI, RoomType } from 'src/app/model/chat/room.interface';
 import { UserI, UserRole } from 'src/app/model/user/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { ChatService } from '../../services/chat-service/chat.service';
@@ -14,10 +14,10 @@ import { ChatService } from '../../services/chat-service/chat.service';
   styleUrls: ['./option-room.component.css']
 })
 export class OptionRoomComponent {
-
-  @Input() OptionRoom: RoomI;
+	
   user: UserI = this.authService.getLoggedInUser();
   IsOwner: boolean = false;
+  room: RoomI;
 
   private roomId$: Observable<number> = this.activatedRoute.params.pipe(
 	map((params: Params) => parseInt(params['id']))
@@ -49,6 +49,12 @@ export class OptionRoomComponent {
 				panelClass: ['red-snackbar','login-snackbar'],
 			});
 		}
+		this.room$.subscribe(val => {
+			if (!val) this.router.navigate(['../../page-not-found'],{ relativeTo: this.activatedRoute })
+			else {
+				this.room = val;
+			}
+			});
 	}
 
 	doSearch(term: string) {
@@ -56,7 +62,33 @@ export class OptionRoomComponent {
 		if (isNaN(test)) {
 		  this.router.navigate(['../../page-not-found'],{ relativeTo: this.activatedRoute })
 		}
-	  }
+	  }  
 
+	addAdmin(user: UserI) {
+		this.chatService.addAdmin(this.room, user);
+	}
 
+	addMuted(user: UserI) {
+		this.chatService.addMuted(this.room, user);
+	}
+
+	removeUser(user: UserI) {
+		this.chatService.removeUser(this.room, user);
+	}
+
+	removeAdmin(user: UserI) {
+		this.chatService.removeAdmin(this.room, user);
+	}
+
+	removeMuted(user: UserI) {
+		this.chatService.removeMuted(this.room, user);
+	}
+
+	changePassword(password: string) {
+		this.chatService.changePassword(this.room, password);
+	}
+
+	changeType(type: RoomType, password: string) {
+		this.chatService.changeType(this.room, type, password);
+	}
 }

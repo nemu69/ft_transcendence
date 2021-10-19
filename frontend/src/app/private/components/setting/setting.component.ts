@@ -4,7 +4,7 @@ import { UserService } from '../../../public/services/user-service/user.service'
 import { AuthService } from '../../../public/services/auth-service/auth.service';
 import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute,Router } from '@angular/router';
-import { UserI } from 'src/app/model/user/user.interface';
+import { UserI, UserRole } from 'src/app/model/user/user.interface';
 import { TwoFactorService } from 'src/app/private/services/twoFactor-service/twoFactor.service';
 import { setImmediate } from 'timers';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -16,7 +16,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./setting.component.css']
 })
 export class SettingComponent implements OnInit {
-	isChecked : boolean;
 	constructor(
 		private formBuilder: FormBuilder,
 		private userService: UserService,
@@ -28,12 +27,15 @@ export class SettingComponent implements OnInit {
 		) { }
 	
 	settingForm: FormGroup;
+	owner = UserRole.OWNER;
+	
   ngOnInit(): void {
 	this.settingForm = this.formBuilder.group({
 		id: [{value: null, disabled: true}, [Validators.required]],
 		username: [null, [Validators.required, Validators.maxLength(20)]],
-		avatar: [null],
+		role: [null],
 		email: [{value: null, disabled: true}, [Validators.required]],
+		avatar: [null],
 		twoFactorAuthEnabled: [null],
 		twoFactorAuthenticationSecret : {value: null, disabled: true}
 	  });
@@ -44,6 +46,7 @@ export class SettingComponent implements OnInit {
 			this.settingForm.patchValue({
 			  id: user.id,
 			  username: user.username,
+			  role: user.role,
 			  email: user.email,
 			  avatar: user.avatar,
 			  twoFactorAuthEnabled: user.twoFactorAuthEnabled,

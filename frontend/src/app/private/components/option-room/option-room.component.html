@@ -1,0 +1,40 @@
+<div class="wrapper">
+	<div class="container">
+	  <div class="dashboard">
+		  <a [routerLink]="['../dashboard']">Go to Dashboard</a>
+		</div>
+	  <mat-card>
+		<div>
+		  <div>
+			<div class="title">
+				<h1>Users Room</h1>
+		  </div>
+		  <div *ngIf="(room$|async)?.users?.length > 0; else no_friends" class="friends-list">
+			<mat-list>
+				<mat-list-item *ngFor="let roomUsers of (room$ | async).users">
+					{{roomUsers.username}}
+					<button  mat-button class="firstbutton" (click)="removeUser(roomUsers)">
+						Ban {{roomUsers.username}}     
+					</button>
+					<!--<ng-template #UnBan>
+						<button mat-button class="firstbutton" (click)="removeUser(allUsers)">
+							Unban {{allUsers.username}}
+						</button>
+					</ng-template>-->
+				  <mat-divider></mat-divider>
+				</mat-list-item>
+			  </mat-list>
+		</div>
+		<ng-template #no_friends>
+			<br>
+			<mat-error>`I have no friends and no enemies - only competitors`</mat-error>
+		</ng-template>
+		  </div>
+		</div>
+	  </mat-card>
+	</div>
+  
+	<ng-template #no_rooms>
+		<mat-error>No Chatrooms for you so far, please create one or get invited</mat-error>
+	</ng-template>
+  </div>

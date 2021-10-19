@@ -40,13 +40,6 @@ export class AdministrationComponent implements OnInit, AfterViewInit {
 			});
 			this.router.navigate(['../setting'], { relativeTo: this.ActivatedRoute });
 		}
-		this.allUsers$.subscribe(
-			data => {
-			console.log("ttlIt",data.meta.totalItems);
-			console.log("ttlpa",data.meta.totalPages);
-			console.log("ttlpa",data.meta.currentPage);
-			},
-		);
 		this.chatService.emitPaginateAllRooms(10, 0);
 	}
 
