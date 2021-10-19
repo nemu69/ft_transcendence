@@ -39,6 +39,8 @@ export class MatchComponent implements OnInit {
     let type: number;
     let name1: string;
     let name2: string;
+    let score1: number = 0;
+    let score2: number = 0;
     //Get Room ID from Server Response
     chatService.socket.on('id', function(n_id: number[]) {
       id = n_id[0];
@@ -50,7 +52,6 @@ export class MatchComponent implements OnInit {
     });
 
     chatService.socket.on('exists', function(data: number) {
-      console.log("YES");
       var spectate = document.getElementById("spectate");
       var normal = document.getElementById("normal");
       var blitz = document.getElementById("blitz");
@@ -63,6 +64,8 @@ export class MatchComponent implements OnInit {
     });
 
     chatService.socket.on('score', function(state: number[]) {
+      score1 = state[0];
+      score2 = state[1];
       var score = document.getElementById("score");
       if(score)
       {
@@ -88,6 +91,9 @@ export class MatchComponent implements OnInit {
         name1 = "P1>";
         name2 = "<P2";
       }
+      var score = document.getElementById("score");
+      if(score)
+        score.textContent = name1 + " " + score1 + " : " + score2 + " " + name2;
     });
 
     chatService.socket.on('done', function(data: number) {

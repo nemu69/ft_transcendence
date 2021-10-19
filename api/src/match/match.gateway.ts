@@ -383,17 +383,16 @@ export class MatchGateway{
   @SubscribeMessage('checkExistence')
   async checkExist(socket: Socket, data: number)
   {
-    await this.gameRoomService.UpdateRooms(this.lobby_list, this.server);
-    const payload = await this.userService.findOne(data);
-    payload.status = UserStatus.GAME;
-    this.userService.updateOne(payload.id, payload);
-    this.gameRoomService.checkIfAlready(this.lobby_list, payload, socket, this.server);
-    await sleep(10);
     let id_num: number[] = await this.gameRoomService.UpdateRooms(this.lobby_list, this.server);
     this.p_id = id_num[2];
     this.b_id = id_num[1];
     this.n_id = id_num[0];
-    this.gameRoomService.checkExists(socket, data, this.lobby_list, this.server);
+    const payload = await this.userService.findOne(data);
+    payload.status = UserStatus.GAME;
+    this.userService.updateOne(payload.id, payload);
+    //await sleep(10);
+    this.gameRoomService.checkIfAlready(this.lobby_list, payload, socket, this.server);
+    
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }

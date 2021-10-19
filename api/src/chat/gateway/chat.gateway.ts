@@ -84,6 +84,8 @@ export class ChatGateway{
 
   @SubscribeMessage('paginateRooms')
   async onPaginateRoom(socket: Socket, page: PageI) {
+    if (!socket || !socket.data || !socket.data.user)
+      return ;
     const rooms = await this.roomService.getRoomsForUser(socket.data.user.id, this.handleIncomingPageRequest(page));
     // substract page -1 to match the angular material paginator
     rooms.meta.currentPage = rooms.meta.currentPage - 1;
