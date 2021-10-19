@@ -107,101 +107,59 @@ export class GameRoomService {
     return ([n_id, b_id, p_id]);
   }
 
-  public checkExists(socket: Socket, data: number, lobby_list: LobbyI, server : Server)
+  private checkAll(room: GameStateI, user: UserI, socket: Socket, server: Server, opt: number, id: number)
   {
-    let id: number = 0;
-    for (const room of lobby_list.normalRooms)
+    if (room.player1 && room.player1.user.id == user.id)
     {
-      if (room.player1 && room.player1.socket.id == socket.id)
+      if (!room.player2 && opt != 2)
       {
-        server.to(room.player1.socket.id).emit('id', [id,0]);
-        if (room.player1 && room.player2)
-          server.to(room.player1.socket.id).emit('score', [room.player1.points,room.player2.points]);
-        server.to(room.player1.socket.id).emit('exists', 0);
-        server.to(room.player1.socket.id).emit('name', 0);
+        room.player1 = null;
+        return 1;
       }
-      if (room.player2 && room.player2.socket.id == socket.id)
-      {
-        server.to(room.player2.socket.id).emit('id', [id,0]);
-        if (room.player1 && room.player2)
-          server.to(room.player2.socket.id).emit('score', [room.player1.points,room.player2.points]);
-        server.to(room.player2.socket.id).emit('exists', 0);
-        server.to(room.player2.socket.id).emit('name', 1);
-      }
-      for (const spec of room.spectators)
-      {
-        if (spec.socket.id == socket.id)
-        {
-          if (room.player1 && room.player2)
-            server.to(spec.socket.id).emit('score', [room.player1.points,room.player2.points]);
-          server.to(spec.socket.id).emit('name', 2);
-          server.to(spec.socket.id).emit('exists', 2);
-        }
-      }
-      id++;
+      if (room.player1.socket != socket)
+        server.to(room.player1.socket.id).emit('done', 1);
+      room.player1.socket = socket;
+      if (room.player1 && room.player2)
+        server.to(room.player1.socket.id).emit('score', [room.player1.points, room.player2.points]);
+      server.to(room.player1.socket.id).emit('exists', 0);
+      server.to(room.player1.socket.id).emit('name', 0);
+      server.to(room.player1.socket.id).emit('id', [id,opt]);
+      server.to(room.player2.socket.id).emit('id', [id,opt]);
+      return 1;
     }
-    id = 0;
-    for (const room of lobby_list.blitzRooms)
+    if (room.player2 && room.player2.user.id == user.id)
     {
-      if (room.player1 && room.player1.socket.id == socket.id)
+      if (!room.player1 && opt != 2)
       {
-        server.to(room.player1.socket.id).emit('id', [id,1]);
-        if (room.player1 && room.player2)
-          server.to(room.player1.socket.id).emit('score', [room.player1.points,room.player2.points]);
-        server.to(room.player1.socket.id).emit('exists', 0);
-        server.to(room.player1.socket.id).emit('name', 0);
+        room.player2 = null;
+        return 1;
       }
-      if (room.player2 && room.player2.socket.id == socket.id)
-      {
-        server.to(room.player2.socket.id).emit('id', [id,1]);
-        if (room.player1 && room.player2)
-          server.to(room.player2.socket.id).emit('score', [room.player1.points,room.player2.points]);
-        server.to(room.player2.socket.id).emit('exists', 0);
-        server.to(room.player2.socket.id).emit('name', 1);
-      }
-      for (const spec of room.spectators)
-      {
-        if (spec.socket.id == socket.id)
-        {
-          if (room.player1 && room.player2)
-            server.to(spec.socket.id).emit('score', [room.player1.points,room.player2.points]);
-          server.to(spec.socket.id).emit('name', 2);
-          server.to(spec.socket.id).emit('exists', 2);
-        }
-      }
-      id++;
+      if (room.player2.socket != socket)
+        server.to(room.player2.socket.id).emit('done', 1);
+      room.player2.socket = socket;
+      if (room.player1 && room.player2)
+        server.to(room.player2.socket.id).emit('score', [room.player1.points, room.player2.points]);
+      server.to(room.player2.socket.id).emit('exists', 0);
+      server.to(room.player2.socket.id).emit('name', 1);
+      server.to(room.player2.socket.id).emit('id', [id,opt]);
+      server.to(room.player1.socket.id).emit('id', [id,opt]);
+      return 1;
     }
-    id = 0;
-    for (const room of lobby_list.privateRooms)
+    for (const spec of room.spectators)
     {
-      if (room.player1 && room.player1.socket.id == socket.id)
+      if (spec.socket.id == socket.id)
       {
-        server.to(room.player1.socket.id).emit('id', [id,2]);
         if (room.player1 && room.player2)
-          server.to(room.player1.socket.id).emit('score', [room.player1.points,room.player2.points]);
-        server.to(room.player1.socket.id).emit('exists', 0);
-        server.to(room.player1.socket.id).emit('name', 0);
+          server.to(spec.socket.id).emit('score', [room.player1.points,room.player2.points]);
+        else if ((room.player1 || room.player2) && opt == 2)
+          server.to(spec.socket.id).emit('score', [0,0]);
+        else
+          return 1;
+        server.to(spec.socket.id).emit('name', 2);
+        server.to(spec.socket.id).emit('exists', 2);
       }
-      if (room.player2 && room.player2.socket.id == socket.id)
-      {
-        server.to(room.player2.socket.id).emit('id', [id,2]);
-        if (room.player1 && room.player2)
-          server.to(room.player2.socket.id).emit('score', [room.player1.points,room.player2.points]);
-        server.to(room.player2.socket.id).emit('exists', 0);
-        server.to(room.player2.socket.id).emit('name', 1);
-      }
-      for (const spec of room.spectators)
-      {
-        if (spec.socket.id == socket.id)
-        {
-          if (room.player1 && room.player2)
-            server.to(spec.socket.id).emit('score', [room.player1.points,room.player2.points]);
-          server.to(spec.socket.id).emit('name', 2);
-          server.to(spec.socket.id).emit('exists', 2);
-        }
-      }
-      id++;
     }
+    return 0;
   }
 
   public checkIfAlready(lobbies: LobbyI, user: UserI, socket: Socket, server: Server)
@@ -209,112 +167,22 @@ export class GameRoomService {
     let id: number = 0;
     for (const room of lobbies.normalRooms)
     {
-      if (room.player1 && room.player1.user.id == user.id)
-      {
-        if (!room.player2)
-        {
-          room.player1 = null;
-          return 0;
-        }
-        if (room.player1.socket != socket)
-          server.to(room.player1.socket.id).emit('done', 1);
-        room.player1.socket = socket;
-        if (room.player1 && room.player2)
-          server.to(room.player1.socket.id).emit('score', [room.player1.points, room.player2.points]);
-        server.to(room.player1.socket.id).emit('name', 0);
-        server.to(room.player1.socket.id).emit('id', [id,0]);
+      if (this.checkAll(room, user, socket, server, 0, id))
         return 1;
-      }
-      if (room.player2 && room.player2.user.id == user.id)
-      {
-        if (!room.player1)
-        {
-          room.player2 = null;
-          return 0;
-        }
-        if (room.player2.socket != socket)
-          server.to(room.player2.socket.id).emit('done', 1);
-        room.player2.socket = socket;
-        if (room.player1 && room.player2)
-          server.to(room.player2.socket.id).emit('score', [room.player1.points, room.player2.points]);
-        server.to(room.player2.socket.id).emit('name', 1);
-        server.to(room.player2.socket.id).emit('id', [id,0]);
-        return 1;
-      }
       id++;
     }
     id = 0;
     for (const room of lobbies.blitzRooms)
     {
-      if (room.player1 && room.player1.user == user)
-      {
-        if (!room.player2)
-        {
-          room.player1 = null;
-          return 0;
-        }
-        if (room.player1.socket != socket)
-          server.to(room.player1.socket.id).emit('done', 1);
-        room.player1.socket = socket;
-        if (room.player1 && room.player2)
-          server.to(room.player1.socket.id).emit('score', [room.player1.points, room.player2.points]);
-        server.to(room.player1.socket.id).emit('name', 0);
-        server.to(room.player1.socket.id).emit('id', [id,1]);
+      if (this.checkAll(room, user, socket, server, 1, id))
         return 1;
-      }
-      if (room.player2 && room.player2.user == user)
-      {
-        if (!room.player1)
-        {
-          room.player2 = null;
-          return 0;
-        }
-        if (room.player2.socket != socket)
-          server.to(room.player2.socket.id).emit('done', 1);
-        room.player2.socket = socket;
-        if (room.player1 && room.player2)
-          server.to(room.player2.socket.id).emit('score', [room.player1.points, room.player2.points]);
-        server.to(room.player2.socket.id).emit('name', 1);
-        server.to(room.player2.socket.id).emit('id', [id,1]);
-        return 1;
-      }
       id++;
     }
     id = 0;
     for (const room of lobbies.privateRooms)
     {
-      if (room.player1 && room.player1.user == user)
-      {
-        if (!room.player2)
-        {
-          room.player1 = null;
-          return 0;
-        }
-        if (room.player1.socket != socket)
-          server.to(room.player1.socket.id).emit('done', 1);
-        room.player1.socket = socket;
-        if (room.player1 && room.player2)
-          server.to(room.player1.socket.id).emit('score', [room.player1.points, room.player2.points]);
-        server.to(room.player1.socket.id).emit('name', 0);
-        server.to(room.player1.socket.id).emit('id', [id,2]);
+      if (this.checkAll(room, user, socket, server, 2, id))
         return 1;
-      }
-      if (room.player2 && room.player2.user == user)
-      {
-        if (!room.player1)
-        {
-          room.player2 = null;
-          return 0;
-        }
-        if (room.player2.socket != socket)
-          server.to(room.player2.socket.id).emit('done', 1);
-        room.player2.socket = socket;
-        if (room.player1 && room.player2)
-          server.to(room.player2.socket.id).emit('score', [room.player1.points, room.player2.points]);
-        server.to(room.player2.socket.id).emit('name', 1);
-        server.to(room.player2.socket.id).emit('id', [id,2]);
-        return 1;
-      }
       id++;
     }
     return 0;
