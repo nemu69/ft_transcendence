@@ -19,7 +19,7 @@ import { ChatService } from '../services/chat-service/chat.service';
 export class AdministrationComponent implements OnInit {
 
 	user: UserI = this.authService.getLoggedInUser();
-	allUsers$: Observable<UserI[]> = this.UserService.getAllUsers();
+	// allUsers$: Observable<UserI[]> = this.UserService.getAllUsers();
 	allRooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms();
 	constructor(
 		private authService: AuthService,
