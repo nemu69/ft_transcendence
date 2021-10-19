@@ -422,40 +422,6 @@ Remove or comment-out the code block below to see how the browser will fall-back
     }
 }
 
-.container-block {
-	padding-top: 10%;
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
-  grid-auto-rows: minmax(50px, auto);
-  }
-  
-
-
-  .friends {
-	background-color: #50a3a2b9;
-    border: 2px solid #3b656462;
-    border-radius: 6px;
-	grid-column: 1 / 2;
-	grid-row: 1 / 8;
-  }
-
-
-  .requests {
-	background-color: #50a3a2b9;
-    border: 2px solid #3b656462;
-    border-radius: 6px;
-	grid-column: 2 / 3;
-	grid-row: 1 / 8;
-  }
-  .blocked {
-	background-color: #50a3a2b9;
-    border: 2px solid #3b656462;
-    border-radius: 6px;
-	grid-column: 3 / 3;
-	grid-row: 1 / 8;
-  }
-  mat-form-field {
-	width: 100%;
-	min-width: 300px;
-  }
+.firstbutton {
+	margin-left: 150px;
+}

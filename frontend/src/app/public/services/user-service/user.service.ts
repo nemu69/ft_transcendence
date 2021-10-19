@@ -10,9 +10,9 @@ import { UserI, UserPaginateI } from 'src/app/model/user/user.interface';
 })
 export class UserService {
 
-  constructor(private http: HttpClient, private snackbar: MatSnackBar) { }
+	constructor(private http: HttpClient, private snackbar: MatSnackBar) { }
 
-  getAllUsers(): Observable<UserPaginateI> {
+	getAllUsers(): Observable<UserPaginateI> {
 		return this.http.get<UserPaginateI>('/api/users');
 	}
 
@@ -33,7 +33,29 @@ export class UserService {
     	    return throwError(e);
     	  })
     	)
-}
+	}
+
+	banUser(user: UserI): Observable<UserI> {
+		return this.http.put<UserI>(`/api/users/ban/${user.id}`, user).pipe(
+			tap((user: UserI) => {
+				if (user.ban) {
+					this.snackbar.open(`User ${user.username} banned successfully`, 'Close', {
+						duration: 5000, horizontalPosition: 'right', verticalPosition: 'top'
+					})
+				}
+				else {
+					this.snackbar.open(`User ${user.username} unbanned successfully`, 'Close', {
+				duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+			})}}),
+			catchError(e => {
+				this.snackbar.open(`User could not be banned, due to: ${e.error.message}`, 'Close', {
+					duration: 5000,
+					panelClass: ['red-snackbar','login-snackbar'],
+				})
+				return throwError(e);
+			})
+		)
+	}
 
 	updateOne(user: UserI, bool: boolean): Observable<UserI> {
 		if(bool) {

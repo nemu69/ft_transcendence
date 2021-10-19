@@ -122,6 +122,18 @@ export class ChatService {
     return this.socket.fromEvent<MessageI>('messageAdded');
   }
 
+  // Controller
+
+  //delete room by id
+  deleteRoom(id: number) {
+	return this.http.put(`/api/room/${id}/admin/destroy`, {});
+  }
+
+  // give admin to user
+  giveAdmin(id: number, user: UserI) {
+	  return this.http.put(`/api/room/${id}/admin/add`, {user});
+  }
+
   IsInRoom(roomId: number, userId : number): Observable<number> {
 	  return this.http.get<number>('/api/room/' + roomId + '/' +  userId).pipe(
 		tap(val => {

@@ -40,15 +40,14 @@ export class AdministrationComponent implements OnInit, AfterViewInit {
 			});
 			this.router.navigate(['../setting'], { relativeTo: this.ActivatedRoute });
 		}
-		this.allUsers$.forEach(users => {
-			console.log(users);
-		}
+		this.allUsers$.subscribe(
+			data => {
+			console.log("ttlIt",data.meta.totalItems);
+			console.log("ttlpa",data.meta.totalPages);
+			console.log("ttlpa",data.meta.currentPage);
+			},
 		);
 		this.chatService.emitPaginateAllRooms(10, 0);
-		this.allRooms$.forEach(rooms => {
-			console.log(rooms);
-		}
-		);
 	}
 
 	ngAfterViewInit() {
@@ -58,11 +57,29 @@ export class AdministrationComponent implements OnInit, AfterViewInit {
 	onPaginateRooms(pageEvent: PageEvent) {
 		this.chatService.emitPaginateAllRooms(10, pageEvent.pageIndex);
 	  }
-	onPaginateUsers(pageEvent: PageEvent) {
-		//this.chatService.emitPaginateAllRooms(10, pageEvent.pageIndex);
-	  }
 
-	// get all users
+	// delete a room by id
+	deleteRoom(roomId: number) {
+		this.chatService.deleteRoom(roomId).subscribe(
+			data => {
+				this.snackBar.open('Room deleted', '', {
+					duration: 3000,
+				});
+				this.chatService.emitPaginateAllRooms(10, 0);
+			},
+		);
+	}
+
+	// ban user by id
+	banUser(user : UserI) {
+		if (user.role != UserRole.OWNER) {
+			user.ban = !user.ban;
+		}
+		this.UserService.banUser(user).subscribe();
+	}
+	
+
+
 
 
 

@@ -133,7 +133,7 @@ export class UserController {
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put('ban/:id')
-	async updateBanOfUser(@Param('id') id: string, @Body() user: UserI): Promise<UserI> {
+	async updateBanOfUser(@Param('id') id: string, @Body() user: UserI): Promise<UserI> {		
 	  return this.userService.updateBanOfUser(Number(id), user);
 	}
 

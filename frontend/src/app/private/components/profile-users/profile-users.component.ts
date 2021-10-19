@@ -65,7 +65,7 @@ export class ProfileusersComponent implements OnInit {
 				switchMap((idt: number) => this.userService.findOne(idt).pipe(
 				tap((user) => {
 					this.user$.subscribe(val => {
-						if (!val) this.router.navigate(['../../page-not-found'],{ relativeTo: this.activatedRoute })
+						if (!val || val.ban) this.router.navigate(['../../page-not-found'],{ relativeTo: this.activatedRoute })
 						else if (val.id == user.id) {
 							this.router.navigate(['../../profile'],{ relativeTo: this.activatedRoute })
 						}

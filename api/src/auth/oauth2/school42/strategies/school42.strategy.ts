@@ -29,11 +29,13 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 			headers: { Authorization: `Bearer ${accessToken}` },
 		});
 		try {
-			let user = await this.usersService.getUserBy42Id(data.id);
-			//check if user is ban
-			if (user.ban)
-				throw new UnauthorizedException('User is banned');
 			// check if user already exists
+			let user = await this.usersService.getUserBy42Id(data.id);
+			
+			//check if user is banned
+			if (user.ban) {
+				throw new UnauthorizedException('You\'re banned');				
+			}
 			done(null, user);
 		}
 		catch (error) {
@@ -65,12 +67,14 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 			}
 			else {
 				console.log("error");
+				console.log(error.message);
+				
 				throw new HttpException(
-					'Something went wrong',
+					error.message,
 					HttpStatus.INTERNAL_SERVER_ERROR,
 				  );
 			}
-			// throw error;
+			//throw error;
 		}
 	}
 }

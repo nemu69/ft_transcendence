@@ -126,7 +126,7 @@ export class UserService {
 			where: {
 			  id: id,
 			},
-		});
+		});		
 		if (temp.role == UserRole.OWNER) throw new HttpException('You can\'t ban Owner...', HttpStatus.CONFLICT);
 		return from(this.userRepository.update(id, user)).pipe(
 			switchMap(() => this.findOne(id))

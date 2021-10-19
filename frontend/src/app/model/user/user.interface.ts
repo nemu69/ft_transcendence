@@ -7,6 +7,7 @@ export interface UserI {
     username?: string;
     password?: string;
     email?: string;
+	ban?: boolean;
     avatar?: string;
     level?: number;
 	following?: FriendEntity[];

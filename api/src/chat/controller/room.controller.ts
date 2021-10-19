@@ -27,7 +27,7 @@ export class RoomController {
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put(':id/admin/destroy')
-	async updateRoomAdmin(@Param('id') id: string): Promise<RoomI> {
+	async closeRoomAdmin(@Param('id') id: string): Promise<RoomI> {
 	  var room: RoomI = await this.roomService.getRoom(Number(id));
 	  return this.roomService.changeTypeRoom(room, RoomType.CLOSE);
 	}
