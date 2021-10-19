@@ -9,6 +9,7 @@ export interface GameStateI {
     userServices?: UserService;
     historyServices?: HistoryService;
     id?: NodeJS.Timeout;
+    p_id?: number;
     player1: PlayerI;
     player2: PlayerI;
     spectators?: PlayerI[];

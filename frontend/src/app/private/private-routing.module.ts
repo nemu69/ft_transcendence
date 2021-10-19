@@ -28,15 +28,12 @@ const routes: Routes = [
       {path: ':id', component: ProfileusersComponent},
     ]
   },
-  {path: 'option-room',
-  children: [
-	{path: ':id', component: OptionRoomComponent},
-  ]
-},
+  {path: 'option-room/:id', component: OptionRoomComponent},
   {path: 'friend', component: FriendComponent},
   {path: 'admin', component: AdministrationComponent},
   {path: 'two-factor', component: TwoFactorComponent},
   {path: 'two-factor-disabled', component: TwoFactorDisabledComponent},
+  {path: 'page-not-found', component: PageNotFoundComponent},
   {path: '**', component: PageNotFoundComponent},
 ];
 

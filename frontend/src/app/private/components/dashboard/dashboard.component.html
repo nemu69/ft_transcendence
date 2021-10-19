@@ -21,7 +21,7 @@
             </mat-selection-list>
             <mat-paginator [length]="(rooms$ | async)?.meta?.totalItems" [pageIndex]="(rooms$ | async)?.meta?.currentPage"
               [pageSize]="(rooms$ | async)?.meta?.itemsPerPage" (page)="onPaginateRooms($event)"
-              [pageSizeOptions]="[10,25,50]"></mat-paginator>
+              ></mat-paginator>
           </div>
         </div>
         <div class="chatroom">

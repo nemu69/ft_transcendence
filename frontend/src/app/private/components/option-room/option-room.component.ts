@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { RoomI } from 'src/app/model/chat/room.interface';
-import { UserI } from 'src/app/model/user/user.interface';
+import { UserI, UserRole } from 'src/app/model/user/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { ChatService } from '../../services/chat-service/chat.service';
 
@@ -33,8 +33,30 @@ export class OptionRoomComponent {
 	  private router: Router,
 	  private activatedRoute: ActivatedRoute,
 	  private _snackBar: MatSnackBar
-	  	) { }
+	  	) { 
+			this.activatedRoute.params.subscribe(params => {
+				if (params["id"]) {
+				  this.doSearch(params["id"]);
+				}
+			  });
+			}
 
+	  ngOnInit(): void {
+		// check if user status is owner or admin
+		if (this.user.role !== UserRole.ADMIN && this.user.role !== UserRole.OWNER) {
+			this._snackBar.open('You are not authorized to access this page', '', {
+				duration: 2000,
+				panelClass: ['red-snackbar','login-snackbar'],
+			});
+		}
+	}
+
+	doSearch(term: string) {
+		let test = parseInt(term);
+		if (isNaN(test)) {
+		  this.router.navigate(['../../page-not-found'],{ relativeTo: this.activatedRoute })
+		}
+	  }
 
 
 }

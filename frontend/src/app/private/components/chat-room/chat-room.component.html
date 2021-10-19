@@ -7,9 +7,13 @@
         <mat-icon>group</mat-icon>
         {{chatRoom.name}}
       </h2>
-      <button mat-button (click)="gameInvite()">
+      <button mat-button (click)="gameInvite(0)">
         <i class="fas fa-sign-out-alt"></i>
-        Game Invite
+        Normal Game Invite
+      </button>
+      <button mat-button (click)="gameInvite(1)">
+        <i class="fas fa-sign-out-alt"></i>
+        Blitz Game Invite
       </button>
       <span style="display: flex; flex-direction: row; align-items: center;">
         <mat-icon>event</mat-icon>
@@ -39,7 +43,7 @@
   <div #messages class="message">
     <span *ngFor="let message of (messagesPaginate$ | async)?.items">
       <div *ngIf="message.type == 1; else lost">
-        <button class="gameButton" (click)="joinGameRoom()">{{message.user.username}}<div>GAME INVITE</div></button>
+        <button class="gameButton" (click)="joinGameRoom(message.id)">{{message.user.username}}<div>{{message.text}}</div></button>
       </div>
       <ng-template #lost>
         <app-chat-message [message]="message"></app-chat-message>

@@ -54,8 +54,8 @@ export class ChatService {
 	this.socket.emit('paginateRooms', { limit, page });
   }
 
-  inviteMessage(message: MessageI) {
-    this.socket.emit('gameMessage', message);
+  inviteMessage(message: MessageI, id: number, type: number) {
+    this.socket.emit('gameMessage', {message, id, type});
   }
 
   joinRoom(room: RoomI) {
@@ -156,12 +156,12 @@ export class ChatService {
     this.socket.emit('newPlayer', [info, user]);
   }
 
-  newPrivatePlayer(room: RoomI, user: number) {
-    this.socket.emit('newPrivatePlayer', {room, user});
+  newPrivatePlayer(room: RoomI, user: number, m_id: number) {
+    this.socket.emit('newPrivatePlayer', {room, user, m_id});
   }
 
-  newPrivateGame(room: RoomI, user: number) {
-    this.socket.emit('CreatePrivateGame', {room, user});
+  newPrivateGame(room: RoomI, user: number, type: number, m_id: number) {
+    this.socket.emit('CreatePrivateGame', {room, user, type, m_id});
   }
 
   getGameState(): Observable<GameStateI> {
