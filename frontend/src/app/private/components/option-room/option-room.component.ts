@@ -16,7 +16,6 @@ import { ChatService } from '../../services/chat-service/chat.service';
 export class OptionRoomComponent {
 
   @Input() OptionRoom: RoomI;
-  @ViewChild('messages') private messagesScroller: ElementRef;
   user: UserI = this.authService.getLoggedInUser();
   IsOwner: boolean = false;
 
