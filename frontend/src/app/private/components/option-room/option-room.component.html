@@ -7,14 +7,19 @@
 		<div>
 		  <div>
 			<div class="title">
-				<h1>Users Room</h1>
+				<h1>Room {{room.name}}</h1>
 		  </div>
+		  <mat-divider></mat-divider>
 		  <div *ngIf="(room$|async)?.users?.length > 0; else no_friends" class="friends-list">
+			  <h3>Users in room</h3>
 			<mat-list>
-				<mat-list-item *ngFor="let roomUsers of (room$ | async).users">
+				<mat-list-item *ngFor="let roomUsers of (room$ | async)?.users">
 					{{roomUsers.username}}
 					<button  mat-button class="firstbutton" (click)="removeUser(roomUsers)">
-						Ban {{roomUsers.username}}     
+						Remove user
+					</button>
+					<button  mat-button  class="firstbutton" (click)="removeUser(roomUsers)">
+						Mute user  
 					</button>
 					<!--<ng-template #UnBan>
 						<button mat-button class="firstbutton" (click)="removeUser(allUsers)">

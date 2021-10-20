@@ -21,7 +21,7 @@ export class AdministrationComponent implements OnInit, AfterViewInit {
 
 	user: UserI = this.authService.getLoggedInUser();
 	allUsers$: Observable<UserPaginateI> = this.UserService.getAllUsers();
-	allRooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms();
+	allRooms$: Observable<RoomPaginateI> = this.chatService.getAllRooms();
 	constructor(
 		private authService: AuthService,
 		private router: Router,
@@ -40,7 +40,18 @@ export class AdministrationComponent implements OnInit, AfterViewInit {
 			});
 			this.router.navigate(['../setting'], { relativeTo: this.ActivatedRoute });
 		}
-		this.chatService.emitPaginateAllRooms(10, 0);
+		else {
+			// remove current user from all users list
+			this.allUsers$ = this.allUsers$.pipe(
+			map(users => {
+				return {
+					...users,
+					items: users.items.filter(user => user.id !== this.user.id)
+				};
+			})
+			);
+			this.chatService.emitPaginateAllRooms(10, 0);
+		}
 	}
 
 	ngAfterViewInit() {

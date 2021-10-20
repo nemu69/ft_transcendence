@@ -1,7 +1,7 @@
 <div class="wrapper">
 	<div class="container">
 	  <div class="dashboard">
-		  <a [routerLink]="['../dashboard']">Go to Dashboard</a>
+		  <a [routerLink]="['../setting']">Go to setting</a>
 		</div>
 	  <mat-card>
 		<div>
@@ -35,7 +35,7 @@
 		  <div *ngIf="(allUsers$|async)?.items?.length > 0; else no_friends" class="friends-list">
 			<mat-list>
 				<mat-list-item *ngFor="let allUsers of (allUsers$ | async)?.items">
-					{{allUsers.username}}
+					{{allUsers.username}} | role : {{allUsers.role}}
 					<button *ngIf="!allUsers.ban; else UnBan" mat-button class="firstbutton" (click)="banUser(allUsers)">
 						Ban {{allUsers.username}}     
 					</button>

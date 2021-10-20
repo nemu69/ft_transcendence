@@ -121,10 +121,14 @@ export class ChatService {
   getMyRooms(): Observable<RoomPaginateI> {
     return this.socket.fromEvent<RoomPaginateI>('rooms');
   }
+  
+  getAllRooms(): Observable<RoomPaginateI> {
+    return this.socket.fromEvent<RoomPaginateI>('allrooms');
+  }
 
   getAddedMessage(): Observable<MessageI> {
     return this.socket.fromEvent<MessageI>('messageAdded');
-  }
+  }	  
 
   // Controller
 
@@ -162,6 +166,12 @@ export class ChatService {
 		}));
   }
 
+  findOne(id: number): Observable<RoomI> {
+	return this.http.get('/api/room/' + id).pipe(
+	  map((room:RoomI) => room)
+	)
+  }
+
   // Game
   checkExistence(n: number)
   {
@@ -193,9 +203,4 @@ export class ChatService {
     this.socket.emit("paddle", data);
   }
 
-  findOne(id: number): Observable<RoomI> {
-	return this.http.get('/api/room/' + id).pipe(
-	  map((room:RoomI) => room)
-	)
-  }
 }

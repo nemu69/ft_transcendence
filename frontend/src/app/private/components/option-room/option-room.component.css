@@ -68,9 +68,9 @@ body :-ms-input-placeholder {
   margin: 20px;
 }
 
-.title button{
+.title{
   margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .container mat-card mat-cardmat-card{
@@ -110,4 +110,8 @@ body :-ms-input-placeholder {
   font-weight: 300;
   width: 350px;
   /* height: 36px; */
+}
+
+.firstbutton {
+	margin-left: 50px;
 }

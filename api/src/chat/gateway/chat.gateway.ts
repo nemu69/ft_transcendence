@@ -120,7 +120,7 @@ export class ChatGateway{
 	const rooms = await this.roomService.getAllRoom(this.handleIncomingPageRequest(page));
     // substract page -1 to match the angular material paginator
     rooms.meta.currentPage = rooms.meta.currentPage - 1;
-    return this.server.to(socket.id).emit('rooms', rooms);
+    return this.server.to(socket.id).emit('allrooms', rooms);
   }
 
   // add user

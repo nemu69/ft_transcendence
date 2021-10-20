@@ -17,7 +17,7 @@ export class OptionRoomComponent {
 	
   user: UserI = this.authService.getLoggedInUser();
   IsOwner: boolean = false;
-  room: RoomI;
+  room: RoomI = {};
 
   private roomId$: Observable<number> = this.activatedRoute.params.pipe(
 	map((params: Params) => parseInt(params['id']))
@@ -41,7 +41,7 @@ export class OptionRoomComponent {
 			  });
 			}
 
-	  ngOnInit(): void {
+	ngOnInit(): void {
 		// check if user status is owner or admin
 		if (this.user.role !== UserRole.ADMIN && this.user.role !== UserRole.OWNER) {
 			this._snackBar.open('You are not authorized to access this page', '', {
@@ -53,6 +53,16 @@ export class OptionRoomComponent {
 			if (!val) this.router.navigate(['../../page-not-found'],{ relativeTo: this.activatedRoute })
 			else {
 				this.room = val;
+				this.room$ = this.room$.pipe(
+					map(room => {
+						return {
+							...room,
+							users: room.users.filter(user => user.id !== this.user.id)
+						};
+					})
+					);
+				
+				// remove current user from all users list
 			}
 			});
 	}

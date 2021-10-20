@@ -15,9 +15,9 @@ import { ChatService } from '../../services/chat-service/chat.service';
 })
 export class AllRoomsComponent implements OnInit, AfterViewInit{
 
-  rooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms();
+  rooms$: Observable<RoomPaginateI> = this.chatService.getAllRooms();
   selectedRoom : RoomI = null;
-  InRoom = null;
+  InRoom : boolean = false;
   user: UserI = this.authService.getLoggedInUser();
 
   constructor(private chatService: ChatService,
@@ -26,33 +26,34 @@ export class AllRoomsComponent implements OnInit, AfterViewInit{
 	) { }
 
   ngOnInit() {
-    this.chatService.emitPaginateAllRooms(20, 0);
+    this.chatService.emitPaginateAllRooms(10, 0);
   }
 
   ngAfterViewInit() {
-    this.chatService.emitPaginateAllRooms(20, 0);
+    this.chatService.emitPaginateAllRooms(10, 0);
   }
 
   addUserToRoom(event: MatSelectionListChange) {
 	this.selectedRoom = event.source.selectedOptions.selected[0].value;
-	console.log(this.selectedRoom.users);
-	
-	if (this.selectedRoom.users && this.selectedRoom.users.find(user => user.id === this.user.id)) {
-		this.InRoom = true;
-	} 
-	else if  (this.selectedRoom.admin && this.selectedRoom.admin.find(user => user.id === this.user.id)) {
-		this.InRoom = true;
-	} 
-	else if  (this.selectedRoom.muted && this.selectedRoom.muted.find(user => user.id === this.user.id)) {
-		this.InRoom = true;
-	} 
-	else {
-		this.InRoom = false;
-	}
+	this.chatService.findOne(this.selectedRoom.id).subscribe(room => {
+		this.selectedRoom = room;		
+		if (this.selectedRoom.users && this.selectedRoom.users.find(user => user.id === this.user.id)) {
+			this.InRoom = true;
+		} 
+		else if  (this.selectedRoom.admin && this.selectedRoom.admin.find(user => user.id === this.user.id)) {
+			this.InRoom = true;
+		} 
+		else if  (this.selectedRoom.muted && this.selectedRoom.muted.find(user => user.id === this.user.id)) {
+			this.InRoom = true;
+		} 
+		else {
+			this.InRoom = false;
+		}
+	});
   }
 
   onPaginateRooms(pageEvent: PageEvent) {
-    this.chatService.emitPaginateAllRooms(20, pageEvent.pageIndex);
+    this.chatService.emitPaginateAllRooms(10, pageEvent.pageIndex);
   }
 
 }

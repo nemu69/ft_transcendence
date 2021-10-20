@@ -64,6 +64,7 @@ export class AppModule implements NestModule {
         {path: '/api/history', method: RequestMethod.GET},
         {path: '/api/history/match/:id', method: RequestMethod.GET},
 		// room
+		{path: '/api/room/:idRoom', method: RequestMethod.GET},
 		{path: '/api/room/:id/admin/destroy', method: RequestMethod.PUT},
 		{path: '/api/room/:id/admin/give', method: RequestMethod.PUT},
 		{path: '/api/room/:id/admin/remove', method: RequestMethod.PUT},
