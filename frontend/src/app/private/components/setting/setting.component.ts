@@ -27,7 +27,9 @@ export class SettingComponent implements OnInit {
 		) { }
 	
 	settingForm: FormGroup;
+	selectedFile: File
 	owner = UserRole.OWNER;
+	admin = UserRole.ADMIN;
 	
   ngOnInit(): void {
 	this.settingForm = this.formBuilder.group({
@@ -43,6 +45,7 @@ export class SettingComponent implements OnInit {
 	  this.authService.getUserId().pipe(
 		switchMap((idt: number) => this.userService.findOne(idt).pipe(
 		  tap((user) => {
+			  
 			this.settingForm.patchValue({
 			  id: user.id,
 			  username: user.username,
@@ -103,12 +106,12 @@ export class SettingComponent implements OnInit {
 		else this.settingForm.value.twoFactorAuthEnabled = false;
 	  }
 
-	  selectedFile: File
 	onFileChanged(event) {
 	this.selectedFile = event.target.files[0]
 	
 	}
 	onUpload() {
+		if (this.selectedFile) {
 		let formData = new FormData();
     	formData.append('file', this.selectedFile);
 		 this.userService.uploadFile(formData).subscribe(
@@ -118,6 +121,7 @@ export class SettingComponent implements OnInit {
 		 	  })
 		 	}
 		 );
+		}
 	  }
 
 	update(bool: boolean) {

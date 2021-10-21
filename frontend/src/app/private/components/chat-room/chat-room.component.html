@@ -8,11 +8,11 @@
         {{chatRoom.name}}
       </h2>
       <button mat-button (click)="gameInvite(0)">
-        <i class="fas fa-sign-out-alt"></i>
+        <i class="fas fa-gamepad-alt"></i>
         Normal Game Invite
       </button>
       <button mat-button (click)="gameInvite(1)">
-        <i class="fas fa-sign-out-alt"></i>
+        <i class="fas fa-gamepad-alt"></i>
         Blitz Game Invite
       </button>
       <span style="display: flex; flex-direction: row; align-items: center;">
@@ -29,6 +29,10 @@
 	  <button mat-button *ngIf="IsOwner; else adminUser" (click)="LeaveChatRoom('close')">
 		<i class="fas fa-sign-out-alt"></i>
 			Close Room
+	  </button>
+	  <button mat-button *ngIf="IsOwner || IsAdmin" (click)="optionRoom(chatRoom.id)">
+		<i class="fas fa-user-cog"></i>
+			Option Room
 	  </button>
 	  <ng-template #adminUser>
 		<button mat-button (click)="LeaveChatRoom('leave')">

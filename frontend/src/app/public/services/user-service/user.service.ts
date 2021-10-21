@@ -57,6 +57,28 @@ export class UserService {
 		)
 	}
 
+	changeRole(user: UserI): Observable<UserI> {
+		return this.http.put<UserI>(`/api/users/${user.id}/role`, user).pipe(
+			tap((user: UserI) => {
+				if (user.role === 'admin') {
+					this.snackbar.open(`User ${user.username} is now an admin`, 'Close', {
+						duration: 5000, horizontalPosition: 'right', verticalPosition: 'top'
+					})
+				}
+				else {
+					this.snackbar.open(`User ${user.username} is now a user`, 'Close', {
+				duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+			})}}),
+			catchError(e => {
+				this.snackbar.open(`User could not be changed, due to: ${e.error.message}`, 'Close', {
+					duration: 5000,
+					panelClass: ['red-snackbar','login-snackbar'],
+				})
+				return throwError(e);
+			})
+		)
+	}
+
 	updateOne(user: UserI, bool: boolean): Observable<UserI> {
 		if(bool) {
     		return this.http.put('api/users/' + user.id, user).pipe(

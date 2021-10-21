@@ -1,7 +1,7 @@
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { AuthService } from 'src/auth/login/service/auth.service';
 import { Socket, Server } from 'socket.io';
-import { UserI } from 'src/user/model/user.interface';
+import { UserI, UserRole } from 'src/user/model/user.interface';
 import { UserService } from 'src/user/service/user-service/user.service';
 import { UnauthorizedException } from '@nestjs/common';
 import { RoomService } from '../service/room-service/room.service';
@@ -136,8 +136,14 @@ export class ChatGateway{
   async addAdmin(socket: Socket, data: any) {
 	let room : RoomI = data.room;
 	let user : UserI = data.user;
-	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
+	
+	let bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
+	if (socket.data.user.role == UserRole.ADMIN || socket.data.user.role == UserRole.OWNER) {
+		bool = 1;
+	}
+	
 	if (bool) await this.roomService.addAdminToRoom(room, user);
+	this.roomService.saveRoom(room);
   }
 
   // add muted
@@ -147,6 +153,7 @@ export class ChatGateway{
 	let user : UserI = data.user;
 	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
 	if (bool && user != room.owner) await this.roomService.addMutedToRoom(room, user);
+	this.roomService.saveRoom(room);
   }
 
   // remove user
@@ -198,6 +205,7 @@ export class ChatGateway{
 	let room : RoomI = data.room;
 	let type : RoomType = data.type;
 	const password = data.password;
+
 	if (room.owner.id == socket.data.user.id) {
 		if (type == RoomType.PROTECTED) {
 			if (room.password != null && password == null){

@@ -10,7 +10,7 @@ import { RoomI, RoomPaginateI, RoomType } from 'src/app/model/chat/room.interfac
 import { UserI, UserPaginateI, UserRole } from 'src/app/model/user/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserService } from 'src/app/public/services/user-service/user.service';
-import { ChatService } from '../services/chat-service/chat.service';
+import { ChatService } from '../../services/chat-service/chat.service';
 
 @Component({
   selector: 'app-administration',
@@ -20,25 +20,29 @@ import { ChatService } from '../services/chat-service/chat.service';
 export class AdministrationComponent implements OnInit, AfterViewInit {
 
 	user: UserI = this.authService.getLoggedInUser();
-	allUsers$: Observable<UserPaginateI> = this.UserService.getAllUsers();
+	admin :UserRole = UserRole.ADMIN;
+	allUsers$: Observable<UserPaginateI> = this.userService.getAllUsers();
 	allRooms$: Observable<RoomPaginateI> = this.chatService.getAllRooms();
 	constructor(
 		private authService: AuthService,
 		private router: Router,
-		private ActivatedRoute: ActivatedRoute,
+		private activatedRoute: ActivatedRoute,
 		private snackBar: MatSnackBar,
-		private UserService: UserService,
+		private userService: UserService,
 		private chatService: ChatService
   	) { }
 
 	ngOnInit(): void {
+		this.userService.findOne(this.user.id).subscribe(
+			(user: UserI) => {
+				this.user = user;
 		// check if user status is owner or admin
 		if (this.user.role !== UserRole.ADMIN && this.user.role !== UserRole.OWNER) {
 			this.snackBar.open('You are not authorized to access this page', '', {
 				duration: 3000,
 				panelClass: ['red-snackbar','login-snackbar'],
 			});
-			this.router.navigate(['../setting'], { relativeTo: this.ActivatedRoute });
+			this.router.navigate(['../setting'], { relativeTo: this.activatedRoute });
 		}
 		else {
 			// remove current user from all users list
@@ -52,6 +56,7 @@ export class AdministrationComponent implements OnInit, AfterViewInit {
 			);
 			this.chatService.emitPaginateAllRooms(10, 0);
 		}
+	});
 	}
 
 	ngAfterViewInit() {
@@ -79,12 +84,23 @@ export class AdministrationComponent implements OnInit, AfterViewInit {
 		if (user.role != UserRole.OWNER) {
 			user.ban = !user.ban;
 		}
-		this.UserService.banUser(user).subscribe();
+		this.userService.banUser(user).subscribe();
 	}
-	
 
+	changeRole(user : UserI) {
+		if (user.role != UserRole.OWNER) {
+			if (user.role === UserRole.ADMIN) {
+				user.role = UserRole.USER;
+			}
+			else {
+				user.role = UserRole.ADMIN;
+			}
+		}
+		this.userService.changeRole(user).subscribe();
+	}
 
-
-
+	optionRoom(roomId: number) {
+	  this.router.navigate(['../option-room/' + roomId], { relativeTo: this.activatedRoute });
+	}
 
 }

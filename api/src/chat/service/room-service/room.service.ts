@@ -51,6 +51,10 @@ export class RoomService {
 	  select: ['id', 'name', 'type', 'password']
     });
   }
+
+  async saveRoom(room: RoomI): Promise<RoomI> {
+	return this.roomRepository.save(room);
+  }
   
   async getAllRoomAdmin(options: IPaginationOptions): Promise<Pagination<RoomI>> {
     const query = this.roomRepository
@@ -151,18 +155,14 @@ export class RoomService {
 
   async deleteAUserMutedFromRoom(roomId: number, userId: number): Promise<RoomI> {
 	const room = await this.getRoom(roomId);
-	console.log(room);
 	room.muted = room.muted.filter(user => user.id !== userId);
-	console.log("without : ",room);
-	
+
 	return this.roomRepository.save(room);
   }
 
   async deleteAUserAdminFromRoom(roomId: number, userId: number): Promise<RoomI> {
 	const room = await this.getRoom(roomId);
-	console.log(room);
 	room.admin = room.admin.filter(user => user.id !== userId);
-	console.log("without : ",room);
 	
 	return this.roomRepository.save(room);
   }

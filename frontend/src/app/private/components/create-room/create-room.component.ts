@@ -79,8 +79,6 @@ export class CreateRoomComponent {
   }
 
   radioPassword($event: MatRadioChange) {
-    console.log($event.source.name, $event.value);
-
     if ($event.value == 'no') {
 		this.form.get('password').clearValidators();
         this.form.get('password').disable();
@@ -95,7 +93,6 @@ export class CreateRoomComponent {
   }
 
   radioType($event: MatRadioChange) {
-    console.log($event.source.name, $event.value);
 	if ($event.value == 'public') {
 		this.form.get('type').setValue('public');
 		this.beforeType = 'public';

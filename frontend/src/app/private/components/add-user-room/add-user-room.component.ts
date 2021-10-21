@@ -36,7 +36,6 @@ export class AddUserRoomComponent implements OnChanges {
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes.InRoom) {
-			console.log(changes.InRoom.currentValue);
 			this.InRoom = changes.InRoom.currentValue;
 		}
 	}
@@ -48,7 +47,6 @@ export class AddUserRoomComponent implements OnChanges {
 		if (this.password.value === undefined) {
 			this.password.setValue('');
 		}
-		console.log(this.password.value);
 		
 		this.chatService.addUserToRoom(this.joinRoom, this.password.value);
 		setTimeout(() => {
@@ -56,7 +54,6 @@ export class AddUserRoomComponent implements OnChanges {
 				this.chatService.IsInRoom(this.joinRoom.id, this.user.id).subscribe();
 			}
 			else {
-				console.log(this.router.url);
 				this.router.navigate(['../dashboard'], {relativeTo: this.activatedRoute});
 				this.snackBar.open(`You're in the room !`, 'Close', {
 					duration: 3000, horizontalPosition: 'right', verticalPosition: 'top',

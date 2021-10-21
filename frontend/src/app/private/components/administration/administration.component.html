@@ -16,6 +16,9 @@
 				<button mat-button class="firstbutton" (click)="deleteRoom(room.id)">
 					Delete {{room.name}}     
 				</button>
+				<button mat-button class="firstbutton" (click)="optionRoom(room.id)">
+					Option Room
+				</button>
 				<mat-divider></mat-divider>
 				</mat-list-item>
 			</mat-list>
@@ -35,13 +38,21 @@
 		  <div *ngIf="(allUsers$|async)?.items?.length > 0; else no_friends" class="friends-list">
 			<mat-list>
 				<mat-list-item *ngFor="let allUsers of (allUsers$ | async)?.items">
-					{{allUsers.username}} | role : {{allUsers.role}}
+					{{allUsers.username}} | {{allUsers.role}}
 					<button *ngIf="!allUsers.ban; else UnBan" mat-button class="firstbutton" (click)="banUser(allUsers)">
 						Ban {{allUsers.username}}     
 					</button>
 					<ng-template #UnBan>
 						<button mat-button class="firstbutton" (click)="banUser(allUsers)">
 							Unban {{allUsers.username}}
+						</button>
+					</ng-template>
+					<button *ngIf="allUsers.role != admin ; else adminRole" mat-button class="firstbutton" (click)="changeRole(allUsers)">
+						Promote admin {{allUsers.username}}     
+					</button>
+					<ng-template #adminRole>
+						<button mat-button class="firstbutton" (click)="changeRole(allUsers)">
+							Demote admin {{allUsers.username}}
 						</button>
 					</ng-template>
 				  <mat-divider></mat-divider>

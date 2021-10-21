@@ -29,10 +29,9 @@ export class TwoFactorService {
   authenticate(user: UserI, code: TwoFactorAuthenticationCodeDto): Observable<any> {
 	return this.http.post<any>('api/2fa/authenticate', user).pipe(
 		tap((res) => {
-			console.log("res", res);
 			localStorage.setItem(JWT_TWO_NAME, res)}),
 		catchError(e => {
-		this.snackbar.open(`Wrong Password. Please try again.`, 'Close', {
+		this.snackbar.open(e.error.message, 'Close', {
 		  duration: 3000,
 		  panelClass: ['red-snackbar','login-snackbar'],
 		})

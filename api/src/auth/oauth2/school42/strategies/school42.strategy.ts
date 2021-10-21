@@ -50,7 +50,6 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 						if (nbTry) {
 							username = username + nbTry;
 						}
-						console.log("Create user account for: ", username, "(school42)");
 						let user = await this.usersService.create({
 							username: username,
 							password: "School42",
@@ -66,9 +65,6 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 				}
 			}
 			else {
-				console.log("error");
-				console.log(error.message);
-				
 				throw new HttpException(
 					error.message,
 					HttpStatus.INTERNAL_SERVER_ERROR,

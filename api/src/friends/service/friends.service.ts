@@ -74,7 +74,6 @@ export class FriendsService {
     receiverId: number,
     creator: UserEntity,
   ): Observable<FriendRequest | { error: string }> {
-	console.log("sendfriendRequest");
     if (receiverId === creator.id)
       return of({ error: 'It is not possible to add yourself!' });
 
@@ -92,7 +91,6 @@ export class FriendsService {
               receiver,
               status: 'pending',
             };
-			console.log(friendRequest);
 			
             return from(this.friendRequestRepository.save(friendRequest));
           }),
@@ -175,7 +173,6 @@ export class FriendsService {
 						receiver,
 						status: 'blocked',
 					};
-					console.log(friendRequest);
 					return from(this.friendRequestRepository.save(friendRequest));
 				}
 				this.friendRequestRepository.delete(friendRequest);

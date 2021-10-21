@@ -68,6 +68,21 @@ body :-ms-input-placeholder {
   margin: 20px;
 }
 
+mat-card mat-card-content form {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+mat-card mat-card-content form mat-form-field {
+	width: 100%;
+	min-width: 300px;
+}
+mat-card mat-card-content form .button {
+	display: flex;
+	margin: 20px;
+	justify-content: flex-end;
+}
+
 .title{
   margin-top: 20px;
   margin-bottom: 40px;
@@ -90,28 +105,41 @@ body :-ms-input-placeholder {
   padding-bottom: 30px;
 }
 
-.gameButton{
-  right:0%;
+.mat-button, .mat-icon-button, .mat-stroked-button, .mat-flat-button{
+	min-width: auto;
 }
 
+form {
+	padding: 50px 0;
+	border-radius: 300px;
+	position: relative;
+	z-index: 2;
+  }
+
  mat-form-field {
-  display: block;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: 0;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  background-color: #50a3a280;
-  border-radius: 3px;
-  text-align: center;
-  font-size: 18px;
-  color: white;
-  transition-duration: 0.25s;
-  font-weight: 300;
-  width: 350px;
-  /* height: 36px; */
+	display: block;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	outline: 0;
+	border: 1px solid rgba(255, 255, 255, 0.4);
+	background-color: rgba(255, 255, 255, 0.2);
+	width: 250px;
+	border-radius: 3px;
+	margin: 0 auto 15px auto;
+	text-align: center;
+	font-size: 18px;
+	color: white;
+	transition-duration: 0.25s;
+	font-weight: 300;
+	padding: 7px 20px;
+	padding-top: 0px;
 }
 
 .firstbutton {
 	margin-left: 50px;
+}
+
+.radio{
+  margin: 20px;
 }

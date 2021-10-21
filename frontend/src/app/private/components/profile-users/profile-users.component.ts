@@ -129,7 +129,6 @@ export class ProfileusersComponent implements OnInit {
 		blockUser(){
 			this.friendsService.blockOrUnblockUsers(this.idProfile.toString()).subscribe(
 				(data) => {
-					console.log(data);
 					this.yourBlocked = !this.yourBlocked;
 					this.yourFriend = 0;
 				})		
@@ -162,7 +161,6 @@ export class ProfileusersComponent implements OnInit {
 		removeFriend(){
 			this.friendsService.removeFriendRequest(this.idProfile.toString()).subscribe(
 				(data) => {
-					console.log(data);
 					this.yourFriend = 0;
 				})
 		}
@@ -199,7 +197,6 @@ export class ProfileusersComponent implements OnInit {
 			}, error => {
 			  this.isImageLoading = false;
 			});
-			console.log(this.isImageLoading);
 		}
 
 		onSelectOpp(event: MatSelectionListChange) {

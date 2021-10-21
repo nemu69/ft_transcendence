@@ -92,7 +92,6 @@ export class TwoFactorComponent implements OnInit {
 		  this.isImageLoading = false;
 		}, error => {
 		  this.isImageLoading = false;
-		  console.log(error);
 		});
 	}
 	turnOn(){
@@ -100,8 +99,6 @@ export class TwoFactorComponent implements OnInit {
 			this._snackBar.open('Two factor authentication is enabled', 'Close', {
 				duration: 5000,
 			});
-			console.log("next");
-			
 			this.stepper.next();
 			setTimeout(() => {
 				this.router.navigate(['../../private/setting']);

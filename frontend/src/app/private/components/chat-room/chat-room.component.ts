@@ -6,8 +6,9 @@ import { combineLatest, Observable } from 'rxjs';
 import { switchMap, map, startWith, tap } from 'rxjs/operators';
 import { MessagePaginateI } from 'src/app/model/chat/message.interface';
 import { RoomI } from 'src/app/model/chat/room.interface';
-import { UserI } from 'src/app/model/user/user.interface';
+import { UserI, UserRole } from 'src/app/model/user/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
+import { UserService } from 'src/app/public/services/user-service/user.service';
 import { ChatService } from '../../services/chat-service/chat.service';
 
 @Component({
@@ -21,15 +22,26 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   @ViewChild('messages') private messagesScroller: ElementRef;
   user: UserI = this.authService.getLoggedInUser();
   IsOwner: boolean = false;
+  IsAdmin: boolean = false;
   messagesPaginate$: Observable<MessagePaginateI> = combineLatest([this.chatService.getMessages(), this.chatService.getAddedMessage().pipe(startWith(null))]).pipe(
     map(([messagePaginate, message]) => {
 		if (message && message.room.id === this.chatRoom.id && !messagePaginate.items.some(m => m.id === message.id)) {
-		    messagePaginate.items.push(message);
+			messagePaginate.items.push(message);
 		}
 		const items = messagePaginate.items.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
 		messagePaginate.items = items;
+		this.userService.findOne(this.user.id).subscribe(user => {
+			this.user = user;
 		if (this.chatRoom.owner && this.chatRoom.owner.id === this.user.id)
 			  this.IsOwner = true;
+		else this.IsOwner = false;
+
+		if (this.chatRoom.admin && this.chatRoom.admin.some(m => m.id === this.user.id) ||
+		this.user.role === UserRole.ADMIN || this.user.role === UserRole.OWNER){
+			  this.IsAdmin = true;
+			}
+		else this.IsAdmin = false;
+		});
 		if (this.chatRoom.muted && this.chatRoom.muted.some(m => m.id === this.user.id)){
 			  this.chatMessage.disable();
 			  this.chatMessage.setValue('You are muted');
@@ -41,7 +53,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 		return messagePaginate;
     }),
     tap(() => this.scrollToBottom())
-  )
+	)
 
   chatMessage: FormControl = new FormControl({value: '', disabled: false}, [Validators.required]);
 
@@ -50,7 +62,8 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 	  private authService: AuthService,
 	  private router: Router,
 	  private activatedRoute: ActivatedRoute,
-	  private _snackBar: MatSnackBar
+	  private _snackBar: MatSnackBar,
+	  private userService: UserService
 	  	) {
         chatService.socket.on('startGame', function(data: {room: RoomI, u_id: number, type: number, m_id: number}) {
           chatService.newPrivateGame(data.room, data.u_id, data.type, data.m_id);
@@ -107,6 +120,10 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 	this._snackBar.open('You ' +  action + ' ' + this.chatRoom.name + ' !', 'Close', {
 		duration: 2000,
 	});
-	this.router.navigate(['../profile/'], { relativeTo: this.activatedRoute });
+	this.router.navigate(['../profile'], { relativeTo: this.activatedRoute });
+  }
+
+  optionRoom(roomId: number) {
+	this.router.navigate(['../option-room/' + roomId], { relativeTo: this.activatedRoute });
   }
 }

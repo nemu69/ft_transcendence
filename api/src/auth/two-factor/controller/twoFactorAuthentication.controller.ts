@@ -32,19 +32,24 @@ import { UserEntity } from 'src/user/model/user.entity';
 	@UseGuards(JwtAuthGuard)
 	async authenticate(
 	  @Req() request: RequestWithUser,
-	  @Body() { twoFactorAuthenticationCode } : TwoFactorAuthenticationCodeDto
-	) : Promise<string>{
-	  const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
+	  @Body() { twoFactorAuthenticationCode } : TwoFactorAuthenticationCodeDto) : Promise<string>{
+		
+		const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
 		twoFactorAuthenticationCode, request.body
-	  );
-	  if (!isCodeValid) {
+		);
+		if (!isCodeValid) {
 		  throw new UnauthorizedException('Wrong authentication code');
+		}
+		
+		const user = await this.usersService.findOne(request.body.id);
+		if (user.ban) {
+		  throw new UnauthorizedException('You\'re banned');
 		}
 
 		const accessTokenCookie = this.twoFactorAuthenticationService.getCookieWithJwtToken(request.body.id, true);
 		request.res.setHeader('Set-Cookie', [accessTokenCookie.cookie]);
-		
-	  return JSON.stringify(accessTokenCookie.token);
+
+		return JSON.stringify(accessTokenCookie.token);
 	}
 
 	@Post('turn-on')

@@ -12,7 +12,7 @@ import { TwoFactorComponent } from './components/two-factor/two-factor.component
 import { TwoFactorDisabledComponent } from './components/two-factor-disabled/two-factor-disabled.component';
 import { ProfileusersComponent } from './components/profile-users/profile-users.component';
 import { AllRoomsComponent } from './components/all-rooms/all-rooms.component';
-import { AdministrationComponent } from './administration/administration.component';
+import { AdministrationComponent } from './components/administration/administration.component';
 import { OptionRoomComponent } from './components/option-room/option-room.component';
 
 const routes: Routes = [

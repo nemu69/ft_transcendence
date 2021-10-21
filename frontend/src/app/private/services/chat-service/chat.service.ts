@@ -106,8 +106,8 @@ export class ChatService {
 	this.socket.emit('changePassword', { room, password });
   }
 
-  changeType(room: RoomI, type: RoomType, password: string) {
-	this.socket.emit('changeType', { room, type, password });
+  changeType(room: RoomI, type: RoomType, password: string, user: UserI) {
+	this.socket.emit('changeType', { room, type, password, user});
   }
 
   sendMessage(message: MessageI) {

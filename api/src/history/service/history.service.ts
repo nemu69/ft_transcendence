@@ -39,7 +39,6 @@ export class HistoryService {
 	async createMatchHistory(match: HistoryI): Promise<HistoryI>{
 		try {
 			const n_match = await this.historyRepository.save(this.historyRepository.create(match));
-			console.log(match)
 			return this.findOne(n_match.id);
 		} catch {
 			throw new HttpException('BLEBLEBLE', HttpStatus.CONFLICT);

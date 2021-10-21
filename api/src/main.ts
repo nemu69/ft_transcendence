@@ -10,7 +10,6 @@ async function bootstrap() {
   app.use(json());
   app.enableCors();
   app.use((req, res, next) => {
-    console.log('req.body', req.body);
     next();
   });
   app.useGlobalPipes(new ValidationPipe());

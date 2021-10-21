@@ -15,7 +15,6 @@ export class TwoFactorGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 	if(!this.authService.isTwofactor()) { //twofactor
-		console.log("this.authService.istwofactor() false");
 		this.router.navigate(['two-factor']);
 		return false;
 	}

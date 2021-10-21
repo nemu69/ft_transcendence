@@ -14,7 +14,8 @@ rel="stylesheet">
 				<input matInput placeholder="Password" formControlName="password"[type]="hide ? 'password' : 'text'">
 					<mat-icon matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
 			</mat-form-field>
-			<button mat-flat-button color="primary" [disabled]="!loginForm.valid" type="submit" id="login-button">Log in</button>
+			<button mat-flat-button color="primary" [disabled]="true" type="submit" id="login-button">Log in (unavailable)</button>
+			<!--<button mat-flat-button color="primary" [disabled]="!loginForm.valid" type="submit" id="login-button">Log in</button>-->
 			<p>or</p>
 			<a routerLink="/public/register" class="log-reg-dir">Register</a>
 			<!-- <input type="text" placeholder="Guest" > -->

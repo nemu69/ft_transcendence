@@ -1,16 +1,40 @@
 <div class="wrapper">
 	<div class="container">
 	  <div class="dashboard">
-		  <a [routerLink]="['../dashboard']">Go to Dashboard</a>
+		  <a [routerLink]="['../../dashboard']">Go to Dashboard</a>
+		</div>
+		<div *ngIf="room.owner?.id == user.id" class="settingRoom">
+			<mat-card>
+				<div class="title">
+					<h1>Settings</h1>
+				</div>
+				<form [formGroup]="form" (ngSubmit)="modify()">
+					<mat-divider></mat-divider>
+					<br>
+					<br>
+					<mat-radio-group (change)="radioType($event)" class="radio">
+						<mat-radio-button value="private" required>Private |</mat-radio-button>
+						<mat-radio-button value="public" required >Public |</mat-radio-button>
+						<mat-radio-button value="protected" required >Protected</mat-radio-button>
+					</mat-radio-group>
+					<br>
+					<br>
+					<mat-form-field appearance="standard">
+						<input matInput placeholder="Password" formControlName="password" placeholder="Password"/>
+				</mat-form-field>
+				<mat-hint *ngIf="!form.valid"><small>Please fill out all needed information</small></mat-hint>
+				<div class="button">
+					<button mat-button type="submit" [disabled]="!form.valid">Modify Chatroom</button>
+				</div>
+			</form>
+			</mat-card>
 		</div>
 	  <mat-card>
-		<div>
-		  <div>
 			<div class="title">
 				<h1>Room {{room.name}}</h1>
 		  </div>
 		  <mat-divider></mat-divider>
-		  <div *ngIf="(room$|async)?.users?.length > 0; else no_friends" class="friends-list">
+		  <div *ngIf="(room$|async)?.users?.length > 0" class="friends-list">
 			  <h3>Users in room</h3>
 			<mat-list>
 				<mat-list-item *ngFor="let roomUsers of (room$ | async)?.users">
@@ -18,8 +42,11 @@
 					<button  mat-button class="firstbutton" (click)="removeUser(roomUsers)">
 						Remove user
 					</button>
-					<button  mat-button  class="firstbutton" (click)="removeUser(roomUsers)">
+					<button  mat-button  class="firstbutton" (click)="addMuted(roomUsers)">
 						Mute user  
+					</button>
+					<button  mat-button  class="firstbutton" (click)="addAdmin(roomUsers)">
+						Give admin rights 
 					</button>
 					<!--<ng-template #UnBan>
 						<button mat-button class="firstbutton" (click)="removeUser(allUsers)">
@@ -30,16 +57,7 @@
 				</mat-list-item>
 			  </mat-list>
 		</div>
-		<ng-template #no_friends>
-			<br>
-			<mat-error>`I have no friends and no enemies - only competitors`</mat-error>
-		</ng-template>
-		  </div>
-		</div>
 	  </mat-card>
+	
 	</div>
-  
-	<ng-template #no_rooms>
-		<mat-error>No Chatrooms for you so far, please create one or get invited</mat-error>
-	</ng-template>
   </div>

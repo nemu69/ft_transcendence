@@ -9,7 +9,6 @@ export class School42AuthenticationGuard extends AuthGuard('school42') {
             return "failure";
 		//TODO switch 'failure' to a throw
 		if (err || !user) {
-			console.log("err= ", err);
 		  throw err || new UnauthorizedException ();
 		}
 		return user;
