@@ -130,7 +130,6 @@ export class ProfileusersComponent implements OnInit {
 			this.friendsService.blockOrUnblockUsers(this.idProfile.toString()).subscribe(
 				(data) => {
 					this.yourBlocked = !this.yourBlocked;
-					this.yourFriend = 0;
 				})		
 		}
 
