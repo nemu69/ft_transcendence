@@ -11,7 +11,7 @@ import { RoomI } from 'src/chat/model/room/room.interface';
 @Injectable()
 export class GameRoomService {
 
-  constructor(){};
+  constructor(private userService: UserService){};
 
   public findGameByMessageId(lobbies: LobbyI, id: number)
   {
@@ -114,7 +114,7 @@ export class GameRoomService {
       if (!room.player2 && opt != 2)
       {
         room.player1 = null;
-        return 1;
+        return 2;
       }
       if (room.player1.socket != socket)
         server.to(room.player1.socket.id).emit('done', 1);
@@ -132,7 +132,7 @@ export class GameRoomService {
       if (!room.player1 && opt != 2)
       {
         room.player2 = null;
-        return 1;
+        return 2;
       }
       if (room.player2.socket != socket)
         server.to(room.player2.socket.id).emit('done', 1);
@@ -154,38 +154,55 @@ export class GameRoomService {
         else if ((room.player1 || room.player2) && opt == 2)
           server.to(spec.socket.id).emit('score', [0,0]);
         else
-          return 1;
+          return 2;
         server.to(spec.socket.id).emit('name', 2);
         server.to(spec.socket.id).emit('exists', 2);
+        return 1;
       }
     }
     return 0;
   }
 
+  async changeGameState(user: UserI, status: UserStatus)
+  {
+    user.status = status;
+    this.userService.updateOne(user.id, user);
+  }
+
   public checkIfAlready(lobbies: LobbyI, user: UserI, socket: Socket, server: Server)
   {
     let id: number = 0;
+    let status: number;
     for (const room of lobbies.normalRooms)
     {
-      if (this.checkAll(room, user, socket, server, 0, id))
-        return 1;
+      if (status = this.checkAll(room, user, socket, server, 0, id))
+        if(status == 1)
+          return this.changeGameState(user, UserStatus.GAME);
+        else
+          return this.changeGameState(user, UserStatus.ON);
       id++;
     }
     id = 0;
     for (const room of lobbies.blitzRooms)
     {
-      if (this.checkAll(room, user, socket, server, 1, id))
-        return 1;
+      if (status = this.checkAll(room, user, socket, server, 1, id))
+        if(status == 1)
+          return this.changeGameState(user, UserStatus.GAME);
+        else
+          return this.changeGameState(user, UserStatus.ON);
       id++;
     }
     id = 0;
     for (const room of lobbies.privateRooms)
     {
-      if (this.checkAll(room, user, socket, server, 2, id))
-        return 1;
+      if (status = this.checkAll(room, user, socket, server, 2, id))
+        if(status == 1)
+          return this.changeGameState(user, UserStatus.GAME);
+        else
+          return this.changeGameState(user, UserStatus.ON);
       id++;
     }
-    return 0;
+    return this.changeGameState(user, UserStatus.ON);
   }
 
   //Check if Users are still connected properly

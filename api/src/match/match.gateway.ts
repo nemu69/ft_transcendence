@@ -388,8 +388,6 @@ export class MatchGateway{
     this.b_id = id_num[1];
     this.n_id = id_num[0];
     const payload = await this.userService.findOne(data);
-    payload.status = UserStatus.GAME;
-    this.userService.updateOne(payload.id, payload);
     //await sleep(10);
     this.gameRoomService.checkIfAlready(this.lobby_list, payload, socket, this.server);
     
