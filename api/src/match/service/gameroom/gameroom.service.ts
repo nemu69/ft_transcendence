@@ -221,12 +221,14 @@ export class GameRoomService {
     }
     if (gamestate.player1 && !gamestate.player1.socket.connected)
     {
-      gamestate.player1.user.status = UserStatus.OFF;
+      if (gamestate.player2)
+        gamestate.player2.points = 5;
       return (2);
     }
     else if (gamestate.player2 && !gamestate.player2.socket.connected)
     {
-      gamestate.player2.user.status = UserStatus.OFF;
+      if (gamestate.player1)
+        gamestate.player1.points = 5;
       return (1);
     }
     return (0);
