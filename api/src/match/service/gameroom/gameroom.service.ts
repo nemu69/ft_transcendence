@@ -124,7 +124,8 @@ export class GameRoomService {
       server.to(room.player1.socket.id).emit('exists', 0);
       server.to(room.player1.socket.id).emit('name', 0);
       server.to(room.player1.socket.id).emit('id', [id,opt]);
-      server.to(room.player2.socket.id).emit('id', [id,opt]);
+      if (room.player2 && room.player2.socket)
+        server.to(room.player2.socket.id).emit('id', [id,opt]);
       return 1;
     }
     if (room.player2 && room.player2.user.id == user.id)
@@ -142,7 +143,8 @@ export class GameRoomService {
       server.to(room.player2.socket.id).emit('exists', 0);
       server.to(room.player2.socket.id).emit('name', 1);
       server.to(room.player2.socket.id).emit('id', [id,opt]);
-      server.to(room.player1.socket.id).emit('id', [id,opt]);
+      if (room.player1 && room.player1.socket)
+        server.to(room.player1.socket.id).emit('id', [id,opt]);
       return 1;
     }
     for (const spec of room.spectators)
