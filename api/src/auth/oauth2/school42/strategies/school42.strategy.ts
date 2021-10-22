@@ -14,7 +14,7 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 			tokenURL: "https://api.intra.42.fr/oauth/token",
 			clientID: process.env.OAUTH_42_UID,
 			clientSecret: process.env.OAUTH_42_SECRET,
-			callbackURL: "http://localhost:4200/public/callback",
+			callbackURL: "http://10.4.9.5:4200/public/callback",
 			scope: 'public',
 			proxy: true
 		});
