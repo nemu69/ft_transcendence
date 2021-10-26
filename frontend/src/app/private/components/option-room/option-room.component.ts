@@ -136,24 +136,56 @@ export class OptionRoomComponent implements OnInit {
 		}
 	  }
 
+	isAdmin(user: UserI) {
+		return this.room.admin && this.room.admin.find(admin => admin.id === user.id);
+	}
+
+	isMuted(user: UserI) {
+		return this.room.muted && this.room.muted.find(muted => muted.id === user.id);
+	}
+
 	addAdmin(user: UserI) {
 		this.chatService.addAdmin(this.room, user);
+		this.room.admin.push(user);
 	}
 
 	addMuted(user: UserI) {
-		this.chatService.addMuted(this.room, user);
+		// check if user is owner room
+		if (user.id === this.room.owner.id) {
+			this._snackBar.open('You can\'t mute owner room', '', {
+				duration: 2000,
+				panelClass: ['red-snackbar','login-snackbar'],
+			});
+		}
+		else {
+			this.chatService.addMuted(this.room, user);
+			this.room.muted.push(user);
+		}
 	}
 
 	removeUser(user: UserI) {
+		this.removeAdmin(user);
+		this.removeMuted(user);
 		this.chatService.removeUser(this.room, user);
+		this.router.navigate(['../../dashboard'], { relativeTo: this.activatedRoute });
 	}
 
 	removeAdmin(user: UserI) {
-		this.chatService.removeAdmin(this.room, user);
+		if (user.id === this.room.owner.id) {
+			this._snackBar.open('He\'s owner room', '', {
+				duration: 2000,
+				panelClass: ['red-snackbar','login-snackbar'],
+			});
+		}
+		else {
+			this.chatService.removeAdmin(this.room, user);
+			this.room.admin = this.room.admin.filter(admin => admin.id !== user.id);
+		}
 	}
 
 	removeMuted(user: UserI) {
 		this.chatService.removeMuted(this.room, user);
+		this.room.muted = this.room.muted.filter(muted => muted.id !== user.id);
 	}
 
 	changePassword(password: string) {

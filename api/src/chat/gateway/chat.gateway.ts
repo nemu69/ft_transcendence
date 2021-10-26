@@ -162,7 +162,16 @@ export class ChatGateway{
 	let room : RoomI = data.room;
 	let user : UserI = data.user;
 	const bool: Number = await this.roomService.boolUserIsAdminOnRoom(socket.data.user.id, room);
-	if (bool && user != room.owner) await this.roomService.deleteAUserFromRoom(room.id, user.id);
+	if (bool && user != room.owner) {
+		await this.roomService.deleteAUserFromRoom(room.id, user.id);
+		const connections: ConnectedUserI[] = await this.connectedUserService.findByUser(user);
+		const rooms = await this.roomService.getRoomsForUser(user.id, { page: 1, limit: 10 });
+      	// substract page -1 to match the angular material paginator
+      	rooms.meta.currentPage = rooms.meta.currentPage - 1;
+      	for (const connection of connections) {
+      	  await this.server.to(connection.socketId).emit('rooms', rooms);
+		}
+	}
   }
 
   // remove admin

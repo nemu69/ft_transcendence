@@ -24,19 +24,12 @@ export class CallbackComponent implements OnInit {
 		this.router.navigate(['../../private/profile']);
 		return ;
   	}
-
     let uri: string = window.location.href;
-	console.log(window.location.origin);
-	
 	
     let auth = "api/oauth2/school42/";
     uri = uri.replace('public/', '');
-	console.log(uri);
     let output = [uri.slice(0, 21), auth, uri.slice(21)].join('');
-	console.log(output);
     uri = output;
-	console.log(uri);
-
     this.apiService.getToken(uri).subscribe(
 		(result: any) =>{
         localStorage.setItem('auth-token', result.token);        
