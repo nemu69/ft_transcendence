@@ -39,13 +39,7 @@ export class AllRoomsComponent implements OnInit, AfterViewInit{
 		this.selectedRoom = room;		
 		if (this.selectedRoom.users && this.selectedRoom.users.find(user => user.id === this.user.id)) {
 			this.InRoom = true;
-		} 
-		else if  (this.selectedRoom.admin && this.selectedRoom.admin.find(user => user.id === this.user.id)) {
-			this.InRoom = true;
-		} 
-		else if  (this.selectedRoom.muted && this.selectedRoom.muted.find(user => user.id === this.user.id)) {
-			this.InRoom = true;
-		} 
+		}
 		else {
 			this.InRoom = false;
 		}
