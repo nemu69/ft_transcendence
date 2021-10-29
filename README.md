@@ -96,6 +96,17 @@ play a default pong game without any added stuff.
 The game must be responsive!
 Other users can watch the game live without interfering in it.
 
+Requirements
+============
+
+* docker
+* docker-compose
+
+Installation
+============
+
+`docker-compse up --build`
+
 # Resultat
 
 <img width="1516" alt="transcendence" src="https://user-images.githubusercontent.com/45235527/139443999-fda6d2cf-2a95-4b9e-9d57-d77d25e604da.png">
