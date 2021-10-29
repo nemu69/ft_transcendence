@@ -107,7 +107,7 @@ Installation
 
 `docker-compse up --build`
 
-# Resultat
+# Results
 
 <img width="1516" alt="transcendence" src="https://user-images.githubusercontent.com/45235527/139443999-fda6d2cf-2a95-4b9e-9d57-d77d25e604da.png">
 
