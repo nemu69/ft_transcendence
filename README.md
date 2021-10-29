@@ -4,7 +4,7 @@
 
 # ft_transcendence
 
-<!-- <img alt="Note" src="https://user-images.githubusercontent.com/45235527/96753610-698e7080-13d0-11eb-9461-d3351c9208d7.png" width="250" height="200" /> -->
+<img alt="Note" src="https://user-images.githubusercontent.com/45235527/96753610-698e7080-13d0-11eb-9461-d3351c9208d7.png" width="250" height="200" /> 
 
 ### <strong>Description</strong>
 
@@ -16,6 +16,10 @@ computer science. Now look where you are standing. Time to shine
 > -	   *<a href="https://github.com/nemu69">Nemuel Page Léonie</a> (<a href="https://profile.intra.42.fr/users/nepage-l">nepage-l</a>).<br>*
 > -    *<a href="https://github.com/JDesbordes">Jérôme Desbordes</a> (<a href="https://profile.intra.42.fr/users/jdesbord">jdesbord</a>).<br>*
 > -    *<a href="https://github.com/AcensJJ">Jean-Jacques Acens</a> (<a href="https://profile.intra.42.fr/users/jacens">jacens</a>).*
+
+<p align="center">
+  <img alt="war" src="https://user-images.githubusercontent.com/45235527/139450481-561e3ae8-f843-4d52-8d32-f36f4afca31e.gif" />
+</p>
 
 # Mandatory part
 
@@ -91,3 +95,11 @@ If you want to, you can add power ups, different maps etc... but user must be ab
 play a default pong game without any added stuff.
 The game must be responsive!
 Other users can watch the game live without interfering in it.
+
+# Resultat
+
+<img width="1516" alt="transcendence" src="https://user-images.githubusercontent.com/45235527/139443999-fda6d2cf-2a95-4b9e-9d57-d77d25e604da.png">
+
+<img width="1516" alt="war - profil" src="https://user-images.githubusercontent.com/45235527/139444550-b536a9a7-090f-4a55-97df-bca61319462a.png">
+
+<img width="1516" alt="war - pong" src="https://user-images.githubusercontent.com/45235527/139444775-93d4b070-d351-4843-9980-c68df1c01b0a.png">
