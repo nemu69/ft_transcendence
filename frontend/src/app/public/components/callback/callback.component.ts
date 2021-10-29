@@ -23,13 +23,15 @@ export class CallbackComponent implements OnInit {
 	if (this.apiService.isAuthenticated()) {
 		this.router.navigate(['../../private/profile']);
 		return ;
-  	}
-    let uri: string = window.location.href;
+	}
 	
-    let auth = "api/oauth2/school42/";
-    uri = uri.replace('public/', '');
-    let output = [uri.slice(0, 21), auth, uri.slice(21)].join('');
-    uri = output;
+	let uri: string = window.location.href;
+	
+	let auth = "/api/oauth2/school42";
+	uri = uri.replace('public/', '');
+	let output = [uri.slice(0, 21), auth, uri.slice(21)].join('');
+	uri = output;
+
     this.apiService.getToken(uri).subscribe(
 		(result: any) =>{
         localStorage.setItem('auth-token', result.token);        

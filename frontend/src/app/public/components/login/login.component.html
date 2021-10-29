@@ -6,7 +6,7 @@ rel="stylesheet">
 		<h2 class="login">The original Pong in 5 points</h2>
 		
 		<form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-			<!--<mat-form-field appearance="standard">
+			<mat-form-field appearance="standard">
 				<input matInput placeholder="Email" formControlName="email">
 				 <mat-error *ngIf="loginForm.controls.email.errors">{{getErrorMessageEmail()}}</mat-error>
 			</mat-form-field>
@@ -14,11 +14,9 @@ rel="stylesheet">
 				<input matInput placeholder="Password" formControlName="password"[type]="hide ? 'password' : 'text'">
 					<mat-icon matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
 			</mat-form-field>
-			<button mat-flat-button color="primary" [disabled]="true" type="submit" id="login-button">Log in (unavailable)</button>
 			<button mat-flat-button color="primary" [disabled]="!loginForm.valid" type="submit" id="login-button">Log in</button>
 			<p>or</p>
 			<a routerLink="/public/register" class="log-reg-dir">Register</a>
-			<input type="text" placeholder="Guest" >-->
 		</form>
 		<a class="log-reg-dir" href="/api/oauth2/school42">
 			<span style="color: #8F0000">Log in with</span>

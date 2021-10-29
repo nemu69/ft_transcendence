@@ -4,7 +4,7 @@ rel="stylesheet">
 	<div class="container-login">
 		<h1 class="login">Register</h1>
 		<form class="form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-			<!--<mat-form-field appearance="standard">
+			<mat-form-field appearance="standard">
 				<input matInput placeholder="Username" formControlName="username">
 				<mat-error *ngIf="registerForm.controls.username.errors">{{getErrorMessageUser()}}</mat-error>
 			</mat-form-field>
@@ -48,7 +48,7 @@ rel="stylesheet">
 						Must contain at least 1 Special Character
 				</label>
 			</div>
-			<button id="register-button" type="submit">Register</button>-->
+			<button id="register-button" type="submit">Register</button>
 			<a routerLink="/public/login" class="log-reg-dir">Login</a>
 		</form>
 	</div>
